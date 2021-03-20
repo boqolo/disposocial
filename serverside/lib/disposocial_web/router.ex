@@ -1,12 +1,29 @@
 defmodule DisposocialWeb.Router do
   use DisposocialWeb, :router
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :browser do
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
-  scope "/api", DisposocialWeb do
-    pipe_through :api
+  pipeline :api do
+    plug(:accepts, ["json"])
+  end
+
+  scope "/api/v1", DisposocialWeb do
+    pipe_through(:api)
+
+    # TODO define resource routes here with appropriate controllers hooked up
+  end
+
+  scope "/", DisposocialWeb do
+    pipe_through(:browser)
+
+    # get("/", RootController, :index)
+    get("/photos", RootController, :photo)
   end
 
   # Enables LiveDashboard only for development
@@ -20,8 +37,8 @@ defmodule DisposocialWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through [:fetch_session, :protect_from_forgery]
-      live_dashboard "/dashboard", metrics: DisposocialWeb.Telemetry
+      pipe_through([:fetch_session, :protect_from_forgery])
+      live_dashboard("/dashboard", metrics: DisposocialWeb.Telemetry)
     end
   end
 end
