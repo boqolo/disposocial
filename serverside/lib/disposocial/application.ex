@@ -14,7 +14,9 @@ defmodule Disposocial.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Disposocial.PubSub},
       # Start the Endpoint (http/https)
-      DisposocialWeb.Endpoint
+      DisposocialWeb.Endpoint,
+      # Start random id generator process
+      Disposocial.RandomWords
       # Start a worker by calling: Disposocial.Worker.start_link(arg)
       # {Disposocial.Worker, arg}
     ]
