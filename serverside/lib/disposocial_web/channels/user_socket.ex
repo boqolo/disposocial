@@ -3,6 +3,7 @@ defmodule DisposocialWeb.UserSocket do
 
   ## Channels
   # channel "room:*", DisposocialWeb.RoomChannel
+  channel("default:*", DisposocialWeb.DefaultChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
