@@ -4,7 +4,7 @@ import './index.css';
 import "../node_modules/metro4-dist/js/metro.min.js";
 import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
-import store from './app/store';
+import store from './store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 

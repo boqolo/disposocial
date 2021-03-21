@@ -1,32 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
 import { Switch, Route } from 'react-router-dom';
-import {
-  Counter
-} from './features/counter/Counter';
-import IndexHeader from "./components/IndexHeader.jsx";
-import DispoHeader from "./components/DispoHeader.jsx";
-import FourOFour from "./components/404.jsx";
-// import './App.css';
+import Index from "./views/Index.jsx";
+import About from "./views/About.jsx";
+import Discover from "./views/Discover.jsx";
+import Dispo from "./views/Dispo.jsx";
+import Default from "./views/404.jsx";
 
 function App() {
   return (
     <div class="container">
       <Switch>
         <Route path="/" exact>
-          <IndexHeader />
-          <h1>Disposocial</h1>
-          <h1><small>A disposable social network</small></h1>
+          <Index />
+        </Route>
+        <Route path="/about">
+          <About />
         </Route>
         <Route path="/discover">
-          <IndexHeader />
-          <h1>{"TODO: use location to find local dispos and list them"}</h1>
+          <Discover />
         </Route>
         <Route path="/dispo">
-          <DispoHeader />
+          <Dispo />
         </Route>
         <Route path="*">
-          <FourOFour />
+          <Default />
         </Route>
       </Switch>
     </div>
