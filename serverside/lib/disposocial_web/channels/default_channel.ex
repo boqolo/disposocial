@@ -6,6 +6,13 @@ defmodule DisposocialWeb.DefaultChannel do
     {:ok, socket}
   end
 
+  @impl true
+  def handle_in("register", params) do
+    # TODO validate (proper fields, name not in use, 
+    # password good, email validation), hash password,
+    # create db User, set session + api token
+  end
+
   # @impl true
   # def join("default:lobby", payload, socket) do
   #   if authorized?(payload) do

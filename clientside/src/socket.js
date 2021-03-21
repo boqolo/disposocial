@@ -1,4 +1,5 @@
 import { Socket } from 'phoenix';
+import { store } from './store.js';
 
 // create socket with token if authenticated (undefined if not i.e.
 // for default channel on page load)
@@ -18,6 +19,14 @@ channel_default.join()
   .receive("ok", () => console.log("joined default channel"))
   .receive("error", resp => console.log("unable to join default channel", resp));
 
+export function ch_register(form_params) {
+  channel_default.push("register", form_params)
+    .receive("ok", () => {}) // TODO dispatch user info to store?
+    .receive("error", resp => console.log("unable to register user", resp));
+}
+
+// FIXME should instead join on default channel and register callback
+// to join specific Dispo channel on success
 export function ch_join_dispo(id) {
   channel_dispo = socket.channel(`dispo:${id}`, {});
   channel_dispo.join()

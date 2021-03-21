@@ -2,6 +2,8 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Index from "./views/Index.jsx";
 import About from "./views/About.jsx";
+import Login from "./views/Login.jsx";
+import Register from "./views/Register.jsx";
 import Discover from "./views/Discover.jsx";
 import Dispo from "./views/Dispo.jsx";
 import Default from "./views/404.jsx";
@@ -12,6 +14,12 @@ function App() {
       <Switch>
         <Route path="/" exact>
           <Index />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/register">
+          <Register />
         </Route>
         <Route path="/about">
           <About />
