@@ -3,9 +3,13 @@ defmodule Disposocial.Posts.Post do
   import Ecto.Changeset
 
   schema "posts" do
-    field :body, :string
-    field :media_hash, :string
-    field :user_id, :id
+    field(:body, :string)
+    field(:media_hash, :string)
+
+    belongs_to(:user, Disposocial.Users.User)
+    belongs_to(:dispo, :id)
+    has_many(:reactions, Disposocial.Reactions.Reaction)
+    many_to_many(:tags, Disposocial.Tags.Tag, join_through: "posts-tags")
 
     timestamps()
   end
@@ -13,7 +17,7 @@ defmodule Disposocial.Posts.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:body, :media_hash])
-    |> validate_required([:body, :media_hash])
+    |> cast(attrs, [:body, :media_hash, :user_id, :dispo_id])
+    |> validate_required([:body, :media_hash, :user_id, :dispo_id])
   end
 end

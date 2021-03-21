@@ -3,14 +3,21 @@ defmodule Disposocial.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :name, :string
-      add :password_hash, :string
-      add :photo_hash, :string
-      add :dispo_id, references(:dispos, on_delete: :nothing)
+      add(:name, :string, null: false)
+      add(:email, :string, null: false)
+      add(:status, :string, null: false)
+      add(:passcode_hash, :string, null: false)
+      add(:photo_hash, :string, null: false)
+
+      add(
+        :dispo_id,
+        references(:dispos, on_delete: :nothing),
+        null: false
+      )
 
       timestamps()
     end
 
-    create index(:users, [:dispo_id])
+    create(index(:users, [:dispo_id]))
   end
 end

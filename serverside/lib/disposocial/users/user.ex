@@ -3,10 +3,14 @@ defmodule Disposocial.Users.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :name, :string
-    field :password_hash, :string
-    field :photo_hash, :string
-    field :dispo_id, :id
+    field(:name, :string)
+    field(:email, :string)
+    field(:status, :string)
+    field(:passcode_hash, :string)
+    field(:photo_hash, :string)
+
+    has_one(:dispo, :id)
+    has_many(:posts, Disposocial.Posts.Post)
 
     timestamps()
   end
@@ -14,7 +18,7 @@ defmodule Disposocial.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :password_hash, :photo_hash])
-    |> validate_required([:name, :password_hash, :photo_hash])
+    |> cast(attrs, [:name, :passcode_hash, :dispo_id, :photo_hash, :status, :email])
+    |> validate_required([:name, :passcode_hash, :dispo_id, :photo_hash, :status, :email])
   end
 end
