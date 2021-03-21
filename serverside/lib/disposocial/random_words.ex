@@ -25,8 +25,8 @@ defmodule Disposocial.RandomWords do
 
   def handle_call(:get_dispo_id, _from, state) do
     # get new adj + noun, add them to old, remove from new, reply, loop
-    {adj, newAdjs, oldAdjs} = get_adj(state.new.adjs, state.old.adjs)
-    {noun, newNouns, oldNouns} = get_noun(state.new.nouns, state.old.nouns)
+    {adj, newAdjs, oldAdjs} = get_word(state.new.adjs, state.old.adjs)
+    {noun, newNouns, oldNouns} = get_word(state.new.nouns, state.old.nouns)
 
     newState =
       state
@@ -36,31 +36,17 @@ defmodule Disposocial.RandomWords do
     {:reply, "#{adj}-#{noun}", newState}
   end
 
-  defp get_adj(newAdjs, oldAdjs) do
-    unless Enum.count(newAdjs) < 1 do
-      adj = Enum.random(newAdjs)
-      delAdjs = List.delete(newAdjs, adj)
-      updOldAdjs = [adj | oldAdjs]
-      {adj, delAdjs, updOldAdjs}
+  defp get_word(newWords, oldWords) do
+    unless Enum.count(newWords) < 1 do
+      word = Enum.random(newWords)
+      delWords = List.delete(newWords, word)
+      updOldWords = [word | oldWords]
+      {word, delWords, updOldWords}
     else
-      adj = Enum.random(oldAdjs)
-      delAdjs = List.delete(oldAdjs, adj)
-      updOldAdjs = [adj | newAdjs]
-      {adj, delAdjs, updOldAdjs}
-    end
-  end
-
-  defp get_noun(newNouns, oldNouns) do
-    unless Enum.count(newNouns) < 1 do
-      noun = Enum.random(newNouns)
-      delNouns = List.delete(newNouns, noun)
-      updOldNouns = [noun | oldNouns]
-      {noun, delNouns, updOldNouns}
-    else
-      noun = Enum.random(oldNouns)
-      delNouns = List.delete(oldNouns, noun)
-      updOldNouns = [noun | newNouns]
-      {noun, delNouns, updOldNouns}
+      word = Enum.random(oldWords)
+      delWords = List.delete(oldWords, word)
+      updOldWords = [word | newWords]
+      {word, delWords, updOldWords}
     end
   end
 end
