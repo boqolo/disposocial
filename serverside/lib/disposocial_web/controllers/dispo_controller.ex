@@ -1,0 +1,43 @@
+defmodule DisposocialWeb.DispoController do
+  use DisposocialWeb, :controller
+
+  alias Disposocial.Dispos
+  alias Disposocial.Dispos.Dispo
+
+  action_fallback DisposocialWeb.FallbackController
+
+  def index(conn, _params) do
+    dispos = Dispos.list_dispos()
+    render(conn, "index.json", dispos: dispos)
+  end
+
+  def create(conn, %{"dispo" => dispo_params}) do
+    with {:ok, %Dispo{} = dispo} <- Dispos.create_dispo(dispo_params) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", Routes.dispo_path(conn, :show, dispo))
+      |> render("show.json", dispo: dispo)
+    end
+  end
+
+  def show(conn, %{"id" => id}) do
+    dispo = Dispos.get_dispo!(id)
+    render(conn, "show.json", dispo: dispo)
+  end
+
+  def update(conn, %{"id" => id, "dispo" => dispo_params}) do
+    dispo = Dispos.get_dispo!(id)
+
+    with {:ok, %Dispo{} = dispo} <- Dispos.update_dispo(dispo, dispo_params) do
+      render(conn, "show.json", dispo: dispo)
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    dispo = Dispos.get_dispo!(id)
+
+    with {:ok, %Dispo{}} <- Dispos.delete_dispo(dispo) do
+      send_resp(conn, :no_content, "")
+    end
+  end
+end

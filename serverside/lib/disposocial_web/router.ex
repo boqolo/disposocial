@@ -16,7 +16,12 @@ defmodule DisposocialWeb.Router do
   scope "/api/v1", DisposocialWeb do
     pipe_through(:api)
 
-    # TODO define resource routes here with appropriate controllers hooked up
+    resources("/dispos", DispoController, except: [:new, :edit])
+    resources("/users", UserController, except: [:new, :edit])
+    resources("/posts", PostController, except: [:new, :edit])
+    resources("/tags", TagController, except: [:new, :edit])
+    # FIXME may not need this last route
+    resources("/reactions", ReactionController, except: [:new, :edit])
   end
 
   scope "/", DisposocialWeb do
