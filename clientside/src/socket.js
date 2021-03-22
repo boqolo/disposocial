@@ -1,9 +1,9 @@
 import { Socket } from 'phoenix';
-import { store } from './store.js';
 
 // create socket with token if authenticated (undefined if not i.e.
 // for default channel on page load)
-let socket = new Socket("/socket", {params: {token: window.userToken}});
+// FIXME change for prod -> "/socket"
+let socket = new Socket("ws://localhost:4000/socket", {params: {token: window.userToken}});
 
 // error handling
 socket.onError(() => console.log("websocket error"));
@@ -12,18 +12,28 @@ socket.onClose(() => console.log("websocket closed"));
 socket.connect();
 
 // Channels
-let channel_default = socket.channel("default", {});
-let channel_dispo = null;
+let channel_default = socket.channel("default:init", {});
+let channel_dispo;
 
+// Join default channel on load
 channel_default.join()
   .receive("ok", () => console.log("joined default channel"))
   .receive("error", resp => console.log("unable to join default channel", resp));
 
-export function ch_register(form_params) {
-  channel_default.push("register", form_params)
-    .receive("ok", () => {}) // TODO dispatch user info to store?
-    .receive("error", resp => console.log("unable to register user", resp));
-}
+// Register user
+// export function ch_register({form_params, dispatch}) {
+//   channel_default.push("register", form_params)
+//     .receive("ok", () => {
+//       console.log("register success!");
+//       // TODO clear form, set user data?, set auth, redirect to discover,
+//       dispatch({ type: "acct_form/set", data: {} });
+// 
+//     }) // TODO dispatch user info to store?
+//     .receive("error", resp => {
+//       console.log("unable to register user", resp);
+//       dispatch({ type: "error/one", data: [resp] });
+//     });
+// }
 
 // FIXME should instead join on default channel and register callback
 // to join specific Dispo channel on success

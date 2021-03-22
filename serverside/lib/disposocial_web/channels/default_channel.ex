@@ -1,13 +1,16 @@
 defmodule DisposocialWeb.DefaultChannel do
   use DisposocialWeb, :channel
 
+  require Logger
+
   @impl true
   def join("default:init", payload, socket) do
+    Logger.debug("Init default channel")
     {:ok, socket}
   end
 
   @impl true
-  def handle_in("register", params) do
+  def handle_in("default:register", params) do
     # TODO validate (proper fields, name not in use, 
     # password good, email validation), hash password,
     # create db User, set session + api token

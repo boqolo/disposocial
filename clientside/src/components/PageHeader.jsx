@@ -2,6 +2,8 @@ import React from "react";
 
 export default function Header() {
 
+  // TODO display errors, connect to store
+
   return (
     <>
       <nav

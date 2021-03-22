@@ -39,10 +39,31 @@ import { combineReducers, createStore } from 'redux';
 
 // Start default state reducers
 
+function error_reducer(state = [], action) {
+  switch (action.type) {
+    case "error/set":
+      return action.data;
+    case "error/one":
+      return [action.data];
+    case "error/add":
+      return state.concat([action.data]);
+    default:
+      return state;
+  }
+}
+
 function acct_form_reducer(state = {}, action) {
   switch (action.type) {
     case "acct_form/set":
       return action.data;
+    case "acct_form/set/username":
+      return { ...state, username: action.data };
+    case "acct_form/set/email":
+      return { ...state, email: action.data };
+    case "acct_form/set/passcode":
+      return { ...state, passcode: action.data };
+    case "acct_form/set/valid":
+      return { ...state, isvalid: action.data };
     default:
       return state;
   }
@@ -143,6 +164,7 @@ function show_reducer(state = [], action) {
 
 // Combine state reducers to create global state reducer
 let root_reducer = combineReducers({
+  error: error_reducer,
   acct_form: acct_form_reducer,
   join_form: join_form_reducer,
   create_form: create_form_reducer,

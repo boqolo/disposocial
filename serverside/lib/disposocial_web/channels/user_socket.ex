@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.UserSocket do
   use Phoenix.Socket
 
+  require Logger
+
   ## Channels
   # channel "room:*", DisposocialWeb.RoomChannel
   channel("default:*", DisposocialWeb.DefaultChannel)
@@ -18,6 +20,7 @@ defmodule DisposocialWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(_params, socket, _connect_info) do
+    Logger.debug("Connected client")
     {:ok, socket}
   end
 
