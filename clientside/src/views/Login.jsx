@@ -112,7 +112,7 @@ function Login({acct_form, dispatch}) {
             disabled={isValid}
             size="lg"
             className="btn btn-primary my-4 mx-auto">
-            {"Create account"}
+            {"Log in"}
           </Button>
 
         </Form>
