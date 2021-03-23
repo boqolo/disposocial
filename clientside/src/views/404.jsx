@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Leader } from "../components/Text";
 
-export default function FourOFour() {
+export default function Default() {
   return (
-    <>
-      <div class="display4">404</div>
+    <div>
+      <Leader>404</Leader>
       <h1>{"That page couldn't be found"}</h1>
-      <a class="button secondary outline rounded" href="/">{"Home"}</a>
-    </>
+      <Link class="btn btn-primary" to="/">{"Home"}</Link>
+    </div>
   );
 }

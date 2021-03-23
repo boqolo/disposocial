@@ -15,7 +15,7 @@ async function api_get(path) {
 // Based on Nat Tuck lecture code here:
 // https://github.com/NatTuck/scratch-2021-01/blob/master/4550/0319/photo-blog-spa/web-ui/src/api.js
 async function api_post(path, data) {
-  req = {
+  let req = {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -24,9 +24,9 @@ async function api_post(path, data) {
   };
   console.log("POST with", JSON.stringify(req, null, 2))
   let resp = await fetch(api_base(path), req);
-  let data = await resp.json();
-  console.log("POST response", JSON.stringify(data, null, 2));
-  return data;
+  let resp_data = await resp.json();
+  console.log("POST response", JSON.stringify(resp_data, null, 2));
+  return resp_data;
 }
 
 export function api_create_acct({username, email, passcode}) {

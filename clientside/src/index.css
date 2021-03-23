@@ -1,6 +1,6 @@
-@import "../node_modules/metro4-dist/css/metro-all.min.css";
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import "../node_modules/metro4-dist/css/metro-components.min.css";
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  background-color: #f8f9fa !important;
 }
