@@ -1,4 +1,5 @@
 import React from "react";
+import { Alert } from "react-bootstrap";
 
 export default function DispoHeader() {
 
@@ -6,13 +7,14 @@ export default function DispoHeader() {
   let updates = ["Hello World", "somebody has just joined", "Pineapple"];
 
   return (
+    <Alert variant="info">
+      <div data-role="marquee">
+        {updates.map((update, i) =>
+          <div key={i}>
+            {update}
+          </div>)}
+        </div>
+      </Alert>
+    );
 
-    <div data-role="marquee">
-      {updates.map((update, i) => 
-        <div key={i}>
-          {update}
-        </div>)}
-    </div>
-  );
-
-}
+  }
