@@ -3,7 +3,9 @@ defmodule Disposocial.Tags.Tag do
   import Ecto.Changeset
 
   schema "tags" do
-    field :name, :string
+    field(:name, :string)
+
+    many_to_many(:posts, Disposocial.Posts.Post, join_through: "posts-tags")
 
     timestamps()
   end

@@ -3,9 +3,10 @@ defmodule Disposocial.Reactions.Reaction do
   import Ecto.Changeset
 
   schema "reactions" do
-    field :value, :integer
-    field :post_id, :id
-    field :user_id, :id
+    field(:value, :integer)
+
+    belongs_to(:user, :id)
+    belongs_to(:post, :id)
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule Disposocial.Reactions.Reaction do
   @doc false
   def changeset(reaction, attrs) do
     reaction
-    |> cast(attrs, [:value])
-    |> validate_required([:value])
+    |> cast(attrs, [:value, :user_id, :post_id])
+    |> validate_required([:value, :user_id, :post_id])
   end
 end
