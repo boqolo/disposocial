@@ -1,12 +1,27 @@
 import React from "react";
-import { Switch, Route, useRouteMatch, useParams, Link } from 'react-router-dom';
-import { Navbar, Nav, Container, Alert, Col } from "react-bootstrap";
+import { Switch, Route, useRouteMatch, useHistory, useParams, Link } from 'react-router-dom';
+import { Navbar, Nav, Container, Alert, Col, Row, Button } from "react-bootstrap";
 import { connect } from 'react-redux';
 
 function Header({session, error, success, dispatch}) {
 
   // TODO display errors
   let { path, url } = useRouteMatch();
+  let history = useHistory();
+
+  let localStorage = window.localStorage;
+  let ss = localStorage.getItem('session');
+  console.log("Have in storage", JSON.stringify(ss, null, 2));
+
+  function handle_logout() {
+    dispatch({ type: "session/set", data: {} });
+    dispatch({ type: "success/one", data: "Logged out" });
+    let localStorage = window.localStorage;
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('username');
+    history.replace("/");
+  }
 
   return (
     <div>
@@ -30,7 +45,10 @@ function Header({session, error, success, dispatch}) {
                 </div>}
             </Nav>
             {session?.username &&
-              <h4 className="mx-2">{session?.username}</h4>}
+              <Row xs="auto">
+                <h4 className="mx-2">{session?.username}</h4>
+                <Button onClick={handle_logout} variant="light" className="text-dark" size="sm">{"Log out"}</Button>
+              </Row>}
           </Navbar.Collapse>
         </Navbar>
       </Container>

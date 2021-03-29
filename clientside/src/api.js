@@ -109,6 +109,12 @@ export function api_auth({email, password}, success = () => {}) {
       } else {
         store.dispatch({ type: "session/set", data: data });
         store.dispatch({ type: "success/one", data: "Logged in" });
+        // store session in browser local storage
+        let localStorage = window.localStorage;
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user_id', data.user_id);
+        localStorage.setItem('username', data.username);
+
         clear_errors();
         success();
       }

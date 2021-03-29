@@ -4,6 +4,7 @@ import './index.css';
 import "../node_modules/bootstrap/dist/js/bootstrap.min.js";
 import "../node_modules/metro4-dist/js/metro.min.js";
 import App from './App';
+import { load_session_from_storage } from './util';
 import { BrowserRouter as Router } from 'react-router-dom';
 import store from './store';
 import { Provider } from 'react-redux';
@@ -19,6 +20,9 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+// Check for session cookie and load
+load_session_from_storage(store);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

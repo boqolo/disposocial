@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import store from './store';
 import { Container } from 'react-bootstrap';
 import Index from "./views/Index.jsx";
 import About from "./views/About.jsx";
