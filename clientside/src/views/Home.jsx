@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.jsx';
 import { Jumbotron, Button } from 'react-bootstrap';
 import { Leader } from '../components/Text';
 
-export default function Index() {
+export default function Home() {
 
   return (
     <div>

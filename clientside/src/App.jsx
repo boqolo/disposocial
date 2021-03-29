@@ -2,12 +2,12 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import store from './store';
 import { Container } from 'react-bootstrap';
-import Index from "./views/Index.jsx";
+import Home from "./views/Home.jsx";
 import About from "./views/About.jsx";
 import Login from "./views/Login.jsx";
 import Register from "./views/Register.jsx";
 import Discover from "./views/Discover.jsx";
-import Dispo from "./views/Dispo.jsx";
+import DispoView from "./views/dispo/Index.jsx";
 import Default from "./views/404.jsx";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
     <Container className="bg-light shadow-light rounded">
       <Switch>
         <Route path="/" exact>
-          <Index />
+          <Home />
         </Route>
         <Route path="/login">
           <Login />
@@ -31,7 +31,7 @@ function App() {
           <Discover />
         </Route>
         <Route path="/dispo">
-          <Dispo />
+          <DispoView />
         </Route>
         <Route path="*">
           <Default />

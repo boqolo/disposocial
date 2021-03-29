@@ -17,7 +17,7 @@ function None({session}) {
       <h2>{"None found in your location"}</h2>
       {session?.user_id &&
         <div className="my-5">
-          <Link to="/dispos/create">
+          <Link to="/dispo/create">
             <Button variant="primary" size="lg">{"Create one"}</Button>
           </Link>
       </div>}

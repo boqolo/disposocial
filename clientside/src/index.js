@@ -10,6 +10,9 @@ import store from './store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 
+// Check for session cookie and load
+load_session_from_storage(store);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -20,9 +23,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// Check for session cookie and load
-load_session_from_storage(store);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

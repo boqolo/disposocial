@@ -11,7 +11,8 @@ function Header({session, error, success, dispatch}) {
 
   let localStorage = window.localStorage;
   let ss = localStorage.getItem('session');
-  console.log("Have in storage", JSON.stringify(ss, null, 2));
+  console.log("Page header Have session in storage", JSON.stringify(ss, null, 2));
+  console.log("Page header has session", JSON.stringify(session, null, 2));
 
   function handle_logout() {
     dispatch({ type: "session/set", data: {} });
@@ -38,7 +39,7 @@ function Header({session, error, success, dispatch}) {
             <Nav activeKey={path} className="mr-auto">
               <Link className="text-decoration-none text-muted mx-3" to="/discover">Discover</Link>
               {session?.user_id ?
-                <Link className="text-decoration-none text-muted mx-3" to="/dispos/new">Create</Link> :
+                <Link className="text-decoration-none text-muted mx-3" to="/dispo/new">Create</Link> :
                 <div>
                   <Link className="text-decoration-none text-muted mx-3" to="/login">{"Log in"}</Link>
                   <Link className="text-decoration-none text-muted mx-3" to="/register">{"Register"}</Link>
