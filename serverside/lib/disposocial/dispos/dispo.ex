@@ -4,6 +4,8 @@ defmodule Disposocial.Dispos.Dispo do
 
   schema "dispos" do
     field(:death, :utc_datetime)
+    field(:latitude, :integer)
+    field(:longitude, :integer)
     field(:location, :string)
     field(:name, :string)
     field(:is_public, :boolean)
@@ -19,7 +21,7 @@ defmodule Disposocial.Dispos.Dispo do
   @doc false
   def changeset(dispo, attrs) do
     dispo
-    |> cast(attrs, [:name, :location, :is_public, :passcode_hash, :death, :creator_id])
-    |> validate_required([:name, :location, :death])
+    |> cast(attrs, [:name, :location, :latitude, :longitude, :is_public, :passcode_hash, :death, :creator_id])
+    |> validate_required([:name, :latitude, :longitude, :death])
   end
 end
