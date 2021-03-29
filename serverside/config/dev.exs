@@ -30,6 +30,22 @@ config :disposocial, DisposocialWeb.Endpoint,
     ]
   ]
 
+# This lets the client requesting from us know
+# that it is okay to receive our resources. Browser
+# blocks receiving resources from a different origin
+# by default (hostname + post).
+#
+# Notice that we don't need to configure this in
+# production because when we deploy as an SPA, the
+# origin will be same, only the path to the api
+# differs. Unless we set it up differently then we
+# will need to configure for prod
+config :cors_plug,
+  origin: ["http://localhost:3000"],
+  max_age: 86400,
+  methods: ["GET", "POST", "PATCH", "DELETE"],
+  headers: ["x-auth", "Content-Type"]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
