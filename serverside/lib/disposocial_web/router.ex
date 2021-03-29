@@ -15,7 +15,9 @@ defmodule DisposocialWeb.Router do
 
   scope "/api/v1", DisposocialWeb do
     pipe_through(:api)
+    post "/dispos", DispoController, :get_near
 
+    resources("/session", SessionController, only: [:create])
     resources("/dispos", DispoController, except: [:new, :edit])
     resources("/users", UserController, except: [:new, :edit])
     resources("/posts", PostController, except: [:new, :edit])

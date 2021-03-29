@@ -6,6 +6,17 @@ defmodule DisposocialWeb.DispoController do
 
   action_fallback DisposocialWeb.FallbackController
 
+  def get_near(conn, %{"lat" => lat, "lng" => lng}) do
+    unless is_float(lat) && is_float(lng) do
+      # TODO return error
+      render(conn, "one_error.json", msgs: ["Malformed data"])
+    else
+      # TODO perform lookup and return results
+      dispos = Dispos.get_all_near(lat, lng)
+      render(conn, "index.json", dispos: dispos)
+    end
+  end
+
   def index(conn, _params) do
     dispos = Dispos.list_dispos()
     render(conn, "index.json", dispos: dispos)

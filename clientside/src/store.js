@@ -8,8 +8,8 @@ import { combineReducers, createStore } from 'redux';
  *
  * STATE SHOULD ONLY BE CHANGED BY DISPATCHING ACTIONS. DO NOT WRITE DIRECTLY
  * It is up to me to maintain this because JS won't...bummer.
- * 
- * Actions are the interface for state. 
+ *
+ * Actions are the interface for state.
  *
  * Reducer functions have signature:
  *
@@ -17,7 +17,7 @@ import { combineReducers, createStore } from 'redux';
  *
  * where action is a:
  *
- *    {type: "what the action does", data: X} 
+ *    {type: "what the action does", data: X}
  *
  * A basic reducer determines what the action means for the state,
  * copies the current state, adds the data from the action to the
@@ -39,6 +39,15 @@ import { combineReducers, createStore } from 'redux';
 
 // Start default state reducers
 
+function location_reducer(state = {}, action) {
+  switch (action.type) {
+    case "location/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function error_reducer(state = [], action) {
   switch (action.type) {
     case "error/set":
@@ -47,6 +56,30 @@ function error_reducer(state = [], action) {
       return [action.data];
     case "error/add":
       return state.concat([action.data]);
+    default:
+      return state;
+  }
+}
+
+function success_reducer(state = [], action) {
+  switch (action.type) {
+    case "success/set":
+      return action.data;
+    case "success/one":
+      return [action.data];
+    case "success/add":
+      return state.concat([action.data]);
+    default:
+      return state;
+  }
+}
+
+function flags_reducer(state = {}, action) {
+  switch (action.type) {
+    case "flags/set":
+      return action.data;
+    case "flags/setone":
+      return { ...state, ...action.data };
     default:
       return state;
   }
@@ -142,6 +175,17 @@ function popular_reducer(state = [], action) {
   }
 }
 
+function likes_reducer(state = [], action) {
+  switch (action.type) {
+    case "likes/add":
+      return state.concat([action.data]);
+    case "likes/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function tags_reducer(state = [], action) {
   switch (action.type) {
     case "tags/add":
@@ -162,28 +206,42 @@ function show_reducer(state = [], action) {
   }
 }
 
+function session_reducer(state = {}, action) {
+  switch (action.type) {
+    case "session/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 // Combine state reducers to create global state reducer
 let root_reducer = combineReducers({
+  session: session_reducer,
+  location: location_reducer,
   error: error_reducer,
+  info: info_reducer,
+  success: success_reducer,
+  flags: flags_reducer,
   acct_form: acct_form_reducer,
   join_form: join_form_reducer,
   create_form: create_form_reducer,
   local_dispos: local_dispos_reducer,
-  info: info_reducer,
   feed: feed_reducer,
   popular: popular_reducer,
+  likes: likes_reducer,
   tags: tags_reducer,
   show: show_reducer
 });
 
 /* Now, we create our global, in-memory app store.
- * It will have everything it needs to receive a dispatched 
+ * It will have everything it needs to receive a dispatched
  * action, run it through to the appropriate sub-reducer and
  * return a new global state.
  *
  * A store has this API:
  *    getState() --- self-explanatory
- *    dispatch(action) --- synchronously applies action to state 
+ *    dispatch(action) --- synchronously applies action to state
  *                          reducer and sets new state
  *    subscribe(listener) --- adds a change listener to execute
  *                            when an action is dispatched

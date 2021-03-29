@@ -13,4 +13,15 @@ defmodule DisposocialWeb.ErrorHelpers do
       String.replace(acc, "%{#{key}}", to_string(value))
     end)
   end
+
+  def stringify(msgs) do
+    Enum.join(msgs, ", ")
+    |> humanize()
+  end
+
+  def humanize(str) do
+    str
+    |> String.capitalize()
+    |> (fn s -> s <> "." end).()
+  end
 end
