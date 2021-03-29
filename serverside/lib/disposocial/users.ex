@@ -8,6 +8,8 @@ defmodule Disposocial.Users do
 
   alias Disposocial.Users.User
 
+  require Logger
+
   @doc """
   Returns the list of users.
 
@@ -50,9 +52,32 @@ defmodule Disposocial.Users do
 
   """
   def create_user(attrs \\ %{}) do
+    Logger.debug("CREATING USER WITH --> #{inspect(attrs)}")
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def stringify_keys(amap) do
+    for {k, v} <- amap, into: %{}, do: {to_string(k), v}
+  end
+
+  def create_user_with_passhash(%{"password" => password} = attrs) do
+    attrs
+    |> Map.merge(Argon2.add_hash(password))
+    |> Map.drop(["password"])
+    |>stringify_keys()
+    |> create_user()
+  end
+
+  def authenticate(email, password) do
+    # determine if username and password match
+    user = Repo.get_by(User, email: email)
+    if user && Argon2.verify_pass(password, user.password_hash) do
+      {:ok, user}
+    else
+      nil
+    end
   end
 
   @doc """

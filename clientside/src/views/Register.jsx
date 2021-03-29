@@ -34,20 +34,22 @@ function Register({acct_form, dispatch}) {
     dispatch({ type: "acct_form/set/valid", data: false })
   }, [username, email, passcode]);
 
-  function handleSuccessRedirect() {
-    history.push("/discover");
-  }
-
   function handleSubmit(ev) {
-    ev.preventDefault(); // needed because form submission default
-    // forces a page load
-    if (isValid) {
-      // TODO need to dispatch on success, clear acct_form state
-      let form = delete { ...acct_form }.isvalid;
-      // FIXME WHICH TO USE!??
-      // api_create_acct(form);
-      // ch_register({ form: form, dispatch: dispatch, redirect: handleSuccessRedirect});
-    }
+    ev.preventDefault();
+    console.log("SUbmit clicked")
+    let username = ev.target[0].value;
+    let email = ev.target[1].value;
+    let passcode = ev.target[2].value;
+    // TODO need to dispatch on success
+    let form = {
+      name: username,
+      email: email,
+      password: passcode
+    };
+
+    let success = () => history.replace("/discover");
+    api_create_acct(form, success);
+    // ch_register({ form: form, dispatch: dispatch, redirect: handleSuccessRedirect});
   }
 
   function handleKey(ev, field) {
@@ -87,7 +89,7 @@ function Register({acct_form, dispatch}) {
   return (
     <div>
       <PageHeader />
-      <div class="w-50 mx-auto">
+      <div className="w-50 mx-auto">
         <Form onSubmit={handleSubmit}>
           <Leader>Register</Leader>
           <Form.Group>
@@ -96,7 +98,6 @@ function Register({acct_form, dispatch}) {
                 type="name"
                 placeholder="username"
                 value={username}
-                onChange={ev => handleKey(ev, "username")}
                 onKeyPress={ev => pressedEnter(ev)}
                 />
               <Form.Label htmlFor="floating-input">{"Username"}</Form.Label>
@@ -109,7 +110,6 @@ function Register({acct_form, dispatch}) {
                 type="email"
                 placeholder="email"
                 value={email}
-                onChange={ev => handleKey(ev, "email")}
                 onKeyPress={ev => pressedEnter(ev)}
                 />
               <Form.Label>{"Email"}</Form.Label>
@@ -122,7 +122,6 @@ function Register({acct_form, dispatch}) {
                 type="password"
                 placeholder="passcode"
                 value={passcode}
-                onChange={ev => handleKey(ev, "passcode")}
                 onKeyPress={ev => pressedEnter(ev)}
                 />
               <Form.Label>{"Passcode"}</Form.Label>
@@ -130,6 +129,7 @@ function Register({acct_form, dispatch}) {
           </Form.Group>
 
           <Button
+            type="submit"
             disabled={isValid}
             size="lg"
             className="btn btn-primary my-4 mx-auto">

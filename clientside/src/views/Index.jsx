@@ -9,7 +9,7 @@ export default function Index() {
   return (
     <div>
       <PageHeader />
-      <Jumbotron className="rounded p-5 my-3 w-75 mx-auto">
+      <Jumbotron className="rounded my-3 w-75 mx-auto">
         <Leader>{"Pop up. Tear down."}</Leader>
         <h2><small>{"Disposocial is an experiment. It is a localized social media bulletin that self-destructs after an amount of time."}</small></h2>
         <p>{"There is no one network. Interact with others by creating or joining Dispos within your geographic radius."}</p>
