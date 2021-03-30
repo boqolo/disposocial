@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.ReactionController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth
+
   alias Disposocial.Reactions
   alias Disposocial.Reactions.Reaction
 

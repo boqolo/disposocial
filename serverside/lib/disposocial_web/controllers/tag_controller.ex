@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.TagController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth
+
   alias Disposocial.Tags
   alias Disposocial.Tags.Tag
 

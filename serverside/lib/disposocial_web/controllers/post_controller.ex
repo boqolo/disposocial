@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.PostController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth
+
   alias Disposocial.Posts
   alias Disposocial.Posts.Post
 

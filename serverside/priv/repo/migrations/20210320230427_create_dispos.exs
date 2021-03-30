@@ -11,7 +11,7 @@ defmodule Disposocial.Repo.Migrations.CreateDispos do
       add(:is_public, :boolean, null: false, default: true)
       add(:password_hash, :string, null: false, default: "")
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 end

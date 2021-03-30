@@ -148,6 +148,8 @@ function info_reducer(state = [], action) {
       return state.concat([action.data]);
     case "info/set":
       return action.data;
+    case "info/one":
+      return [action.data];
     default:
       return state;
   }

@@ -8,7 +8,7 @@ defmodule Disposocial.Repo.Migrations.CreatePosts do
       add(:user_id, references(:users, on_delete: :nothing), null: false)
       add(:dispo_id, references(:dispos, on_delete: :delete_all), null: false)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:posts, [:user_id]))

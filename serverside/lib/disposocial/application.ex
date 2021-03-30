@@ -16,7 +16,9 @@ defmodule Disposocial.Application do
       # Start the Endpoint (http/https)
       DisposocialWeb.Endpoint,
       # Start random id generator process
-      Disposocial.RandomWords
+      Disposocial.RandomWords,
+      # Start Phoenix presence
+      DisposocialWeb.Presence
       # Start a worker by calling: Disposocial.Worker.start_link(arg)
       # {Disposocial.Worker, arg}
     ]

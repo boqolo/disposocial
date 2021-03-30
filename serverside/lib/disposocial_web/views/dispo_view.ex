@@ -2,6 +2,7 @@ defmodule DisposocialWeb.DispoView do
   use DisposocialWeb, :view
   alias DisposocialWeb.DispoView
   alias DisposocialWeb.ErrorHelpers
+  alias Disposocial.Util
 
   require Logger
 
@@ -16,6 +17,8 @@ defmodule DisposocialWeb.DispoView do
   def render("dispo.json", %{dispo: dispo}) do
     %{id: dispo.id,
       name: dispo.name,
+      created: Util.convertUTC!(dispo.inserted_at),
+      is_public: dispo.is_public,
       location: dispo.location,
       latitude: dispo.latitude,
       longitude: dispo.longitude,

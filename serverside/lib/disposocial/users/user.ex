@@ -12,7 +12,7 @@ defmodule Disposocial.Users.User do
     has_many(:posts, Disposocial.Posts.Post)
     has_many(:dispos, Disposocial.Dispos.Dispo)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

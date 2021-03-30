@@ -8,7 +8,7 @@ defmodule Disposocial.Reactions.Reaction do
     belongs_to(:user, :id)
     belongs_to(:post, :id)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

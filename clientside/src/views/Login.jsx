@@ -91,7 +91,7 @@ function Login({acct_form, dispatch}) {
                 placeholder="username_or_email"
                 onKeyPress={ev => pressedEnter(ev)}
                 />
-              <Form.Label htmlFor="floating-input">{"Username / Email"}</Form.Label>
+              <Form.Label htmlFor="floating-input">{"Email"}</Form.Label>
             </div>
           </Form.Group>
 

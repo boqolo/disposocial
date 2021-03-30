@@ -8,7 +8,7 @@ defmodule Disposocial.Repo.Migrations.CreateComments do
       add(:user_id, references(:users, on_delete: :nothing), null: false)
       add(:post_id, references(:posts, on_delete: :nothing), null: false)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create(index(:comments, [:user_id]))

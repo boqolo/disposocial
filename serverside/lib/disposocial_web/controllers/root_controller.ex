@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.RootController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth
+
   alias Disposocial.Photos
 
   def photo(conn, %{"hash" => hash}) do

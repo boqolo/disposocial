@@ -3,7 +3,7 @@ import { Switch, Route, useRouteMatch, useHistory, useParams, Link } from 'react
 import { Navbar, Nav, Container, Alert, Col, Row, Button } from "react-bootstrap";
 import { connect } from 'react-redux';
 
-function Header({session, error, success, dispatch}) {
+function Header({session, error, info, success, dispatch}) {
 
   // TODO display errors
   let { path, url } = useRouteMatch();
@@ -54,6 +54,8 @@ function Header({session, error, success, dispatch}) {
       <Col className="mt-3 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
           <Alert className="mb-2" key={`succ-${i}`} variant="success">{msg}</Alert>)}
+        {info.length > 0 && info.map((msg, i) =>
+          <Alert className="mb-2" key={`info-${i}`} variant="info">{msg}</Alert>)}
         {error.length > 0 && error.map((msg, i) =>
           <Alert className="mb-2" key={`err-${i}`} variant="danger">{msg}</Alert>)}
       </Col>
@@ -61,8 +63,8 @@ function Header({session, error, success, dispatch}) {
   );
 }
 
-function state_to_props({session, error, success}) {
-  return {session, error, success};
+function state_to_props({session, info, error, success}) {
+  return {session, info, error, success};
 }
 
 // Remember, you get `dispatch` for free as a prop when you do this

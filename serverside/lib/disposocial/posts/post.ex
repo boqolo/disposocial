@@ -11,7 +11,7 @@ defmodule Disposocial.Posts.Post do
     has_many(:reactions, Disposocial.Reactions.Reaction)
     many_to_many(:tags, Disposocial.Tags.Tag, join_through: "posts-tags")
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

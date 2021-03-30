@@ -7,7 +7,7 @@ defmodule Disposocial.Tags.Tag do
 
     many_to_many(:posts, Disposocial.Posts.Post, join_through: "posts-tags")
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

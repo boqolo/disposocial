@@ -20,9 +20,18 @@ defmodule DisposocialWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    Logger.debug("Connected client")
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    # THIS IS THE SOCKET CONSTRUCTOR
+    # Any user needs to authenticate to get a channel connection
+    # They should have a token that we've previouslt given from the API
+    # and need to send it here
+    Logger.debug("Authenticating client")
+    case Phoenix.Token.verify(socket, "hello user", token, max_age: 86_400) do
+      {:ok, user_id} -> {:ok, assign(socket, :current_user, user_id)}
+      {:error, :expired} -> {:error, "Token expired"}
+      {:error, :invalid} -> {:error, "Token invalid"}
+      _ -> {:error, "Bad token"}
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

@@ -2,15 +2,16 @@ import React from 'react';
 import PageHeader from '../components/PageHeader';
 import { Leader } from '../components/Text';
 import { Col, Row, Button, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import store from '../store';
 import { api_fetch_local_dispos } from '../api';
+import { ch_join_dispo } from '../socket';
 import { convertDateTime, getMyLocation } from '../util';
 
 function None({session}) {
 
-  console.log("session is", session)
+  console.log("session is", session);
 
   return (
     <div>
@@ -28,10 +29,22 @@ function None({session}) {
 function Discover({session, location, local_dispos, dispatch}) {
 
   console.log("rerender w location", location)
+  let history = useHistory();
+
+  function handle_join(id) {
+    console.log("Join clicked")
+    let redirect = () => {
+      history.replace(`/dispo/${id}`);
+      dispatch({ type: "success/setone", data: "Dispo joined" });
+    };
+    ch_join_dispo(id, redirect);
+  }
 
   React.useEffect(() => {
     // get my location on mount
-    getMyLocation(dispatch);
+    if (!location.lat || !location.lng) {
+      getMyLocation(dispatch);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -66,15 +79,24 @@ function Discover({session, location, local_dispos, dispatch}) {
                   className="p-4 mb-3">
                   <Card.Title>{dispo.name}</Card.Title>
                   <Card.Subtitle className="mb-3 text-muted">
-                    {convertDateTime(dispo.date)}
+                    {convertDateTime(dispo.created)}
                   </Card.Subtitle>
                   {session?.user_id &&
-                    <Link
-                      to={`/dispos/${dispo.id}`}
-                      size="sm"
-                      className="btn btn-outline-primary">
-                      {"Join"}
-                    </Link>}
+                    dispo.is_public ?
+                      <Button variant="primary" onClick={() => handle_join(dispo.id)}>
+                        {"Join"}
+                      </Button> :
+                      <Row className="align-items-center">
+                        <Col>
+                          <Link
+                            to={`/dispo/${dispo.id}/auth`}
+                            size="sm"
+                            className="btn btn-outline-primary">
+                            {"Join"}
+                          </Link>
+                        </Col>
+                        <Col><small>{"Passphrase required"}</small></Col>
+                      </Row>}
                   </Card>
               </Row>) :
             location.lat && location.lng && <None session={session} />}

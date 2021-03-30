@@ -9,7 +9,7 @@ defmodule Disposocial.Comments.Comment do
     belongs_to(:user, Disposocial.Users.User)
     belongs_to(:post, :id)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

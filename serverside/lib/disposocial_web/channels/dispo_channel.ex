@@ -1,19 +1,25 @@
 defmodule DisposocialWeb.DispoChannel do
   use DisposocialWeb, :channel
 
+  alias DisposocialWeb.Presence
+
   require Logger
 
   @impl true
-  def join("dispo:" <> id, payload, socket) do
-    Logger.debug("Init dispo channel")
-    Logger.debug("sent payload ---> #{inspect(payload)}")
-    {:ok, socket}
+  def join("dispo:" <> id, %{"user_id" => user_id}, socket) do
+    if authorized?(socket) do
+      Logger.debug("Init dispo channel")
+      socket = assign(socket, :curr_dispo_id, id)
+      {:ok, socket}
+    else
+      {:error, "Unauthorized"}
+    end
   end
 
   # Add authorization logic here as required.
-  # TODO use Phoenix.Token.verify on sent session
-  defp authorized?(payload) do
-    true
+  # TODO use Phoenix.Token.verify on sent session???
+  defp authorized?(socket) do
+    socket.assigns[:current_user] && true
   end
 
   #@impl true

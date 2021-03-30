@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.DispoController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth when action not in [:get_near]
+
   alias Disposocial.Dispos
   alias Disposocial.Dispos.Dispo
 

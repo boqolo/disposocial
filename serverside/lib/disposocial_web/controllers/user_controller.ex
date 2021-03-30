@@ -1,6 +1,8 @@
 defmodule DisposocialWeb.UserController do
   use DisposocialWeb, :controller
 
+  plug Disposocial.Plugs.RequireAPIAuth when action not in [:create]
+
   alias Disposocial.Users
   alias Disposocial.Users.User
 
