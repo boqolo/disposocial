@@ -82,7 +82,7 @@ function Discover({session, location, local_dispos, dispatch}) {
                     {convertDateTime(dispo.created)}
                   </Card.Subtitle>
                   {session?.user_id &&
-                    dispo.is_public ?
+                    (dispo.is_public ?
                       <Button variant="primary" onClick={() => handle_join(dispo.id)}>
                         {"Join"}
                       </Button> :
@@ -96,7 +96,7 @@ function Discover({session, location, local_dispos, dispatch}) {
                           </Link>
                         </Col>
                         <Col><small>{"Passphrase required"}</small></Col>
-                      </Row>}
+                      </Row>)}
                   </Card>
               </Row>) :
             location.lat && location.lng && <None session={session} />}
