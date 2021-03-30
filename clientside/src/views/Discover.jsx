@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import store from '../store';
 import { api_fetch_local_dispos } from '../api';
-import { convertDateTime } from '../util';
+import { convertDateTime, getMyLocation } from '../util';
 
 function None({session}) {
 
@@ -29,38 +29,9 @@ function Discover({session, location, local_dispos, dispatch}) {
 
   console.log("rerender w location", location)
 
-  function getMyLocation() {
-    let geo = navigator.geolocation;
-    let opts = {
-      enableHighAccuracy: true,
-      timeout: 7000 // time after which it will error if info not received
-    };
-
-    // this handler can be registered when the position is
-    // retrieved and have access to do things with the coords
-    let success = (geoPosn) => {
-      let crd = geoPosn.coords;
-      // crd.latitude, crd.longitude, crd.accuracy
-      let fetched_location = {lat: crd.latitude, lng: crd.longitude}
-      dispatch({ type: "location/set", data: fetched_location });
-    };
-
-    let error = (err) => {
-      dispatch({ type: "errors/one", data: "Couldn't detect your location" });
-    };
-
-    // Locate me
-    geo.getCurrentPosition(success, error, opts);
-
-    // TODO future functionality. live read location and then unregister
-    // let watcher_id = geo.watchPosition(success, error, opts)
-    // would need effect clean up to cancel
-    // return {geo, watcher_id};
-  }
-
   React.useEffect(() => {
     // get my location on mount
-    getMyLocation();
+    getMyLocation(dispatch);
   }, []);
 
   React.useEffect(() => {

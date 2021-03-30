@@ -15,10 +15,11 @@ defmodule DisposocialWeb.Router do
 
   scope "/api/v1", DisposocialWeb do
     pipe_through(:api)
-    post "/dispos", DispoController, :get_near
+    # FIXME conflicting routes
+    post "/dispos/near", DispoController, :get_near
 
     resources("/session", SessionController, only: [:create])
-    resources("/dispos", DispoController, except: [:new, :edit])
+    resources("/dispos", DispoController, except: [:new, :edit, :index])
     resources("/users", UserController, except: [:new, :edit])
     resources("/posts", PostController, except: [:new, :edit])
     resources("/tags", TagController, except: [:new, :edit])

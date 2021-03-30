@@ -7,6 +7,7 @@ defmodule Disposocial.Users do
   alias Disposocial.Repo
 
   alias Disposocial.Users.User
+  alias Disposocial.Util
 
   require Logger
 
@@ -53,20 +54,17 @@ defmodule Disposocial.Users do
   """
   def create_user(attrs \\ %{}) do
     Logger.debug("CREATING USER WITH --> #{inspect(attrs)}")
+    # TODO also hash emails
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
-  end
-
-  def stringify_keys(amap) do
-    for {k, v} <- amap, into: %{}, do: {to_string(k), v}
   end
 
   def create_user_with_passhash(%{"password" => password} = attrs) do
     attrs
     |> Map.merge(Argon2.add_hash(password))
     |> Map.drop(["password"])
-    |>stringify_keys()
+    |> Util.stringify_keys()
     |> create_user()
   end
 

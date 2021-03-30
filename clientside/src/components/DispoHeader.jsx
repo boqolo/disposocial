@@ -1,6 +1,7 @@
 import React from "react";
-import { Alert, Container } from "react-bootstrap";
+import { Alert, Container, Row, Col } from "react-bootstrap";
 import { Leader } from './Text';
+import { ch_leave_dispo } from '../socket';
 
 export default function DispoHeader() {
 
@@ -9,22 +10,29 @@ export default function DispoHeader() {
 
   return (
     <div>
-      <Container className="d-flex flex-row align-items-center">
-        <h3 className="text-muted fw-lighter">{"Disposocial (info)"}</h3>
-      <Container className="w-50 bg-primary">
-        <Container className="bg-light px-0 py-3 h-100">
-          <div
-            id="ticker"
-            data-role="marquee">
-            {updates.map((update, i) =>
-              <div key={i}>
-                {update}
-              </div>)}
-            </div>
-          </Container>
-        </Container>
-      </Container>
-      </div>
-    );
+      <Row className="m-0 p-0">
+        <Col xs="auto" className="d-flex p-0 flex-row align-items-center">
+          <h3 className="text-muted fw-lighter w-auto">{"Disposocial (info)"}</h3>
+        </Col>
+        <Col className="p-0">
+          <Container className="w-50 bg-primary">
+            <Container className="bg-light px-0 py-3 h-100">
+              <div
+                id="ticker"
+                data-role="marquee">
+                {updates.map((update, i) =>
+                  <div key={i}>
+                    {update}
+                  </div>)}
+                </div>
+              </Container>
+            </Container>
+        </Col>
+        <Col xs="auto" className="p-0">
+          <h5>{"logout stuff here"}</h5>
+        </Col>
+      </Row>
+    </div>
+  );
 
-  }
+}

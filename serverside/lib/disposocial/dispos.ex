@@ -11,7 +11,11 @@ defmodule Disposocial.Dispos do
   import Ecto.Query, warn: false
   alias Disposocial.Repo
 
+  alias Disposocial.Util
   alias Disposocial.Dispos.Dispo
+  alias Disposocial.PositionStack
+
+  require Logger
 
   @doc """
   Returns the list of dispos.
@@ -102,10 +106,10 @@ defmodule Disposocial.Dispos do
   def get_all_near(qlat, qlng) do
     # TODO lat and lng checking. fix this later
     query = cond do
-      qlat > 0 && qlng > 0 -> from(d in Dispo, where: d.latitude > 0 and d.longitude > 0)
-      qlat > 0 && qlng < 0 -> from(d in Dispo, where: d.latitude > 0 and d.longitude < 0)
-      qlat < 0 && qlng > 0 -> from(d in Dispo, where: d.latitude < 0 and d.longitude > 0)
-      qlat < 0 && qlng < 0 -> from(d in Dispo, where: d.latitude < 0 and d.longitude < 0)
+      qlat > 0.0 && qlng > 0.0 -> from(d in Dispo, where: d.latitude > 0.0 and d.longitude > 0.0)
+      qlat > 0.0 && qlng < 0.0 -> from(d in Dispo, where: d.latitude > 0.0 and d.longitude < 0.0)
+      qlat < 0.0 && qlng > 0.0 -> from(d in Dispo, where: d.latitude < 0.0 and d.longitude > 0.0)
+      qlat < 0.0 && qlng < 0.0 -> from(d in Dispo, where: d.latitude < 0.0 and d.longitude < 0.0)
       true -> nil
     end
 
@@ -115,6 +119,30 @@ defmodule Disposocial.Dispos do
     query
     |> Repo.all()
     |> Enum.filter(in_radius)
+  end
+
+  # field(:death, :utc_datetime) # serverside
+  # field(:latitude, :integer)
+  # field(:longitude, :integer)
+  # field(:location, :string) # serverside
+  # field(:name, :string)
+  # field(:is_public, :boolean)
+  # field(:password_hash, :string) #serverside
+
+  # has_one(:creator, Disposocial.Users.User)
+
+  # name: disponame,
+  # is_public: !is_private,
+  # password: passphrase,
+  # latitude: location.lat,
+  # longitude: location.lng
+
+  def create_dispo(%{"password" => password} = attrs) do
+    attrs
+    |> Map.merge(Argon2.add_hash(password))
+    |> Map.drop(["password"])
+    |> Util.stringify_keys()
+    |> create_dispo()
   end
 
   @doc """
@@ -129,7 +157,30 @@ defmodule Disposocial.Dispos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_dispo(attrs \\ %{}) do
+  def create_dispo(attrs) do
+    Logger.debug("Processing Dispo args")
+    deathDate = unless is_nil(attrs["duration"]) do
+      added_time = String.to_integer(attrs["duration"]) * 3_600 # in seconds. duration received as hours
+      DateTime.utc_now()
+      |> DateTime.add(added_time, :second, Tzdata.TimeZoneDatabase)
+    end
+
+    not_worth_it = is_nil(deathDate) || is_nil(attrs["latitude"]) || is_nil(attrs["longitude"])
+    geodata = unless not_worth_it do
+      # do api reverse geocoding req
+      PositionStack.get_location_by_coords(attrs["latitude"], attrs["longitude"])
+    end
+
+    Logger.debug("GOT LOCATION DATA --> #{inspect(geodata)}")
+
+    attrs =
+      attrs
+      |> Map.put("user_id", attrs["user_id"])
+      |> Map.put("location", geodata)
+      |> Map.put("death", deathDate)
+
+    Logger.debug("FINAL ATTRS --> #{inspect(attrs)}")
+
     %Dispo{}
     |> Dispo.changeset(attrs)
     |> Repo.insert()

@@ -33,8 +33,8 @@ function Login({acct_form, dispatch}) {
     let email = ev.target[0].value;
     let passcode = ev.target[1].value;
     let form = {
-      email: email,
-      password: passcode
+      email: email.trim(),
+      password: passcode.trim()
     };
 
     let success = () => history.replace("/discover");

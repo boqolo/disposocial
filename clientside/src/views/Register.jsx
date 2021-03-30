@@ -42,9 +42,9 @@ function Register({acct_form, dispatch}) {
     let passcode = ev.target[2].value;
     // TODO need to dispatch on success
     let form = {
-      name: username,
-      email: email,
-      password: passcode
+      name: username.trim(),
+      email: email.trim(),
+      password: passcode.trim()
     };
 
     let success = () => history.replace("/discover");

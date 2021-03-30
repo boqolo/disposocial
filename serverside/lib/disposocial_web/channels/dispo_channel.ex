@@ -1,12 +1,19 @@
-defmodule DisposocialWeb.DefaultChannel do
+defmodule DisposocialWeb.DispoChannel do
   use DisposocialWeb, :channel
 
   require Logger
 
   @impl true
-  def join("default:init", _payload, socket) do
-    Logger.debug("Init default channel")
+  def join("dispo:" <> id, payload, socket) do
+    Logger.debug("Init dispo channel")
+    Logger.debug("sent payload ---> #{inspect(payload)}")
     {:ok, socket}
+  end
+
+  # Add authorization logic here as required.
+  # TODO use Phoenix.Token.verify on sent session
+  defp authorized?(payload) do
+    true
   end
 
   #@impl true
@@ -40,8 +47,4 @@ defmodule DisposocialWeb.DefaultChannel do
   #   {:noreply, socket}
   # end
 
-  # Add authorization logic here as required.
-  # defp authorized?(_payload) do
-  #   true
-  # end
 end

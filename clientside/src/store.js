@@ -206,6 +206,15 @@ function show_reducer(state = [], action) {
   }
 }
 
+function curr_dispo_reducer(state = {}, action) {
+  switch (action.type) {
+    case "curr_dispo/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function session_reducer(state = {}, action) {
   switch (action.type) {
     case "session/set":
@@ -226,6 +235,7 @@ let root_reducer = combineReducers({
   acct_form: acct_form_reducer,
   join_form: join_form_reducer,
   create_form: create_form_reducer,
+  curr_dispo: curr_dispo_reducer,
   local_dispos: local_dispos_reducer,
   feed: feed_reducer,
   popular: popular_reducer,

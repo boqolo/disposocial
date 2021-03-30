@@ -139,13 +139,13 @@ export function api_create_acct(params, success) {
       }
     })
     .catch(err => {
-      console.error("POST user failed", err);
+      console.error("POST create user failed", err);
       store.dispatch({ type: "errors/one", data: ERROR.failed });
     });
 }
 
 export function api_fetch_local_dispos(params) {
-  api_post("/dispos", params)
+  api_post("/dispos/near", params)
     .then(resp => {
       let error_resp = resp["error"];
       if (error_resp) {
@@ -157,5 +157,25 @@ export function api_fetch_local_dispos(params) {
     .catch(err => {
       console.error("FETCH local dispos failed");
       store.dispatch({ type: "error/one", data: ERROR.failed });
+    });
+}
+
+export function api_create_dispo(params, success) {
+  // create acct, then api_auth
+  api_post("/dispos", {dispo: params})
+    .then(resp => {
+      let error_resp = resp["error"];
+      if (error_resp) {
+        store.dispatch({ type: "error/set", data: parse_errors(resp["error"]) });
+      } else {
+        store.dispatch({ type: "curr_dispo/set", data: resp["data"] });
+        // TODO set curr dispo id in local storage
+        success(resp["data"]["id"]);
+        clear_errors();
+      }
+    })
+    .catch(err => {
+      console.error("POST create dispo failed", err);
+      store.dispatch({ type: "errors/one", data: ERROR.failed });
     });
 }

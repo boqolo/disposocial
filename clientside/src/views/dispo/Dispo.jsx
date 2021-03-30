@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
-import PageHeader from "../../components/PageHeader.jsx";
+import DispoHeader from "../../components/DispoHeader.jsx";
 
 function Dispo({session, dispatch}) {
 
@@ -10,7 +10,7 @@ function Dispo({session, dispatch}) {
 
   return (
     <div>
-      <PageHeader />
+      <DispoHeader />
       <h1>Dispo View</h1>
     </div>
   );
