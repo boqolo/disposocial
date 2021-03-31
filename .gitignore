@@ -1,0 +1,5 @@
+*.nginx
+*.service
+deploy.sh
+start.sh
+**.DS_Store
