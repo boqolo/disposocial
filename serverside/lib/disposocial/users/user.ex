@@ -20,8 +20,8 @@ defmodule Disposocial.Users.User do
     user
     |> cast(attrs, [:name, :password_hash, :photo_hash, :status, :email])
     |> validate_required([:name, :password_hash, :email])
-    |> validate_length(:name, min: 2, max: 15)
-    |> validate_length(:email, min: 6, max: 20)
+    |> validate_length(:name, min: 2, max: 20)
+    |> validate_length(:email, min: 6, max: 30)
     |> validate_format(:email, ~r/.+@.+\..+/)
   end
 end
