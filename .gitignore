@@ -2,4 +2,5 @@
 *.service
 deploy.sh
 start.sh
+update.sh
 **.DS_Store
