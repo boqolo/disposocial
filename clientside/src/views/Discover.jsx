@@ -89,7 +89,7 @@ function Discover({session, location, local_dispos, dispatch}) {
                       <Row className="align-items-center">
                         <Col>
                           <Link
-                            to={`/dispo/${dispo.id}/auth`}
+                            to={`/dispo/${dispo.id}/join`}
                             size="sm"
                             className="btn btn-outline-primary">
                             {"Join"}

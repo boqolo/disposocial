@@ -28,9 +28,15 @@ defmodule DisposocialWeb.UserSocket do
     Logger.debug("Authenticating client")
     case Phoenix.Token.verify(socket, "hello user", token, max_age: 86_400) do
       {:ok, user_id} -> {:ok, assign(socket, :current_user, user_id)}
-      {:error, :expired} -> {:error, "Token expired"}
-      {:error, :invalid} -> {:error, "Token invalid"}
-      _ -> {:error, "Bad token"}
+      {:error, :expired} ->
+        Logger.info("Token expired")
+        :error
+      {:error, :invalid} ->
+        Logger.info("Token invalid")
+        :error
+      _ ->
+        Logger.info("Token failure")
+        :error
     end
   end
 

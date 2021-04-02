@@ -20,9 +20,11 @@ export function load_session_from_storage(store) {
   console.log("Checking for cookiue in sotrage")
   let localStorage = window.localStorage;
   let token = localStorage.getItem('token');
+  let login_time = localStorage.getItem('time');
   let user_id = localStorage.getItem('user_id');
   let username = localStorage.getItem('username');
-  if (token && user_id && username) {
+  let not_expired = new Date() < new Date(login_time).addHours(23);
+  if (token && not_expired && user_id && username) {
     let session = {
       token: token,
       user_id: user_id,

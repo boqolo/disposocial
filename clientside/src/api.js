@@ -107,11 +107,14 @@ export function api_auth({email, password}, success = () => {}) {
       if (error_resp) {
         store.dispatch({ type: "error/one", data: error_resp});
       } else {
-        store.dispatch({ type: "session/set", data: data });
+        let sess = {...data};
+        delete sess['time'];
+        store.dispatch({ type: "session/set", data: sess });
         store.dispatch({ type: "success/one", data: "Logged in" });
         // store session in browser local storage
         let localStorage = window.localStorage;
         localStorage.setItem('token', data.token);
+        localStorage.setItem('time', data.time);
         localStorage.setItem('user_id', data.user_id);
         localStorage.setItem('username', data.username);
 

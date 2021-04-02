@@ -16,7 +16,8 @@ defmodule DisposocialWeb.SessionController do
         session = %{
           user_id: user.id,
           username: user.name,
-          token: token
+          token: token,
+          time: DateTime.utc_now()
         }
         conn
         |> assign(:current_user, user)

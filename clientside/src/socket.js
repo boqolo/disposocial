@@ -67,6 +67,7 @@ export function ch_join_dispo(id, successRedirect) {
 export function ch_leave_dispo() {
   channel_dispo.leave()
     .receive("ok", (resp) => {
+      socket = undefined;
       channel_dispo = undefined;
       store.dispatch({ type: "success/one", data: "Left Dispo" });
     })
