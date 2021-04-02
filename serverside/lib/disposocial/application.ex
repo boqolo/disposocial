@@ -15,10 +15,16 @@ defmodule Disposocial.Application do
       {Phoenix.PubSub, name: Disposocial.PubSub},
       # Start the Endpoint (http/https)
       DisposocialWeb.Endpoint,
-      # Start random id generator process
-      Disposocial.RandomWords,
+      # Start the Dispo Agent,
+      Disposocial.DispoAgent,
+      # Start Dispo Server Process Registry
+      {Registry, keys: :unique, name: Disposocial.DispoRegistry},
+      # Start Dispo DynamicSupervisor
+      Disposocial.DispoSupervisor,
       # Start Phoenix presence
-      DisposocialWeb.Presence
+      DisposocialWeb.Presence,
+      # Start random id generator process
+      Disposocial.RandomWords
       # Start a worker by calling: Disposocial.Worker.start_link(arg)
       # {Disposocial.Worker, arg}
     ]

@@ -40,6 +40,12 @@ defmodule Disposocial.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def present(id) do
+    q = from(u in User, where: u.id == ^id, select: [u.id, u.name, u.photo_hash])
+    [user] = Repo.all(q)
+    user
+  end
+
   @doc """
   Creates a user.
 

@@ -12,7 +12,7 @@ defmodule Disposocial.Dispos.Dispo do
     field(:password_hash, :string)
 
     belongs_to(:user, Disposocial.Users.User) # creator
-    has_many(:users, Disposocial.Users.User)
+    has_many(:users, Disposocial.Users.User) # TODO remove??
     has_many(:posts, Disposocial.Posts.Post)
 
     timestamps(type: :utc_datetime)

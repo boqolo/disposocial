@@ -186,6 +186,12 @@ defmodule Disposocial.Dispos do
     |> Repo.insert()
   end
 
+  def get_death(id) do
+    q = from(d in Dispo, where: d.id == ^id, select: d.death)
+    [death_dt] = Repo.all(q)
+    death_dt
+  end
+
   @doc """
   Updates a dispo.
 

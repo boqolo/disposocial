@@ -2,6 +2,7 @@ defmodule DisposocialWeb.UserSocket do
   use Phoenix.Socket
 
   require Logger
+  alias Disposocial.Users
 
   ## Channels
   # channel "room:*", DisposocialWeb.RoomChannel
@@ -27,7 +28,9 @@ defmodule DisposocialWeb.UserSocket do
     # and need to send it here
     Logger.debug("Authenticating client")
     case Phoenix.Token.verify(socket, "hello user", token, max_age: 86_400) do
-      {:ok, user_id} -> {:ok, assign(socket, :current_user, user_id)}
+      {:ok, user_id} ->
+        user = Users.present(user_id)
+        {:ok, assign(socket, :current_user, user)}
       {:error, :expired} ->
         Logger.info("Token expired")
         :error
