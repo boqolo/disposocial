@@ -2,6 +2,12 @@ export function capitalize(str) {
   return str.length > 0 && str.replace(/^\w/, str[0].toUpperCase());
 }
 
+export function remove_at(arr, i) {
+  let temp = [...arr];
+  temp.splice(i, 1);
+  return temp;
+}
+
 export function convertDateTime(isoStr) {
   let dopts = {
     month: 'short',

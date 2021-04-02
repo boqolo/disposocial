@@ -1,7 +1,9 @@
 import React from "react";
 import { Switch, Route, useRouteMatch, useHistory, useParams, Link } from 'react-router-dom';
-import { Navbar, Nav, Container, Alert, Col, Row, Button } from "react-bootstrap";
+import { Navbar, Nav, Container, Row, Col, Button } from "react-bootstrap";
 import { connect } from 'react-redux';
+import { remove_at } from '../util';
+import HeaderAlert from './Alert';
 
 function Header({session, error, info, success, dispatch}) {
 
@@ -22,11 +24,12 @@ function Header({session, error, info, success, dispatch}) {
     history.replace("/");
   }
 
-  return (
-    <div>
-      <Container className="bg-primary">
-        <Navbar bg="light" className="bd-blue-100" variant="light" className="p-3">
-          <Navbar.Brand>
+
+    return (
+      <div>
+        <Container className="bg-primary">
+          <Navbar bg="light" className="bd-blue-100" variant="light" className="p-3">
+            <Navbar.Brand>
             <Link to="/" className="text-decoration-none">
               <h5 className="display-5 fw-lighter">Disposocial</h5>
             </Link>
@@ -53,11 +56,11 @@ function Header({session, error, info, success, dispatch}) {
       </Container>
       <Col className="mt-3 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
-          <Alert className="mb-2" key={`succ-${i}`} variant="success">{msg}</Alert>)}
+          <HeaderAlert key={`succ-${i}`} i={i} msg={msg} success={success} group="success" />)}
         {info.length > 0 && info.map((msg, i) =>
-          <Alert className="mb-2" key={`info-${i}`} variant="info">{msg}</Alert>)}
+          <HeaderAlert key={`info-${i}`} i={i} msg={msg} info={info} group="info" />)}
         {error.length > 0 && error.map((msg, i) =>
-          <Alert className="mb-2" key={`err-${i}`} variant="danger">{msg}</Alert>)}
+          <HeaderAlert key={`error-${i}`} i={i} msg={msg} error={error} group="error" />)}
       </Col>
     </div>
   );

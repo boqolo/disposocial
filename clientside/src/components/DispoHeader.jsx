@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { Leader } from './Text';
 import { ch_leave_dispo } from '../socket';
+import { remove_at } from '../util';
+import HeaderAlert from './Alert';
 
 function DispoHeader({info, success, error, dispatch}) {
 
@@ -16,6 +18,18 @@ function DispoHeader({info, success, error, dispatch}) {
     history.replace("/");
 
   }
+
+  let remove_msg = (i, variant) =>
+    <Button
+      size="sm"
+      variant={`outline-${variant}`}
+      className="text-decoration-none"
+      onClick={() => {
+        console.log("REmoving")
+        dispatch({ type: "success/set", data: remove_at(success, i) })
+      }}>
+      {"X"}
+    </Button>;
 
   return (
     <div>
@@ -48,9 +62,9 @@ function DispoHeader({info, success, error, dispatch}) {
       </Row>
       <Col className="mt-3 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
-          <Alert className="mb-2" key={`succ-${i}`} variant="success">{msg}</Alert>)}
+          <HeaderAlert key={`succ-${i}`} i={i} msg={msg} success={success} group="success" />)}
         {error.length > 0 && error.map((msg, i) =>
-          <Alert className="mb-2" key={`err-${i}`} variant="danger">{msg}</Alert>)}
+          <HeaderAlert key={`error-${i}`} i={i} msg={msg} error={error} group="error" />)}
       </Col>
     </div>
   );
