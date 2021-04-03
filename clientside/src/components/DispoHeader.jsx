@@ -19,23 +19,26 @@ function DispoHeader({info, success, error, dispatch}) {
 
   }
 
-  let remove_msg = (i, variant) =>
-    <Button
-      size="sm"
-      variant={`outline-${variant}`}
-      className="text-decoration-none"
-      onClick={() => {
-        console.log("REmoving")
-        dispatch({ type: "success/set", data: remove_at(success, i) })
-      }}>
-      {"X"}
-    </Button>;
+  function Countdown() {
+    return (
+      <div
+          data-role="countdown"
+          data-animate="slide"
+          data-days="1"
+          data-hours="2"
+          data-minutes="3"
+          data-seconds-label="">
+      </div>
+    );
+  }
 
   return (
     <div>
       <Row className="m-0 p-0">
         <Col xs="auto" className="d-flex p-0 flex-row align-items-center">
-          <h3 className="text-muted fw-lighter w-auto">{"Disposocial (info)"}</h3>
+          <h3 className="display-5 text-muted fw-lighter w-auto">
+            Disposocial
+          </h3>
         </Col>
         <Col className="p-0 mx-4">
           <Container className="bg-primary h-100">
@@ -51,9 +54,11 @@ function DispoHeader({info, success, error, dispatch}) {
               </Container>
             </Container>
         </Col>
-        <Col xs="auto" className="p-0">
-          <h5>{"logout stuff here"}</h5>
+        <Col className="p0" xs="auto">
+        </Col>
+        <Col xs="auto" className="p-0 d-flex align-items-center">
           <Button
+            size="lg"
             onClick={handle_leave}
             variant="danger">
             {"Leave"}

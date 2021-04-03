@@ -30,9 +30,8 @@ export default function HeaderAlert({i, msg, group, success, error, info}) {
         <Button
           size="sm"
           variant={`outline-${variant}`}
-          className="text-decoration-none"
+          className="text-decoration-none border-0"
           onClick={() => {
-            console.log("REmoving")
             store.dispatch({ type: `${group}/set`, data: remove_at(msgs, i) })
           }}>
           {"X"}

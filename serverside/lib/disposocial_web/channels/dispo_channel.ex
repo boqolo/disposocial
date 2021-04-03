@@ -25,19 +25,20 @@ defmodule DisposocialWeb.DispoChannel do
   end
 
   @impl true
-  def handle_in("leave", payload, socket0) do
+  def handle_in("leave", payload, socket) do
     # TODO
 
   end
 
   @impl true
-  def handle_in("post_post", payload, socket0) do
+  def handle_in("post_post", payload, socket) do
     # TODO
-
+    Logger.debug("Got --> #{inspect(payload)}")
+    {:reply, :ok, socket}
   end
 
   @impl true
-  def handle_in("post_comment", payload, socket0) do
+  def handle_in("post_comment", payload, socket) do
     # TODO
 
   end
