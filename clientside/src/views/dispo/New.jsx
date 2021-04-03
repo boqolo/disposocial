@@ -126,9 +126,9 @@ function New({session, location, flags, dispatch}) {
               <Form.Control as="select" defaultValue="1">
                 <option value="0.10">{"6 minutes"}</option>
                 <option value="0.5">Half an hour</option>
-                <option value="1">One hour</option>
-                <option value="2">Two hours</option>
-                <option value="24">{"24 hours"}</option>
+                <option value="1.0">One hour</option>
+                <option value="2.0">Two hours</option>
+                <option value="24.0">{"24 hours"}</option>
               </Form.Control>
               <Form.Label>Duration</Form.Label>
             </div>
