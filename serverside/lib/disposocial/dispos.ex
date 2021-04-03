@@ -160,7 +160,9 @@ defmodule Disposocial.Dispos do
   def create_dispo(attrs) do
     Logger.debug("Processing Dispo args")
     deathDate = unless is_nil(attrs["duration"]) do
-      added_time = Float.round(String.to_float(attrs["duration"])) * 3_600 # in seconds. duration received as hours
+      added_time =
+        Float.round(String.to_float(attrs["duration"]), 2) * 3_600 # in seconds. duration received as hours
+        |> trunc()
       DateTime.utc_now()
       |> DateTime.add(added_time, :second, Tzdata.TimeZoneDatabase)
     end
