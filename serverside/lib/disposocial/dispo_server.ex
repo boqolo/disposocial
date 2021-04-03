@@ -2,7 +2,7 @@ defmodule Disposocial.DispoServer do
   use GenServer
 
   require Logger
-  alias Disposocial.{Dispos, DispoAgent, DispoRegistry, DispoSupervisor}
+  alias Disposocial.{Dispos, Posts, DispoAgent, DispoRegistry, DispoSupervisor}
 
   def registry(id) do
     {:via, Registry, {DispoRegistry, id}}
@@ -20,6 +20,10 @@ defmodule Disposocial.DispoServer do
     }
     DispoSupervisor.start_child(spec)
   end
+
+  # def broadcast_feed(id) do
+  #   GenServer.cast(registry(id), :broadcast_feed)
+  # end
 
   # Callbacks
 
@@ -49,10 +53,26 @@ defmodule Disposocial.DispoServer do
     {:ok, dispo}
   end
 
+  # @impl true
+  # def handle_cast(:broadcast_feed, state) do
+  #   # TODO broadcast on channel topic (dispo)
+  #   {:noreply, state}
+  # end
+
   @impl true
   def handle_info(:death, state) do
     # TODO self destruct stuff
+    id = state.id
     Dispos.delete_dispo(state)
+    # Goodbye
+    Process.exit(self(), :normal)
+    {:noreply, id}
+  end
+
+  @impl true
+  def terminate(:normal, state) do
+    # The final stand. Gets invoked when the server is about to exit
+    Logger.info("DispoServer exiting with state #{inspect(state)}")
   end
 
 end
