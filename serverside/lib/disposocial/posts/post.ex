@@ -18,6 +18,6 @@ defmodule Disposocial.Posts.Post do
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:body, :media_hash, :user_id, :dispo_id])
-    |> validate_required([:body, :media_hash, :user_id, :dispo_id])
+    |> validate_required([:body, :user_id, :dispo_id])
   end
 end

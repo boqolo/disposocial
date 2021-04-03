@@ -7,6 +7,23 @@ import store from './store';
 let socket;
 let channel_dispo;
 
+// Channel state callbacks
+
+function ticker_dispatch(resp) {
+  // TODO
+}
+
+function newpost_dispatch(resp) {
+  store.dispatch({ type: "feed/add", data: resp });
+}
+
+function dispo_dead_dispatch(resp) {
+  // TODO
+}
+
+function direct_msg_dispatch(resp) {
+  // TODO
+}
 
 
 // Channels
@@ -55,6 +72,12 @@ export function ch_join_dispo(id, successRedirect) {
   channel_dispo.join()
     .receive("ok", () => {
       console.log("joined dispo channel", id)
+
+      // Setup channel callbacks
+      channel_dispo.on("doormat", ticker_dispatch);
+      channel_dispo.on("new_post", newpost_dispatch);
+      channel_dispo.on("direct_msg", direct_msg_dispatch);
+      channel_dispo.on("angel_of_death", dispo_dead_dispatch);
       successRedirect()
     })
     .receive("error", resp => {
@@ -64,10 +87,10 @@ export function ch_join_dispo(id, successRedirect) {
     });
 }
 
-export function ch_post_post(params) {
+export function ch_post_post(params, success) {
   channel_dispo.push("post_post", params)
     .receive("ok", resp => {
-      store.dispatch({ type: "success/one", data: "Posted!" });
+      success();
     })
     .receive("error", resp => {
       console.error("unable to post")

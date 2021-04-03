@@ -73,6 +73,13 @@ defmodule Disposocial.Posts do
     |> Repo.update()
   end
 
+  def present(post) do
+    post = Repo.preload(post, :user)
+    username = post.user.name
+    Map.take(post, [:body, :media_hash, :user_id, :inserted_at])
+    |> Map.put(:username, username)
+  end
+
   @doc """
   Deletes a post.
 

@@ -2,7 +2,7 @@ defmodule DisposocialWeb.DispoChannel do
   use DisposocialWeb, :channel
 
   alias DisposocialWeb.Presence
-  alias Disposocial.DispoServer
+  alias Disposocial.{DispoServer, Posts}
 
   require Logger
 
@@ -31,10 +31,19 @@ defmodule DisposocialWeb.DispoChannel do
   end
 
   @impl true
-  def handle_in("post_post", payload, socket) do
-    # TODO
-    Logger.debug("Got --> #{inspect(payload)}")
-    {:reply, :ok, socket}
+  def handle_in("post_post", %{"body" => body} = payload, socket) do
+    attrs = %{
+      body: body,
+      user_id: socket.assigns.current_user.id,
+      dispo_id: socket.assigns.curr_dispo_id
+    }
+
+    case Posts.create_post(attrs) do
+      {:ok, post} ->
+        broadcast!(socket, "new_post", Posts.present(post))
+        {:reply, :ok, socket}
+      {:error, chgset} -> {:reply, {:error, chgset.errors}, socket}
+    end
   end
 
   @impl true
@@ -53,8 +62,8 @@ defmodule DisposocialWeb.DispoChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (default:lobby).
   # @impl true
-  # def handle_in("shout", payload, socket) do
-  #   broadcast(socket, "shout", payload)
+  # def handle_in("new_post", payload, socket) do
+  #   broadcast(socket, "new_post", payload)
   #   {:noreply, socket}
   # end
 

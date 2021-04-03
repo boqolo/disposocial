@@ -43,7 +43,8 @@ defmodule Disposocial.Users do
   def present(id) do
     q = from(u in User, where: u.id == ^id, select: [u.id, u.name, u.photo_hash])
     [user] = Repo.all(q)
-    user
+    [user_id, name, photo_hash] = user
+    %{id: user_id, name: name, photo_hash: photo_hash}
   end
 
   @doc """

@@ -14,9 +14,10 @@ function DispoHeader({info, success, error, dispatch}) {
   let history = useHistory();
 
   function handle_leave() {
+    dispatch({ type: "feed/set", data: [] });
+    dispatch({ type: "info/set", data: [] });
     ch_leave_dispo();
     history.replace("/");
-
   }
 
   function Countdown() {

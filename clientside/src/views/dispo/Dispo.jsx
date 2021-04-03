@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Switch, Route, Link, useRouteMatch, useHistory, useParams } from 'react-router-dom';
+import { Switch, Route, Link, useRouteMatch, useHistory, useParams, useLocation } from 'react-router-dom';
 import { Tabs, Form, Tab, Navbar, Col, Row, Container, Button, Modal } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
+import Feed from './Feed';
 import store from '../../store';
 import { ch_post_post } from '../../socket';
 
@@ -17,19 +18,27 @@ function PostingView({show}) {
     ev.preventDefault()
     console.log("Clicked post")
     let body = ev.target[0].value;
-    let file = ev.target[1].files[0];
-    const reader = new FileReader();
-    console.log("params are", body, file)
-    reader.readAsBinaryString(file);
-    reader.onloadend = () => {
-      let params = {
-        body: body,
-        file: ev.target[1].value,
-        data: reader.result
-      }
-      ch_post_post(params);
-      close();
+    let params = {
+      body: body
     }
+    let success = () => {
+      store.dispatch({ type: "success/one", data: "Posted!" });
+      close();
+    };
+    ch_post_post(params, success);
+    // let file = ev.target[1].files[0];
+    // const reader = new FileReader();
+    // console.log("params are", body, file)
+    // reader.readAsBinaryString(file);
+    // reader.onloadend = () => {
+    //   let params = {
+    //     body: body,
+    //     file: ev.target[1].value,
+    //     data: reader.result
+    //   }
+    //   ch_post_post(params);
+    //   close();
+    // }
   }
 
   return (
@@ -52,7 +61,7 @@ function PostingView({show}) {
           <Form.Group>
             <div className="form-floating">
               <Form.File
-                enctype="multipart/form-data"
+                encType="multipart/form-data"
                 custom
                 />
             </div>
@@ -74,6 +83,8 @@ function PostingView({show}) {
 function Dispo({session, flags, dispatch}) {
 
   let { url } = useRouteMatch();
+  let { pathname } = useLocation();
+  console.log("URL is", url)
   let { dispoId } = useParams();
   let history = useHistory();
 
@@ -84,22 +95,19 @@ function Dispo({session, flags, dispatch}) {
       <Row>
         <Col>
           <Tabs
-            activeKey={url}
-            onSelect={path => history.push(`${url}${path}`)}
-            className="w-100 display-4 bg-light rounded my-4">
-            <Tab eventKey="/" title="Live">
-
+            activeKey={pathname}
+            onSelect={path => history.push(path)}
+            className="w-100 display-4 bg-light rounded my-2">
+            <Tab eventKey={url} title="Live">
+              <Feed />
             </Tab>
-            <Tab eventKey="/popular" title="Popular">
-
+            <Tab eventKey={`${url}/popular`} title="Popular">
+              <h1>Popular</h1>
             </Tab>
-            <Tab eventKey="/mine" title="Mine">
-
+            <Tab eventKey={`${url}/mine`} title="Mine">
+              <h1>Mine</h1>
             </Tab>
           </Tabs>
-          <Container>
-            <h3>{"Posts go here"}</h3>
-          </Container>
           <Navbar fixed="bottom" variant="light" bg="light">
             <Container className="py-5 justify-content-end d-flex flex-end">
               <Button
@@ -112,7 +120,7 @@ function Dispo({session, flags, dispatch}) {
             </Container>
           </Navbar>
         </Col>
-        <Col xs="2" className="d-flex align-items-center">
+        <Col xs="2" className="d-flex align-items-start">
           <h1 className="fw-lighter">Tags</h1>
         </Col>
       </Row>
