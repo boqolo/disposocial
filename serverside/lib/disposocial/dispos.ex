@@ -14,6 +14,7 @@ defmodule Disposocial.Dispos do
   alias Disposocial.Util
   alias Disposocial.Dispos.Dispo
   alias Disposocial.PositionStack
+  alias Disposocial.Posts
 
   require Logger
 
@@ -133,6 +134,21 @@ defmodule Disposocial.Dispos do
     |> Enum.filter(in_radius)
   end
 
+  def present(dispo) do
+    created = Util.convertUTC!(dispo.inserted_at)
+    death = Util.convertUTC!(dispo.death)
+    dispo
+    |> Map.take([
+        :name,
+        :location,
+        :latitude,
+        :longitude,
+        ])
+    |> Map.put(:created, created)
+    |> Map.put(:death, death)
+  end
+
+
   # field(:death, :utc_datetime) # serverside
   # field(:latitude, :integer)
   # field(:longitude, :integer)
@@ -206,16 +222,25 @@ defmodule Disposocial.Dispos do
     death_dt
   end
 
+  def authenticate(id, pass) do
+    dispo = Repo.get_by!(Dispo, id: id)
+    if dispo.is_public do
+      :ok
+    else
+      Argon2.verify_pass(pass, dispo.password_hash)
+    end
+  end
+
   @doc """
   Updates a dispo.
 
   ## Examples
 
-      iex> update_dispo(dispo, %{field: new_value})
-      {:ok, %Dispo{}}
+  iex> update_dispo(dispo, %{field: new_value})
+  {:ok, %Dispo{}}
 
-      iex> update_dispo(dispo, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_dispo(dispo, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_dispo(%Dispo{} = dispo, attrs) do
@@ -229,15 +254,23 @@ defmodule Disposocial.Dispos do
 
   ## Examples
 
-      iex> delete_dispo(dispo)
-      {:ok, %Dispo{}}
+  iex> delete_dispo(dispo)
+  {:ok, %Dispo{}}
 
-      iex> delete_dispo(dispo)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_dispo(dispo)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_dispo(%Dispo{} = dispo) do
     Repo.delete(dispo)
+  end
+
+  def delete_dispo_and_remnants(id) do
+    q = from(d in Dispo, where: d.id == ^id)
+    case Repo.delete_all(q) do
+      {:ok, _} -> Posts.delete_posts_and_remnants(id)
+      error -> error
+    end
   end
 
   @doc """
@@ -245,8 +278,8 @@ defmodule Disposocial.Dispos do
 
   ## Examples
 
-      iex> change_dispo(dispo)
-      %Ecto.Changeset{data: %Dispo{}}
+  iex> change_dispo(dispo)
+  %Ecto.Changeset{data: %Dispo{}}
 
   """
   def change_dispo(%Dispo{} = dispo, attrs \\ %{}) do

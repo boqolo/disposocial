@@ -2,6 +2,7 @@ defmodule Disposocial.DispoServer do
   use GenServer
 
   require Logger
+  alias DisposocialWeb.Endpoint
   alias Disposocial.{Dispos, Posts, DispoAgent, DispoRegistry, DispoSupervisor}
 
   def registry(id) do
@@ -47,10 +48,14 @@ defmodule Disposocial.DispoServer do
     # send self destruct message in on death date in the future
     # NOTE problem if ms too large?? ex. death a week from now
     ms_from_now = DateTime.diff(dispo.death, DateTime.utc_now(), :millisecond)
-    Process.send_after(self(), :death, ms_from_now)
+    Process.send_after(self(), {:death, id}, ms_from_now)
+
+    # Init time remaining reminder
+    next_reminder = round(ms_from_now / 2)
+    Process.send_after(self(), {:reminder, dispo.id, next_reminder}, next_reminder)
 
     Logger.info("Dispo Server started: id --> #{inspect(id)}, pid --> #{inspect(self())}")
-    {:ok, dispo}
+    {:ok, Dispos.present(dispo)}
   end
 
   # @impl true
@@ -59,20 +64,39 @@ defmodule Disposocial.DispoServer do
   #   {:noreply, state}
   # end
 
+  @doc"""
+  Exponential backoff reminders of termination date.
+  """
   @impl true
-  def handle_info(:death, state) do
-    # TODO self destruct stuff
-    id = state.id
-    Dispos.delete_dispo(state)
+  def handle_info({:reminder, dispo_id, ms_left}, state) do
+    death_coming = 60 * 1000 # min time in ms that reminders no longer necessary
+    unless ms_left < death_coming do
+      Logger.notice("DispoServer #{inspect(dispo_id)}, #{inspect(self())} broadcasting reminder")
+      Endpoint.broadcast!("dispo:#{to_string(dispo_id)}", "remind", %{data: ms_left})
+      next_reminder = round(ms_left / 2)
+      Process.send_after(self(), {:reminder, dispo_id, next_reminder}, next_reminder)
+    end
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:death, id}, state) do
+    # self destruct
+    Endpoint.broadcast!("dispo:#{to_string(id)}", "angel_of_death", %{})
+    Dispos.delete_dispo_and_remnants(id)
     # Goodbye
-    Process.exit(self(), :normal)
-    {:noreply, id}
+    {:stop, :normal, state}
   end
 
   @impl true
   def terminate(:normal, state) do
-    # The final stand. Gets invoked when the server is about to exit
-    Logger.info("DispoServer exiting with state #{inspect(state)}")
+    # The final stand
+    Logger.info("DispoServer #{inspect(self())} died peacefully with state --> #{inspect(state)}")
+  end
+
+  @impl true
+  def terminate({reason, _}, state) do
+    Logger.critical("DispoServer #{inspect(self())} terminated abnormally (#{inspect(reason)}) with state --> #{inspect(state)}")
   end
 
 end

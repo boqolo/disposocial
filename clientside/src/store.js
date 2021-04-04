@@ -227,6 +227,8 @@ function curr_dispo_reducer(state = {}, action) {
   switch (action.type) {
     case "curr_dispo/set":
       return action.data;
+    case "curr_dispo/setremind":
+      return {...state, time_remaining: action.data };
     default:
       return state;
   }

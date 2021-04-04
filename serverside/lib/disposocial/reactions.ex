@@ -89,6 +89,11 @@ defmodule Disposocial.Reactions do
     Repo.delete(reaction)
   end
 
+  def delete_post_reactions(post_ids) do
+    q = from(r in Reaction, where: r.post_id in ^post_ids)
+    Repo.delete_all(q)
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking reaction changes.
 

@@ -6,6 +6,7 @@ import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import store from '../../store';
 import { ch_post_post } from '../../socket';
+import { reset_dispo_state } from '../../util';
 
 
 
@@ -17,7 +18,7 @@ function PostingView({show}) {
   function handle_post(ev) {
     ev.preventDefault()
     console.log("Clicked post")
-    let body = ev.target[0].value;
+    let body = ev.target[0].value.trim();
     let params = {
       body: body
     }
@@ -87,6 +88,11 @@ function Dispo({session, flags, dispatch}) {
   console.log("URL is", url)
   let { dispoId } = useParams();
   let history = useHistory();
+
+  if (flags.dispo_dead) {
+    history.replace("/");
+    reset_dispo_state(dispatch);
+  }
 
   return (
     <div>

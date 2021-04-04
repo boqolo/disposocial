@@ -102,6 +102,17 @@ defmodule Disposocial.Posts do
     Repo.delete(post)
   end
 
+  def delete_posts_and_remnants(dispo_id) do
+    q = from(p in Post, where: p.dispo_id == ^dispo_id)
+    post_ids = Repo.all(select(q, [:id]))
+    case Repo.delete_all(q) do
+      {:ok, _} ->
+        # TODO Comments.delete_comments_and_remnants(post_ids)
+        Reactions.delete_post_reactions(post_ids)
+      error -> error
+    end
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking post changes.
 

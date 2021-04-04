@@ -1,6 +1,5 @@
 import { Socket } from 'phoenix';
 import store from './store';
-import { clear_messages } from './util';
 
 // create socket with token if authenticated (undefined if not i.e.
 // for default channel on page load)
@@ -8,10 +7,19 @@ import { clear_messages } from './util';
 let socket;
 let channel_dispo;
 
+let MSG = {
+  dispo_dead: "The Dispo has expired",
+  left: "Left Dispo"
+}
+
 // Channel state callbacks
 
 function ticker_dispatch(resp) {
-  store.dispatch({ type: "ticker/add", data: resp.body })
+  store.dispatch({ type: "ticker/add", data: resp.data })
+}
+
+function error_dispatch(msg) {
+  store.dispatch({ type: "error/one", data: msg });
 }
 
 function newposts_dispatch(resp) {
@@ -24,20 +32,15 @@ function newposts_dispatch(resp) {
   }
 }
 
-function clear_dispo_state() {
-  // Clear ticker, feed, info,
-  store.dispatch({ type: "info/set", data: [] });
-  store.dispatch({ type: "ticker/set", data: [] });
-  store.dispatch({ type: "feed/set", data: [] });
-  store.dispatch({ type: "popular/set", data: [] });
-  store.dispatch({ type: "likes/set", data: [] });
-  store.dispatch({ type: "tags/set", data: [] });
-  store.dispatch({ type: "show/set", data: {} });
-  store.dispatch({ type: "success/one", data: "Left Dispo" });
+function handle_death(resp) {
+  console.log("Got death message", resp)
+  store.dispatch({ type: "flags/dispo_dead", data: true });
+  store.dispatch({ type: "success/one", data: MSG.dispo_dead });
 }
 
-function dispo_dead_dispatch(resp) {
-  // TODO
+function dispo_meta_dispatch(resp) {
+  console.log("received dispo meta", resp)
+  store.dispatch({ type: "curr_dispo/set", data: resp.data });
 }
 
 function direct_msg_dispatch(resp) {
@@ -45,7 +48,13 @@ function direct_msg_dispatch(resp) {
 }
 
 function info_dispatch(resp) {
-  store.dispatch({ type: "info/add", data: resp.body })
+  console.log("Got info", resp)
+  store.dispatch({ type: "info/add", data: resp.data })
+}
+
+function remind_dispatch(resp) {
+  console.log("Got reminder", resp)
+  store.dispatch({ type: "curr_dispo/setremind", data: resp.data });
 }
 
 
@@ -84,30 +93,42 @@ function init_sock(token) {
   return sock;
 }
 
+export function ch_leave_dispo() {
+  channel_dispo?.leave()
+    .receive("ok", (resp) => {
+      socket = undefined;
+      channel_dispo = undefined;
+    })
+    .receive("error", resp => console.error(resp));
+}
+
 // FIXME should instead join on default channel and register callback
 // to join specific Dispo channel on success
-export function ch_join_dispo(id, successRedirect) {
+export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
   let { session } = store.getState();
   socket = init_sock(session.token);
   console.log("Init sock", socket)
-  channel_dispo = socket.channel(`dispo:${id}`, session);
+  let params = {...session, ...dispo_auth};
+  channel_dispo = socket.channel(`dispo:${id}`, params);
   console.log("Init channel", channel_dispo)
   channel_dispo.join()
     .receive("ok", () => {
       console.log("joined dispo channel", id)
 
       // Setup channel callbacks
+      channel_dispo.on("dispo_meta", dispo_meta_dispatch);
       channel_dispo.on("doormat", ticker_dispatch);
       channel_dispo.on("info", info_dispatch);
+      channel_dispo.on("remind", remind_dispatch);
       channel_dispo.on("new_posts", newposts_dispatch);
       channel_dispo.on("direct_msg", direct_msg_dispatch);
-      channel_dispo.on("angel_of_death", dispo_dead_dispatch);
+      channel_dispo.on("angel_of_death", handle_death);
       successRedirect()
     })
     .receive("error", resp => {
       console.error("unable to join dispo channel", id, resp);
-      socket = undefined;
-      channel_dispo = undefined;
+      error_dispatch(resp);
+      ch_leave_dispo();
     });
 }
 
@@ -119,14 +140,4 @@ export function ch_post_post(params, success) {
     .receive("error", resp => {
       console.error("unable to post")
     });
-}
-
-export function ch_leave_dispo() {
-  channel_dispo?.leave()
-    .receive("ok", (resp) => {
-      socket = undefined;
-      channel_dispo = undefined;
-      clear_dispo_state();
-    })
-    .receive("error", resp => console.error(resp));
 }
