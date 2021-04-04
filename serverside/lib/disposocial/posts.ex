@@ -7,6 +7,7 @@ defmodule Disposocial.Posts do
   alias Disposocial.Repo
 
   alias Disposocial.Posts.Post
+  alias Disposocial.Reactions
 
   @doc """
   Returns the list of posts.

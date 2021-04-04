@@ -5,8 +5,8 @@ defmodule Disposocial.Reactions.Reaction do
   schema "reactions" do
     field(:value, :integer)
 
-    belongs_to(:user, :id)
-    belongs_to(:post, :id)
+    belongs_to(:user, Disposocial.Users.User)
+    belongs_to(:post, Disposocial.Posts.Post)
 
     timestamps(type: :utc_datetime)
   end
