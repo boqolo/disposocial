@@ -1,7 +1,7 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
 import { Leader } from '../components/Text';
-import { Col, Row, Button, Card, InputGroup, Form } from 'react-bootstrap';
+import { Col, Row, Button, DropdownButton, Dropdown, Card, InputGroup, Form } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import store from '../store';
@@ -144,6 +144,13 @@ function Discover({session, location, local_dispos, dispatch}) {
                 onClick={() => api_fetch_local_dispos(location)}>
                 {"Refresh"}
               </Button>
+            </Col>
+            <Col xs="auto">
+              <DropdownButton
+                title="Radius"
+                onSelect={(rad) => api_fetch_local_dispos(location)}>
+                <Dropdown.Item eventKey="5">{"5 mi."}</Dropdown.Item>
+              </DropdownButton>
             </Col>
           </Row>
           {location.lat && <small>{`${location.lat}, ${location.lng}`}</small>}
