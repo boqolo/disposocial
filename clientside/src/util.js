@@ -70,10 +70,18 @@ export function getMyLocation(dispatch) {
   // return {geo, watcher_id};
 }
 
-export function clear_messages(store) {
-  console.log("Clearing messages");
-  store.dispatch({ type: "success/set", data: [] });
-  store.dispatch({ type: "info/set", data: [] });
-  store.dispatch({ type: "error/set", data: [] });
-  store.dispatch({ type: "ticker/set", data: [] });
+export function clear_errors(dispatch) {
+  dispatch({ type: "error/set", data: [] });
+}
+
+export function reset_dispo_state(dispatch) {
+  dispatch({ type: "feed/set", data: [] });
+  dispatch({ type: "popular/set", data: [] });
+  dispatch({ type: "likes/set", data: [] });
+  dispatch({ type: "tags/set", data: [] });
+  dispatch({ type: "show/set", data: {} });
+  dispatch({ type: "info/set", data: [] });
+  dispatch({ type: "ticker/set", data: [] });
+  dispatch({ type: "curr_dispo/set", data: {} });
+  dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
 }

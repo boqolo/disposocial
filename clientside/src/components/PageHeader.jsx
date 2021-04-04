@@ -18,9 +18,7 @@ function Header({session, error, info, success, dispatch}) {
     dispatch({ type: "session/set", data: {} });
     dispatch({ type: "success/one", data: "Logged out" });
     let localStorage = window.localStorage;
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('username');
+    localStorage.clear();
     history.replace("/");
   }
 

@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { Leader } from './Text';
 import { ch_leave_dispo } from '../socket';
-import { remove_at } from '../util';
+import { remove_at, reset_dispo_state, clear_errors } from '../util';
 import HeaderAlert from './Alert';
 
 function DispoHeader({info, success, error, ticker, dispatch}) {
@@ -15,24 +15,24 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
   console.log("Info msgs are", info)
 
   function handle_leave() {
-    dispatch({ type: "feed/set", data: [] });
-    dispatch({ type: "info/set", data: [] });
     ch_leave_dispo();
+    clear_errors(dispatch);
+    reset_dispo_state(dispatch);
+    dispatch({ type: "success/one", data: "Left Dispo" });
     history.replace("/");
   }
 
-  function Countdown() {
+  function Timer({dispo_timer, dispatch}) {
     return (
-      <div
-          data-role="countdown"
-          data-animate="slide"
-          data-days="1"
-          data-hours="2"
-          data-minutes="3"
-          data-seconds-label="">
+      <div>
+        <span className="display-3">{dispo_timer}</span>
       </div>
     );
   }
+
+  let Countdown = connect(({dispo_timer}) => {
+    return {dispo_timer}
+  })(Timer);
 
   return (
     <div>
