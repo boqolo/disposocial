@@ -21,6 +21,12 @@ defmodule Disposocial.Posts do
     Repo.all(Post)
   end
 
+  def recent_posts(id) do
+    q = from(p in Post, where: p.dispo_id == ^id, limit: 10, order_by: [desc: p.inserted_at], preload: [:reactions])
+    Repo.all(q)
+    |> Enum.map(fn p -> present(p) end)
+  end
+
   @doc """
   Gets a single post.
 
@@ -76,7 +82,7 @@ defmodule Disposocial.Posts do
   def present(post) do
     post = Repo.preload(post, :user)
     username = post.user.name
-    Map.take(post, [:body, :media_hash, :user_id, :inserted_at])
+    Map.take(post, [:body, :media_hash, :user_id, :inserted_at, :comments])
     |> Map.put(:username, username)
   end
 

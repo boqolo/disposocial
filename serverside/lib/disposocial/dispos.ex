@@ -46,6 +46,18 @@ defmodule Disposocial.Dispos do
   """
   def get_dispo!(id), do: Repo.get!(Dispo, id)
 
+  def get_dispo(id), do: Repo.get(Dispo, id)
+
+  def exists?(id) do
+    q = from d in Dispo, where: d.id == ^id
+    Repo.exists?(q)
+  end
+
+  def get_name!(id) do
+    q = from(d in Dispo, select: d.name)
+    Repo.get!(q, id)
+  end
+
   defp rad(deg) do
     deg * (:math.pi() / 180)
   end

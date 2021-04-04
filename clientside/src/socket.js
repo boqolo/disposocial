@@ -1,5 +1,6 @@
 import { Socket } from 'phoenix';
 import store from './store';
+import { clear_messages } from './util';
 
 // create socket with token if authenticated (undefined if not i.e.
 // for default channel on page load)
@@ -10,11 +11,29 @@ let channel_dispo;
 // Channel state callbacks
 
 function ticker_dispatch(resp) {
-  // TODO
+  store.dispatch({ type: "ticker/add", data: resp.body })
 }
 
-function newpost_dispatch(resp) {
-  store.dispatch({ type: "feed/add", data: resp });
+function newposts_dispatch(resp) {
+  if (resp.one) {
+    console.log("Got one new post")
+    store.dispatch({ type: "feed/addone", data: resp.one });
+  } else {
+    console.log("Got many new posts")
+    store.dispatch({ type: "feed/addmany", data: resp.many });
+  }
+}
+
+function clear_dispo_state() {
+  // Clear ticker, feed, info,
+  store.dispatch({ type: "info/set", data: [] });
+  store.dispatch({ type: "ticker/set", data: [] });
+  store.dispatch({ type: "feed/set", data: [] });
+  store.dispatch({ type: "popular/set", data: [] });
+  store.dispatch({ type: "likes/set", data: [] });
+  store.dispatch({ type: "tags/set", data: [] });
+  store.dispatch({ type: "show/set", data: {} });
+  store.dispatch({ type: "success/one", data: "Left Dispo" });
 }
 
 function dispo_dead_dispatch(resp) {
@@ -23,6 +42,10 @@ function dispo_dead_dispatch(resp) {
 
 function direct_msg_dispatch(resp) {
   // TODO
+}
+
+function info_dispatch(resp) {
+  store.dispatch({ type: "info/add", data: resp.body })
 }
 
 
@@ -50,7 +73,7 @@ function direct_msg_dispatch(resp) {
 // }
 
 function init_sock(token) {
-  let sock = new Socket("ws://localhost:4000/socket", {params: {token: token}});
+  let sock = new Socket("//localhost:4000/socket", {params: {token: token}});
 
   // setup error handling
   sock.onError(() => console.error("websocket error"));
@@ -75,7 +98,8 @@ export function ch_join_dispo(id, successRedirect) {
 
       // Setup channel callbacks
       channel_dispo.on("doormat", ticker_dispatch);
-      channel_dispo.on("new_post", newpost_dispatch);
+      channel_dispo.on("info", info_dispatch);
+      channel_dispo.on("new_posts", newposts_dispatch);
       channel_dispo.on("direct_msg", direct_msg_dispatch);
       channel_dispo.on("angel_of_death", dispo_dead_dispatch);
       successRedirect()
@@ -102,7 +126,7 @@ export function ch_leave_dispo() {
     .receive("ok", (resp) => {
       socket = undefined;
       channel_dispo = undefined;
-      store.dispatch({ type: "success/one", data: "Left Dispo" });
+      clear_dispo_state();
     })
     .receive("error", resp => console.error(resp));
 }

@@ -7,11 +7,12 @@ import { ch_leave_dispo } from '../socket';
 import { remove_at } from '../util';
 import HeaderAlert from './Alert';
 
-function DispoHeader({info, success, error, dispatch}) {
+function DispoHeader({info, success, error, ticker, dispatch}) {
 
   // TODO if notification update marquee
-  let updates = ["Hello World", "somebody has just joined", "Pineapple"];
   let history = useHistory();
+  console.log("Ticker msgs are", ticker)
+  console.log("Info msgs are", info)
 
   function handle_leave() {
     dispatch({ type: "feed/set", data: [] });
@@ -47,8 +48,8 @@ function DispoHeader({info, success, error, dispatch}) {
               <div
                 id="ticker"
                 data-role="marquee">
-                {info.map((msg, i) =>
-                  <div key={`info-${i}`}>
+                {ticker.map((msg, i) =>
+                  <div key={`tick-${i}`}>
                     {msg}
                   </div>)}
                 </div>
@@ -77,8 +78,8 @@ function DispoHeader({info, success, error, dispatch}) {
 
 }
 
-function state_to_props({info, success, error}) {
-  return {info, success, error};
+function state_to_props({info, success, error, ticker}) {
+  return {info, success, error, ticker};
 }
 
 export default connect(state_to_props)(DispoHeader);

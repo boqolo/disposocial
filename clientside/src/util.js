@@ -69,3 +69,11 @@ export function getMyLocation(dispatch) {
   // would need effect clean up to cancel
   // return {geo, watcher_id};
 }
+
+export function clear_messages(store) {
+  console.log("Clearing messages");
+  store.dispatch({ type: "success/set", data: [] });
+  store.dispatch({ type: "info/set", data: [] });
+  store.dispatch({ type: "error/set", data: [] });
+  store.dispatch({ type: "ticker/set", data: [] });
+}

@@ -7,7 +7,7 @@ defmodule Disposocial.Posts.Post do
     field(:media_hash, :string)
 
     belongs_to(:user, Disposocial.Users.User)
-    belongs_to(:dispo, :id)
+    belongs_to(:dispo, Disposocial.Dispos.Dispo)
     has_many(:reactions, Disposocial.Reactions.Reaction)
     many_to_many(:tags, Disposocial.Tags.Tag, join_through: "posts-tags")
 

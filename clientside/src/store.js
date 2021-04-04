@@ -155,10 +155,25 @@ function info_reducer(state = [], action) {
   }
 }
 
+function ticker_reducer(state = [], action) {
+  switch (action.type) {
+    case "ticker/add":
+      return state.concat([action.data]);
+    case "ticker/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 function feed_reducer(state = [], action) {
   switch (action.type) {
-    case "feed/add":
-      return state.concat([action.data]);
+    case "feed/addone":
+      let new_state = [...state]
+      new_state.unshift(action.data)
+      return new_state;
+    case "feed/addmany":
+      return action.data.concat(state);
     case "feed/set":
       return action.data;
     default:
@@ -233,6 +248,7 @@ let root_reducer = combineReducers({
   error: error_reducer,
   info: info_reducer,
   success: success_reducer,
+  ticker: ticker_reducer,
   flags: flags_reducer,
   acct_form: acct_form_reducer,
   join_form: join_form_reducer,
