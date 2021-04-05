@@ -32,6 +32,11 @@ function newposts_dispatch(resp) {
   }
 }
 
+function newcomments_dispatch(resp) {
+  console.log("Got one new comment", resp)
+  store.dispatch({ type: "comments/one", data: resp });
+}
+
 function handle_death(resp) {
   console.log("Got death message", resp)
   store.dispatch({ type: "flags/dispo_dead", data: true });
@@ -121,6 +126,7 @@ export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
       channel_dispo.on("info", info_dispatch);
       channel_dispo.on("remind", remind_dispatch);
       channel_dispo.on("new_posts", newposts_dispatch);
+      channel_dispo.on("new_comments", newcomments_dispatch);
       channel_dispo.on("direct_msg", direct_msg_dispatch);
       channel_dispo.on("angel_of_death", handle_death);
       successRedirect()
@@ -138,6 +144,16 @@ export function ch_post_post(params, success) {
       success();
     })
     .receive("error", resp => {
-      console.error("unable to post")
+      console.error("unable to post", resp)
+    });
+}
+
+export function ch_post_comment(params, success) {
+  channel_dispo.push("post_comment", params)
+    .receive("ok", resp => {
+      success();
+    })
+    .receive("error", resp => {
+      console.error("unable to post comment", resp)
     });
 }

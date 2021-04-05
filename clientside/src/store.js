@@ -181,6 +181,20 @@ function feed_reducer(state = [], action) {
   }
 }
 
+function comments_reducer(state = {}, action) {
+  switch (action.type) {
+    case "comments/one":
+      let post_id = action.data.post_id;
+      let post_comms = state[post_id];
+      let new_post_comms = post_comms ? post_comms.concat([action.data.data]) : [action.data.data]
+      let new_comms = {...state}
+      new_comms[post_id] = new_post_comms;
+      return new_comms;
+    default:
+      return state;
+  }
+}
+
 function popular_reducer(state = [], action) {
   switch (action.type) {
     case "popular/add":
@@ -258,6 +272,7 @@ let root_reducer = combineReducers({
   curr_dispo: curr_dispo_reducer,
   local_dispos: local_dispos_reducer,
   feed: feed_reducer,
+  comments: comments_reducer,
   popular: popular_reducer,
   likes: likes_reducer,
   tags: tags_reducer,
