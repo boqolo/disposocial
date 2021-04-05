@@ -1,16 +1,16 @@
 defmodule DisposocialWeb.DispoChannel do
   use DisposocialWeb, :channel
 
-  alias DisposocialWeb.Presence
-  alias Disposocial.{DispoServer, Dispos, Posts}
+  alias DisposocialWeb.{Presence, ChangesetView}
+  alias Disposocial.{DispoServer, Dispos, Posts, Util}
 
   require Logger
 
   @impl true
-  def join("dispo:" <> id, %{"user_id" => user_id} = params, socket) do
+  def join("dispo:" <> id, params, socket) do
     Logger.debug("GOT DISPO JOIN PARAMS --> #{inspect(params)}")
     id = String.to_integer(id)
-    dispo_pass = params["password"]
+    dispo_pass = params["password"] |> Util.escapeInput()
     if sock_authorized?(socket) &&
         Dispos.exists?(id) && dispo_authorized?(id, dispo_pass) do
       noDispoServer? = Registry.lookup(Disposocial.DispoRegistry, id) == []
@@ -36,7 +36,7 @@ defmodule DisposocialWeb.DispoChannel do
   def handle_info(:after_join, socket) do
     dispo_id = socket.assigns.curr_dispo_id
     user_name = socket.assigns.current_user.name
-    dispo = Dispos.get_dispo!(dispo_id) |> Dispos.present()
+    dispo = DispoServer.get_dispo(dispo_id)
 
     push(socket, "dispo_meta", %{data: dispo})
     push(socket, "doormat", %{data: "#{user_name} joined."})
@@ -52,24 +52,44 @@ defmodule DisposocialWeb.DispoChannel do
   end
 
   @impl true
-  def handle_in("post_post", %{"body" => body} = payload, socket) do
+  def handle_in("post_post", %{"body" => body} = _params, socket) do
     attrs = %{
-      body: body,
+      body: Util.escapeInput(body),
       user_id: socket.assigns.current_user.id,
       dispo_id: socket.assigns.curr_dispo_id
     }
 
-    case Posts.create_post(attrs) do
+    case DispoServer.post_post(socket.assigns.curr_dispo_id, attrs) do
       {:ok, post} ->
-        broadcast!(socket, "new_posts", %{one: Posts.present(post)})
+        broadcast!(socket, "new_posts", %{one: post})
         {:reply, :ok, socket}
-      {:error, chgset} -> {:reply, {:error, chgset.errors}, socket}
+      {:error, errors} -> {
+        :reply,
+        {:error, ChangesetView.translate_errors(errors)},
+        socket
+      }
     end
   end
 
   @impl true
-  def handle_in("post_comment", payload, socket) do
-    # TODO
+  def handle_in("post_comment", %{"post_id" => post_id, "body" => body}, socket) do
+    attrs = %{
+      body: Util.escapeInput(body),
+      user_id: socket.assigns.current_user.id,
+      post_id: Util.escapeInput(post_id)
+    }
+
+
+    case DispoServer.post_comment(socket.assigns.curr_dispo_id, attrs) do
+      {:ok, comment} ->
+        broadcast!(socket, "new_comments", %{post_id: post_id, data: comment})
+        {:reply, :ok, socket}
+      {:error, errors} -> {
+        :reply,
+        {:error, ChangesetView.translate_errors(errors)},
+        socket
+      }
+    end
 
   end
 
