@@ -190,6 +190,8 @@ function comments_reducer(state = {}, action) {
       let new_comms = {...state}
       new_comms[post_id] = new_post_comms;
       return new_comms;
+    case "comments/set":
+      return action.data;
     default:
       return state;
   }

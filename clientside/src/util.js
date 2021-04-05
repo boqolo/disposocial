@@ -81,6 +81,7 @@ export function clear_errors(dispatch) {
 
 export function reset_dispo_state(dispatch) {
   dispatch({ type: "feed/set", data: [] });
+  dispatch({ type: "comments/set", data: {} });
   dispatch({ type: "popular/set", data: [] });
   dispatch({ type: "likes/set", data: [] });
   dispatch({ type: "tags/set", data: [] });

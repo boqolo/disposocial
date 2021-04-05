@@ -45,8 +45,6 @@ function JoinView({dispo, flags, dispatch}) {
     handle_join(dispo_id, params);
   }
 
-  console.log("falgs after", flags)
-
   function set_dispo_auth(id) {
     let dispo_auth_flag = `dispo_auth_${id}`;
     console.log("DISPI AUTH FLAG", dispo_auth_flag)
@@ -112,8 +110,6 @@ function JoinView({dispo, flags, dispatch}) {
 let Join = connect(({flags}) => { return {flags}})(JoinView);
 
 function Discover({session, location, local_dispos, dispatch}) {
-
-  console.log("rerender w location", location)
 
   React.useEffect(() => {
     // get my location on mount

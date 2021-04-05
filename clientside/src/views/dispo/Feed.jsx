@@ -47,8 +47,6 @@ function PostFooter({post}) {
     ch_post_comment(params, successCallback);
   }
 
-  console.log("Flags are", flags)
-
   let body;
   if (flags.post_comment_id == post.id) {
     body = (
@@ -99,9 +97,6 @@ function PostFooter({post}) {
 }
 
 function Feed({feed, comments, flags, dispatch}) {
-
-  console.log("FEED has", feed)
-  console.log("All comments", comments)
 
   return (
     <Col>
