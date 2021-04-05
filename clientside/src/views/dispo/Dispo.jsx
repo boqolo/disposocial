@@ -5,8 +5,8 @@ import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal,
 import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import store from '../../store';
-import { ch_post_post } from '../../socket';
-import { reset_dispo_state, convertDateTime, ms_to_min_s } from '../../util';
+import { ch_post_post, ch_leave_dispo } from '../../socket';
+import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
 
 
 
@@ -98,6 +98,14 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
     reset_dispo_state(dispatch);
   }
 
+  function handle_leave() {
+    ch_leave_dispo();
+    clear_errors(dispatch);
+    reset_dispo_state(dispatch);
+    dispatch({ type: "success/one", data: "Left Dispo" });
+    history.replace("/discover");
+  }
+
   return (
     <div>
       <DispoHeader />
@@ -113,6 +121,15 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
           <p>{`Based in ${curr_dispo.location?.locality}, ${curr_dispo.location?.region} near ${curr_dispo.location?.street}`}</p>
           <p><small className="text-muted">{`lat: ${curr_dispo.latitude}`}</small></p>
           <p><small className="text-muted">{`lng: ${curr_dispo.longitude}`}</small></p>
+        <div className="d-flex justify-content-center">
+            <Button
+              size="lg"
+              className="fw-lighter"
+              onClick={handle_leave}
+              variant="danger">
+              {"Leave"}
+            </Button>
+          </div>
         </Jumbotron>
       </Col>
       <Col>

@@ -111,6 +111,11 @@ let Join = connect(({flags}) => { return {flags}})(JoinView);
 
 function Discover({session, location, local_dispos, dispatch}) {
 
+  function handle_refresh() {
+    clear_errors(dispatch);
+    api_fetch_local_dispos(location);
+  }
+
   React.useEffect(() => {
     // get my location on mount
     if (!location.lat || !location.lng) {
@@ -135,7 +140,7 @@ function Discover({session, location, local_dispos, dispatch}) {
             <Col xs="auto">
               <Button
                 variant="primary"
-                onClick={() => api_fetch_local_dispos(location)}>
+                onClick={handle_refresh}>
                 {"Refresh"}
               </Button>
             </Col>

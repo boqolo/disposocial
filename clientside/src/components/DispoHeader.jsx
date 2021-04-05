@@ -14,14 +14,6 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
   console.log("Ticker msgs are", ticker)
   console.log("Info msgs are", info)
 
-  function handle_leave() {
-    ch_leave_dispo();
-    clear_errors(dispatch);
-    reset_dispo_state(dispatch);
-    dispatch({ type: "success/one", data: "Left Dispo" });
-    history.replace("/discover");
-  }
-
   function Timer({dispo_timer, dispatch}) {
     return (
       <div>
@@ -46,12 +38,6 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
           <Navbar.Toggle aria-controls="basic-Navbar-nav" />
           <Navbar.Collapse expand="md">
             <Nav>
-              <Button
-                size="lg"
-                onClick={handle_leave}
-                variant="danger">
-                {"Leave"}
-              </Button>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

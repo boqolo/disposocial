@@ -53,7 +53,7 @@ function PostFooter({post}) {
       <Form inline className="w-100" onSubmit={ev => post_comment(ev, post.id)}>
         <Form.Row className="d-flex align-items-center">
           <Col className="w-100 p-0">
-            <Form.Control type="text" placeholder="comment" /></Col>
+            <Form.Control type="text" placeholder="Comment" /></Col>
           <Col xs="auto">
             <Button
               type="submit"
