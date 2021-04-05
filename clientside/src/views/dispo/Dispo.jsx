@@ -110,7 +110,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
           <h2 className="fw-lighter">{curr_dispo.name}</h2>
           <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
           <p><strong>{`Expiring ${convertDateTime(curr_dispo.death)}`}</strong></p>
-          <p>{`Based in ${curr_dispo.location.locality}, ${curr_dispo.location. region} near ${curr_dispo.location.street}`}</p>
+          <p>{`Based in ${curr_dispo.location?.locality}, ${curr_dispo.location?.region} near ${curr_dispo.location?.street}`}</p>
           <p><small className="text-muted">{`lat: ${curr_dispo.latitude}`}</small></p>
           <p><small className="text-muted">{`lng: ${curr_dispo.longitude}`}</small></p>
         </Jumbotron>
