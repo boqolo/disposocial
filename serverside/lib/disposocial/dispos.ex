@@ -139,10 +139,12 @@ defmodule Disposocial.Dispos do
     death = Util.convertUTC!(dispo.death)
     dispo
     |> Map.take([
+        :id,
         :name,
         :location,
         :latitude,
         :longitude,
+        :is_public
         ])
     |> Map.put(:created, created)
     |> Map.put(:death, death)

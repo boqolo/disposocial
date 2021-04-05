@@ -5,6 +5,7 @@ defmodule DisposocialWeb.DispoController do
 
   alias Disposocial.Dispos
   alias Disposocial.Dispos.Dispo
+  alias Disposocial.Util
 
   action_fallback DisposocialWeb.FallbackController
 
@@ -13,7 +14,7 @@ defmodule DisposocialWeb.DispoController do
       # TODO return error
       render(conn, "one_error.json", msgs: ["Malformed data"])
     else
-      # TODO perform lookup and return results
+      # perform lookup and return results
       dispos = Dispos.get_all_near(lat, lng)
       render(conn, "index.json", dispos: dispos)
     end
@@ -24,6 +25,7 @@ defmodule DisposocialWeb.DispoController do
     render(conn, "index.json", dispos: dispos)
   end
 
+  # TODO santize input
   def create(conn, %{"dispo" => dispo_params}) do
     with {:ok, %Dispo{} = dispo} <- Dispos.create_dispo(dispo_params) do
       conn

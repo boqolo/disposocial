@@ -6,7 +6,7 @@ import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import store from '../../store';
 import { ch_post_post } from '../../socket';
-import { reset_dispo_state, convertDateTime } from '../../util';
+import { reset_dispo_state, convertDateTime, ms_to_min_s } from '../../util';
 
 
 
@@ -105,9 +105,11 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
       <Row>
       <Col xs="2">
         <Jumbotron className="rounded p-3 border-end border-bottom border-4">
-          <h2 className="fw-lighter">{curr_dispo.name}</h2>
+          <h2 className="fw-lighter text-wrap text-break">{curr_dispo.name}</h2>
           <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
           <p><strong>{`Expiring ${convertDateTime(curr_dispo.death)}`}</strong></p>
+          {curr_dispo.time_remaining &&
+            <p className="bg-warning p-1 rounded text-center">{`${ms_to_min_s(curr_dispo.time_remaining)} min left`}</p>}
           <p>{`Based in ${curr_dispo.location?.locality}, ${curr_dispo.location?.region} near ${curr_dispo.location?.street}`}</p>
           <p><small className="text-muted">{`lat: ${curr_dispo.latitude}`}</small></p>
           <p><small className="text-muted">{`lng: ${curr_dispo.longitude}`}</small></p>

@@ -83,7 +83,7 @@ defmodule Disposocial.Posts do
   def present(post) do
     post = Repo.preload(post, :user)
     username = post.user.name
-    Map.take(post, [:body, :media_hash, :user_id, :inserted_at, :comments])
+    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at, :comments])
     |> Map.put(:username, username)
   end
 

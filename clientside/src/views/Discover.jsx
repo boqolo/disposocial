@@ -123,7 +123,7 @@ function Discover({session, location, local_dispos, dispatch}) {
   }, []);
 
   React.useEffect(() => {
-    if (location.lat && location.lng) {
+    if (location.lat && location.lng && local_dispos.length < 3) {
       console.log("fetch with location", location)
       api_fetch_local_dispos(location);
     }

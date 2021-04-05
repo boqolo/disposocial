@@ -8,6 +8,11 @@ export function remove_at(arr, i) {
   return temp;
 }
 
+export function ms_to_min_s(ms) {
+  // FIXME not accurate
+  return Math.floor(ms / 60000)
+}
+
 export function convertDateTime(isoStr) {
   let dopts = {
     month: 'short',

@@ -19,5 +19,6 @@ defmodule Disposocial.Posts.Post do
     post
     |> cast(attrs, [:body, :media_hash, :user_id, :dispo_id])
     |> validate_required([:body, :user_id, :dispo_id])
+    |> validate_length(:body, min: 1)
   end
 end

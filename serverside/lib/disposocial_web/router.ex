@@ -21,10 +21,10 @@ defmodule DisposocialWeb.Router do
     resources("/session", SessionController, only: [:create])
     resources("/dispos", DispoController, except: [:new, :edit, :index])
     resources("/users", UserController, except: [:new, :edit])
-    resources("/posts", PostController, except: [:new, :edit])
-    resources("/tags", TagController, except: [:new, :edit])
-    # FIXME may not need this last route
-    resources("/reactions", ReactionController, except: [:new, :edit])
+    # resources("/posts", PostController, except: [:new, :edit])
+    # resources("/tags", TagController, except: [:new, :edit])
+    # resources("/reactions", ReactionController, except: [:new, :edit])
+    # resources "/comments", CommentController, except: [:new, :edit]
   end
 
   scope "/", DisposocialWeb do

@@ -3,6 +3,7 @@ defmodule DisposocialWeb.DispoView do
   alias DisposocialWeb.DispoView
   alias DisposocialWeb.ErrorHelpers
   alias Disposocial.Util
+  alias Disposocial.Dispos
 
   require Logger
 
@@ -15,14 +16,7 @@ defmodule DisposocialWeb.DispoView do
   end
 
   def render("dispo.json", %{dispo: dispo}) do
-    %{id: dispo.id,
-      name: dispo.name,
-      created: Util.convertUTC!(dispo.inserted_at),
-      is_public: dispo.is_public,
-      location: dispo.location,
-      latitude: dispo.latitude,
-      longitude: dispo.longitude,
-      death: dispo.death}
+    Dispos.present(dispo)
   end
 
   def render("one_error.json", %{msgs: msgs}) do
