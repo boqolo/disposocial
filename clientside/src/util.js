@@ -89,5 +89,6 @@ export function reset_dispo_state(dispatch) {
   dispatch({ type: "info/set", data: [] });
   dispatch({ type: "ticker/set", data: [] });
   dispatch({ type: "curr_dispo/set", data: {} });
+  dispatch({ type: "local_dispos/set", data: [] });
   dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
 }

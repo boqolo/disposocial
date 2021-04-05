@@ -24,22 +24,27 @@ function error_dispatch(msg) {
 
 function newposts_dispatch(resp) {
   if (resp.one) {
-    console.log("Got one new post")
+    console.log("Got one new post", resp)
     store.dispatch({ type: "feed/addone", data: resp.one });
   } else {
-    console.log("Got many new posts")
+    console.log("Got many new posts", resp)
     store.dispatch({ type: "feed/addmany", data: resp.many });
   }
 }
 
 function newcomments_dispatch(resp) {
-  console.log("Got one new comment", resp)
-  store.dispatch({ type: "comments/one", data: resp });
+  if (resp.one) {
+    console.log("Got one new comment", resp)
+    store.dispatch({ type: "comments/addone", data: resp.one });
+  } else {
+    console.log("Got many new comments", resp)
+    store.dispatch({ type: "comments/addmany", data: resp.many });
+  }
 }
 
 function handle_death(resp) {
   console.log("Got death message", resp)
-  store.dispatch({ type: "flags/dispo_dead", data: true });
+  store.dispatch({ type: "flags/setone", data: {dispo_dead: true} });
   store.dispatch({ type: "success/one", data: MSG.dispo_dead });
 }
 

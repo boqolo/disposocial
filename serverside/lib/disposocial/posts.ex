@@ -8,6 +8,7 @@ defmodule Disposocial.Posts do
 
   alias Disposocial.Posts.Post
   alias Disposocial.Reactions
+  alias Disposocial.Comments.Comment
 
   @doc """
   Returns the list of posts.
@@ -23,9 +24,18 @@ defmodule Disposocial.Posts do
   end
 
   def recent_posts(id) do
+    # Subquery based on example here: https://hexdocs.pm/ecto/Ecto.Query.html#preload/3
     q = from(p in Post, where: p.dispo_id == ^id, limit: 10, order_by: [desc: p.inserted_at], preload: [:reactions])
+
+    posts = Repo.all(q)
+    post_ids = Enum.map(posts, fn p -> p.id end)
+    Enum.zip(post_ids, Enum.map(posts, fn p -> present(p) end))
+    |> Enum.into(%{}, fn {k, v} -> {k, v} end)
+  end
+
+  def recent_post_ids(dispo_id) do
+    q = from(p in Post, where: p.dispo_id == ^dispo_id, limit: 10, order_by: [desc: p.inserted_at], select: p.id)
     Repo.all(q)
-    |> Enum.map(fn p -> present(p) end)
   end
 
   @doc """
@@ -83,7 +93,7 @@ defmodule Disposocial.Posts do
   def present(post) do
     post = Repo.preload(post, :user)
     username = post.user.name
-    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at, :comments])
+    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at])
     |> Map.put(:username, username)
   end
 

@@ -166,14 +166,12 @@ function ticker_reducer(state = [], action) {
   }
 }
 
-function feed_reducer(state = [], action) {
+function feed_reducer(state = {}, action) {
   switch (action.type) {
     case "feed/addone":
-      let new_state = [...state]
-      new_state.unshift(action.data)
-      return new_state;
+      return {...state, ...action.data};
     case "feed/addmany":
-      return action.data.concat(state);
+      return {...state, ...action.data};
     case "feed/set":
       return action.data;
     default:
@@ -183,13 +181,15 @@ function feed_reducer(state = [], action) {
 
 function comments_reducer(state = {}, action) {
   switch (action.type) {
-    case "comments/one":
+    case "comments/addone":
       let post_id = action.data.post_id;
       let post_comms = state[post_id];
-      let new_post_comms = post_comms ? post_comms.concat([action.data.data]) : [action.data.data]
+      let new_post_comms = post_comms ? [...[action.data.data], ...post_comms] : [action.data.data]
       let new_comms = {...state}
       new_comms[post_id] = new_post_comms;
       return new_comms;
+    case "comments/addmany":
+      return {...state, ...action.data};
     case "comments/set":
       return action.data;
     default:

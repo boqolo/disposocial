@@ -42,6 +42,12 @@ defmodule Disposocial.Comments do
   """
   def get_comment!(id), do: raise "TODO"
 
+  def get_post_comments(post_id) do
+    q = from c in Comment, where: c.post_id == ^post_id, order_by: [desc: c.inserted_at]
+    Repo.all(q)
+    |> Enum.map(fn comm -> present(comm) end)
+  end
+
   @doc """
   Creates a comment.
 

@@ -9,6 +9,7 @@ defmodule Disposocial.Posts.Post do
     belongs_to(:user, Disposocial.Users.User)
     belongs_to(:dispo, Disposocial.Dispos.Dispo)
     has_many(:reactions, Disposocial.Reactions.Reaction)
+    has_many(:comments, Disposocial.Comments.Comment)
     many_to_many(:tags, Disposocial.Tags.Tag, join_through: "posts-tags")
 
     timestamps(type: :utc_datetime)

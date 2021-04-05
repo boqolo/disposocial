@@ -23,16 +23,16 @@ function PostComments({postId, comments}) {
   );
 }
 
-function PostFooter({post}) {
+function PostFooterComp({postId, flags, dispatch}) {
 
-  let { flags } = store.getState();
+  console.log("Post footer post", postId)
 
   function set_commenting(post_id) {
-    store.dispatch({ type: "flags/setone", data: {post_comment_id: post_id} });
+    dispatch({ type: "flags/setone", data: {post_comment_id: post_id} });
   }
 
   function cancel_commenting() {
-    store.dispatch({ type: "flags/setone", data: {post_comment_id: undefined} });
+    dispatch({ type: "flags/setone", data: {post_comment_id: undefined} });
   }
 
   function post_comment(ev, post_id) {
@@ -48,9 +48,9 @@ function PostFooter({post}) {
   }
 
   let body;
-  if (flags.post_comment_id == post.id) {
+  if (flags.post_comment_id == postId) {
     body = (
-      <Form inline className="w-100" onSubmit={ev => post_comment(ev, post.id)}>
+      <Form inline className="w-100" onSubmit={ev => post_comment(ev, postId)}>
         <Form.Row className="d-flex align-items-center">
           <Col className="w-100 p-0">
             <Form.Control type="text" placeholder="Comment" /></Col>
@@ -82,7 +82,7 @@ function PostFooter({post}) {
         <Button
           variant="outline-success"
           size="sm"
-          onClick={() => set_commenting(post.id)}>
+          onClick={() => set_commenting(postId)}>
           {"Comment"}
         </Button>
       </div>
@@ -96,33 +96,39 @@ function PostFooter({post}) {
   );
 }
 
-function Feed({feed, comments, flags, dispatch}) {
+let PostFooter = connect(({flags}) => { return {flags} })(PostFooterComp);
+
+function Feed({feed, comments, dispatch}) {
+
+  console.log("Feed has", feed)
+
+  let desc = (x, y) => x > y ? x : y;
 
   return (
     <Col>
-      {feed.map((post, i) =>
-        <Row key={`post-${i}`}>
+      {Object.keys(feed).sort(desc).map((post_id) =>
+        <Row key={`post-${post_id}`}>
           <Card className="rounded p-0">
             <Row className="align-items-center px-3">
-              <Col><h3 className="fw-lighter">{post.username}</h3></Col>
+              <Col><h3 className="fw-lighter">{feed[post_id].username}</h3></Col>
               <Col xs="auto">
-                <p className="fw-lighter fs-6 m-0">{convertDateTime(post.inserted_at)}
+                <p className="fw-lighter fs-6 m-0">{convertDateTime(feed[post_id].inserted_at)}
                 </p>
                 <blockquote className="text-muted m-0">{"Reaction count"}</blockquote>
               </Col>
             </Row>
-            <Card.Body className="text-wrap text-break">{post.body}</Card.Body>
-            <PostFooter post={post} />
-            {comments[post.id] &&
-              <PostComments postId={post.id} comments={comments[post.id]} />}
+            <Card.Body className="text-wrap text-break">{feed[post_id].body}</Card.Body>
+            <PostFooter postId={post_id} />
+            {comments[post_id] &&
+              <PostComments postId={post_id} comments={comments[post_id]} />}
           </Card>
         </Row>)}
     </Col>
   );
 }
 
-function state_to_props({feed, comments, flags}) {
-  return {feed, comments, flags};
+function state_to_props({feed, comments}) {
+  return {feed, comments};
 }
 
 export default connect(state_to_props)(Feed);

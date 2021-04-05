@@ -30,6 +30,14 @@ defmodule Disposocial.DispoServer do
     GenServer.call(registry(id), :get_dispo)
   end
 
+  def get_recent_posts(id) do
+    GenServer.call(registry(id), :get_recent_posts)
+  end
+
+  def get_recent_comments(id) do
+    GenServer.call(registry(id), :get_recent_comments)
+  end
+
   def post_post(id, attrs) do
     GenServer.call(registry(id), {:post_post, attrs})
   end
@@ -88,10 +96,29 @@ defmodule Disposocial.DispoServer do
   end
 
   @impl true
+  def handle_call(:get_recent_posts, _from, state) do
+    posts = Posts.recent_posts(state.id)
+    Logger.debug("GET RECENT POSS --> #{inspect(posts)}")
+    {:reply, posts, state}
+  end
+
+  @impl true
+  def handle_call(:get_recent_comments, _from, state) do
+    post_ids = Posts.recent_post_ids(state.id)
+    comms =
+      for post_id <- post_ids, into: %{} do
+        {post_id, Comments.get_post_comments(post_id)}
+      end
+      |> Enum.reject(fn {k, v} -> v == [] end)
+      |> Enum.into(%{})
+
+    {:reply, comms, state}
+  end
+
+  @impl true
   def handle_call({:post_post, attrs}, _from, state) do
     case Posts.create_post(attrs) do
-      # NOTE potentially too much memory to keep preloading??
-      {:ok, post} -> {:reply, {:ok, Posts.present(post)}, Repo.preload(state, [:posts])}
+      {:ok, post} -> {:reply, {:ok, Posts.present(post)}, state}
       {:error, chgset} -> {:reply, {:error, chgset}, state}
     end
   end

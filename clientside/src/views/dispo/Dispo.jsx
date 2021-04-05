@@ -93,17 +93,17 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
   let { dispoId } = useParams();
   let history = useHistory();
 
-  if (flags.dispo_dead) {
-    history.replace("/");
-    reset_dispo_state(dispatch);
-  }
-
   function handle_leave() {
     ch_leave_dispo();
     clear_errors(dispatch);
     reset_dispo_state(dispatch);
     dispatch({ type: "success/one", data: "Left Dispo" });
     history.replace("/discover");
+  }
+
+  if (flags.dispo_dead) {
+    store.dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
+    handle_leave();
   }
 
   return (

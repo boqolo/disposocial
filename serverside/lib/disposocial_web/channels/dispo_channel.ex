@@ -41,7 +41,12 @@ defmodule DisposocialWeb.DispoChannel do
     push(socket, "dispo_meta", %{data: dispo})
     push(socket, "doormat", %{data: "#{user_name} joined."})
     push(socket, "info", %{data: "Welcome to the #{dispo.name} Dispo!"})
-    push(socket, "new_posts", %{many: Posts.recent_posts(dispo_id)})
+    push(socket, "new_posts", %{many: DispoServer.get_recent_posts(dispo_id)})
+    push(
+      socket,
+      "new_comments",
+      %{many: DispoServer.get_recent_comments(dispo_id)}
+    )
 
     {:noreply, socket}
   end
@@ -61,7 +66,7 @@ defmodule DisposocialWeb.DispoChannel do
 
     case DispoServer.post_post(socket.assigns.curr_dispo_id, attrs) do
       {:ok, post} ->
-        broadcast!(socket, "new_posts", %{one: post})
+        broadcast!(socket, "new_posts", %{one: %{post.id => post}})
         {:reply, :ok, socket}
       {:error, errors} -> {
         :reply,
@@ -76,13 +81,16 @@ defmodule DisposocialWeb.DispoChannel do
     attrs = %{
       body: Util.escapeInput(body),
       user_id: socket.assigns.current_user.id,
-      post_id: Util.escapeInput(post_id)
+      post_id: post_id
     }
+
+    Logger.debug("POSTING COMMET WIT --> #{inspect(attrs)}")
 
 
     case DispoServer.post_comment(socket.assigns.curr_dispo_id, attrs) do
       {:ok, comment} ->
-        broadcast!(socket, "new_comments", %{post_id: post_id, data: comment})
+        payload = %{post_id: post_id, data: comment}
+        broadcast!(socket, "new_comments", %{one: payload})
         {:reply, :ok, socket}
       {:error, errors} -> {
         :reply,
