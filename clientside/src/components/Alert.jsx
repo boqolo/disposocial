@@ -24,17 +24,16 @@ export default function HeaderAlert({i, msg, group, success, error, info}) {
   console.log("alert with", variant, group, msg, msgs)
 
   return (
-    <Alert className="mb-2 p-1 px-3 align-items-center d-flex flex-row" variant={`${variant}`}>
+    <Alert className="mb-1 p-1 px-3 align-items-center d-flex flex-row" variant={`${variant}`}>
       <Col>{msg}</Col>
       <Col xs="auto">
         <Button
           size="sm"
           variant={`outline-${variant}`}
-          className="text-decoration-none border-0"
+          className={`text-${variant} border-0 btn-close`}
           onClick={() => {
             store.dispatch({ type: `${group}/set`, data: remove_at(msgs, i) })
           }}>
-          {"X"}
         </Button>
       </Col>
     </Alert>

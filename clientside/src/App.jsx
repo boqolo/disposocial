@@ -13,7 +13,7 @@ import Default from "./views/404.jsx";
 function App() {
 
   return (
-    <Container className="bg-light shadow-light rounded">
+    <Container className="bg-light">
       <Switch>
         <Route path="/" exact>
           <Home />

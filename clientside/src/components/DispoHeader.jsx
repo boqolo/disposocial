@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Container, Row, Col, Button } from "react-bootstrap";
+import { Alert, Container, Row, Col, Button, Navbar, Nav  } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import { Leader } from './Text';
@@ -36,38 +36,27 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
 
   return (
     <div>
-      <Row className="m-0 p-0">
-        <Col xs="auto" className="d-flex p-0 flex-row align-items-center">
-          <h3 className="display-5 text-muted fw-lighter w-auto">
-            Disposocial
-          </h3>
-        </Col>
-        <Col className="p-0 mx-4">
-          <Container className="bg-primary h-100">
-            <Container className="bg-light px-0 py-3 h-100 w-100">
-              <div
-                id="ticker"
-                data-role="marquee">
-                {ticker.map((msg, i) =>
-                  <div key={`tick-${i}`}>
-                    {msg}
-                  </div>)}
-                </div>
-              </Container>
-            </Container>
-        </Col>
-        <Col className="p0" xs="auto">
-        </Col>
-        <Col xs="auto" className="p-0 d-flex align-items-center">
-          <Button
-            size="lg"
-            onClick={handle_leave}
-            variant="danger">
-            {"Leave"}
-          </Button>
-        </Col>
-      </Row>
-      <Col className="mt-3 mx-auto w-75">
+      <Container className="bg-primary">
+        <Navbar bg="light" expand="lg" className="px-3">
+          <Navbar.Brand>
+            <h3 className="display-5 text-muted fw-lighter w-auto">
+              Disposocial
+            </h3>
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-Navbar-nav" />
+          <Navbar.Collapse expand="md">
+            <Nav>
+              <Button
+                size="lg"
+                onClick={handle_leave}
+                variant="danger">
+                {"Leave"}
+              </Button>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+      </Container>
+      <Col className="mt-1 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
           <HeaderAlert key={`succ-${i}`} i={i} msg={msg} success={success} group="success" />)}
         {error.length > 0 && error.map((msg, i) =>

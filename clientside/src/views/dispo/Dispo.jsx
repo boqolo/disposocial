@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Link, useRouteMatch, useHistory, useParams, useLocation } from 'react-router-dom';
-import { Tabs, Form, Tab, Navbar, Col, Row, Container, Button, Modal } from 'react-bootstrap';
+import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal, Jumbotron } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import store from '../../store';
 import { ch_post_post } from '../../socket';
-import { reset_dispo_state } from '../../util';
+import { reset_dispo_state, convertDateTime } from '../../util';
 
 
 
@@ -41,6 +41,12 @@ function PostingView({show}) {
     //   close();
     // }
   }
+
+  // function pressedEnter(ev) {
+  //   if (show && ev.key === "Enter") {
+  //     handle_post(ev);
+  //   }
+  // }
 
   return (
     <Modal show={show} onHide={close}>
@@ -81,7 +87,7 @@ function PostingView({show}) {
   );
 }
 
-function Dispo({session, flags, dispatch}) {
+function Dispo({session, curr_dispo, tags, flags, dispatch}) {
 
   let { url } = useRouteMatch();
   let { pathname } = useLocation();
@@ -99,44 +105,58 @@ function Dispo({session, flags, dispatch}) {
       <DispoHeader />
       <PostingView show={flags.posting} />
       <Row>
-        <Col>
-          <Tabs
-            activeKey={pathname}
-            onSelect={path => history.push(path)}
-            className="w-100 display-4 bg-light rounded my-2">
-            <Tab eventKey={url} title="Live">
-              <Feed />
-            </Tab>
-            <Tab eventKey={`${url}/popular`} title="Popular">
-              <h1>Popular</h1>
-            </Tab>
-            <Tab eventKey={`${url}/mine`} title="Mine">
-              <h1>Mine</h1>
-            </Tab>
-          </Tabs>
-          <Navbar fixed="bottom" variant="light" bg="light">
-            <Container className="py-5 justify-content-end d-flex flex-end">
-              <Button
-                variant="primary"
-                className="fs-1"
-                size="lg"
-                onClick={() => dispatch({ type: "flags/setone", data: {posting: true} })}>
-                {"Post"}
-              </Button>
-            </Container>
-          </Navbar>
-        </Col>
-        <Col xs="2" className="d-flex align-items-start">
-          <h1 className="fw-lighter">Tags</h1>
-        </Col>
-      </Row>
+      <Col xs="2">
+        <Jumbotron className="rounded p-3 border-end border-bottom border-4">
+          <h2 className="fw-lighter">{curr_dispo.name}</h2>
+          <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
+          <p><strong>{`Expiring ${convertDateTime(curr_dispo.death)}`}</strong></p>
+          <p>{`Based in ${curr_dispo.location.locality}, ${curr_dispo.location. region} near ${curr_dispo.location.street}`}</p>
+          <p><small className="text-muted">{`lat: ${curr_dispo.latitude}`}</small></p>
+          <p><small className="text-muted">{`lng: ${curr_dispo.longitude}`}</small></p>
+        </Jumbotron>
+      </Col>
+      <Col>
+        <Tabs
+          activeKey={pathname}
+          onSelect={path => history.push(path)}
+          className="w-100 display-6 rounded my-2">
+          <Tab eventKey={url} title="Live">
+            <Feed />
+          </Tab>
+          <Tab eventKey={`${url}/popular`} title="Popular">
+            <h1>Popular</h1>
+          </Tab>
+          <Tab eventKey={`${url}/mine`} title="Mine">
+            <h1>Mine</h1>
+          </Tab>
+        </Tabs>
+      </Col>
+      <Col xs="2" className="d-flex flex-column align-items-start">
+        <Row className="w-100 mb-5">
+          <Button
+            variant="primary"
+            size="lg"
+            className="fw-lighter fs-4"
+            onClick={() => dispatch({ type: "flags/setone", data: {posting: true} })}>
+            Post
+          </Button>
+        </Row>
+        <Row className="w-100">
+          <h2 className="fw-lighter">Tags</h2>
+          <ListGroup>
+            {tags.map((tag, i) =>
+              <ListGroup.Item key={`tag-${i}`} action>{JSON.stringify(tag)}</ListGroup.Item>)}
+          </ListGroup>
+        </Row>
+      </Col>
+    </Row>
     </div>
   );
 
 }
 
-function state_to_props({session, flags}) {
-  return {session, flags};
+function state_to_props({session, curr_dispo, tags, flags}) {
+  return {session, curr_dispo, tags, flags};
 }
 
 export default connect(state_to_props)(Dispo);

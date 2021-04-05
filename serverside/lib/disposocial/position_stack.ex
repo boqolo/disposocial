@@ -20,7 +20,7 @@ defmodule Disposocial.PositionStack do
       relevant = [
         "country_code",
         "region",
-        "name",
+        # maybe too specific "name",
         "locality",
         "neighbourhood",
         "street",

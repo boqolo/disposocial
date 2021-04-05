@@ -52,7 +52,7 @@ function Header({session, error, info, success, dispatch}) {
           </Navbar.Collapse>
         </Navbar>
       </Container>
-      <Col className="mt-3 mx-auto w-75">
+      <Col className="mt-1 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
           <HeaderAlert key={`succ-${i}`} i={i} msg={msg} success={success} group="success" />)}
         {info.length > 0 && info.map((msg, i) =>
