@@ -11,8 +11,6 @@ import { convertDateTime, getMyLocation, clear_errors } from '../util';
 
 function None({session}) {
 
-  console.log("session is", session);
-
   return (
     <div>
       <h2>{"None found in your location"}</h2>

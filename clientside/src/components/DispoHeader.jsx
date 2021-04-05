@@ -19,7 +19,7 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
     clear_errors(dispatch);
     reset_dispo_state(dispatch);
     dispatch({ type: "success/one", data: "Left Dispo" });
-    history.replace("/");
+    history.replace("/discover");
   }
 
   function Timer({dispo_timer, dispatch}) {

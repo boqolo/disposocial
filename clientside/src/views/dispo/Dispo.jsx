@@ -56,14 +56,12 @@ function PostingView({show}) {
       <Form onSubmit={handle_post}>
         <Modal.Body>
           <Form.Group>
-            <div className="form-floating">
-              <Form.Control
-                type="text"
-                as="textarea"
-                placeholder="What to say..."
-                />
-              <Form.Label>{"What to say..."}</Form.Label>
-            </div>
+            <Form.Control
+              type="text"
+              as="textarea"
+              rows={3}
+              placeholder="What to say..."
+              />
           </Form.Group>
           <Form.Group>
             <div className="form-floating">

@@ -12,7 +12,6 @@ function Header({session, error, info, success, dispatch}) {
   let history = useHistory();
 
   let localStorage = window.localStorage;
-  console.log("Page header has session", JSON.stringify(session, null, 2));
 
   function handle_logout() {
     dispatch({ type: "session/set", data: {} });

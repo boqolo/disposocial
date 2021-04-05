@@ -39,7 +39,6 @@ function Index({session, dispatch}) {
   let { path, url } = useRouteMatch();
 
   console.log('Got dispo path', path);
-  console.log("Dispo Index session is", session);
 
   return (
     <Switch>
