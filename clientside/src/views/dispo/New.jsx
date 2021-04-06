@@ -14,7 +14,7 @@ import PageHeader from "../../components/PageHeader.jsx";
 import { Leader } from '../../components/Text';
 import { api_create_dispo } from '../../api';
 import { ch_join_dispo } from '../../socket';
-import { getMyLocation } from '../../util';
+import { getMyLocation, clear_errors } from '../../util';
 
 function New({session, location, flags, dispatch}) {
 
@@ -57,8 +57,9 @@ function New({session, location, flags, dispatch}) {
     let created = (id) => {
       let redirect = () => {
         history.replace(`/dispo/${id}`);
-        dispatch({ type: "success/setone", data: "Dispo created" });
+        dispatch({ type: "success/one", data: "Dispo created" });
       };
+      clear_errors(dispatch);
       ch_join_dispo(id, redirect);
     };
 
