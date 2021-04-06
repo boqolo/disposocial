@@ -40,10 +40,10 @@ defmodule Disposocial.Comments do
       %Comment{}
 
   """
-  def get_comment!(id), do: raise "TODO"
+  def get_comment!(id), do: Repo.get!(Comment, id)
 
   def get_post_comments(post_id) do
-    q = from c in Comment, where: c.post_id == ^post_id, order_by: [desc: c.inserted_at]
+    q = from c in Comment, where: c.post_id == ^post_id, order_by: [asc: c.inserted_at]
     Repo.all(q)
     |> Enum.map(fn comm -> present(comm) end)
   end
@@ -95,7 +95,26 @@ defmodule Disposocial.Comments do
 
   """
   def delete_comment(%Comment{} = comment) do
-    raise "TODO"
+    Repo.delete(comment)
+  end
+
+  def delete_post_comments(post_id) do
+    q = from(c in Comment, where: c.post_id == ^post_id)
+    Repo.delete_all(q)
+  end
+
+  def delete_comments_and_remnants(post_ids) do
+    deleter = fn post_id, acc ->
+      with {num_deleted, _} <- delete_post_comments(post_id) do
+        acc + num_deleted
+      end
+    end
+
+    total_deleted =
+      post_ids
+      |> Enum.reduce(0, deleter)
+
+    {:ok, total_deleted}
   end
 
   @doc """

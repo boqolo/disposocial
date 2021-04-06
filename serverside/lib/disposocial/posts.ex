@@ -8,6 +8,7 @@ defmodule Disposocial.Posts do
 
   alias Disposocial.Posts.Post
   alias Disposocial.Reactions
+  alias Disposocial.Comments
   alias Disposocial.Comments.Comment
 
   @doc """
@@ -115,12 +116,14 @@ defmodule Disposocial.Posts do
 
   def delete_posts_and_remnants(dispo_id) do
     q = from(p in Post, where: p.dispo_id == ^dispo_id)
-    post_ids = Repo.all(select(q, [:id]))
-    case Repo.delete_all(q) do
-      {:ok, _} ->
-        # TODO Comments.delete_comments_and_remnants(post_ids)
-        Reactions.delete_post_reactions(post_ids)
-      error -> error
+    post_ids = Repo.all(from(p in Post, where: p.dispo_id == ^dispo_id, select: p.id))
+
+    # TODO
+    # Reactions.delete_post_reactions(post_ids)
+
+    with({:ok, num_comm_deleted} <- Comments.delete_comments_and_remnants(post_ids),
+      {num_post_deleted, _} <- Repo.delete_all(q)) do
+        {:ok, num_post_deleted, num_comm_deleted}
     end
   end
 

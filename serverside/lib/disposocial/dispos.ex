@@ -268,10 +268,10 @@ defmodule Disposocial.Dispos do
   end
 
   def delete_dispo_and_remnants(id) do
-    q = from(d in Dispo, where: d.id == ^id)
-    case Repo.delete_all(q) do
-      {:ok, _} -> Posts.delete_posts_and_remnants(id)
-      error -> error
+    dispo = get_dispo!(id)
+    with({:ok, num_post_deleted, num_comm_deleted} <- Posts.delete_posts_and_remnants(id)) do
+        delete_dispo(dispo)
+        {:ok, dispo.id, dispo.name, num_post_deleted, num_comm_deleted}
     end
   end
 
