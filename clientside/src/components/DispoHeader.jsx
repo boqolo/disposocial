@@ -29,7 +29,7 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
   return (
     <div className="mb-4">
       <Container className="bg-primary">
-        <Navbar bg="light" expand="lg" className="px-3">
+        <Navbar bg="light" expand="md" className="px-3">
           <Navbar.Brand>
             <h3 className="display-5 text-muted fw-lighter w-auto">
               Disposocial

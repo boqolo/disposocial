@@ -25,14 +25,14 @@ function Header({session, error, info, success, dispatch}) {
     return (
       <div>
         <Container className="bg-primary">
-          <Navbar bg="light" className="bd-blue-100" variant="light" className="p-3">
+          <Navbar bg="light" expand="md" className="bd-blue-100" variant="light" className="p-3">
             <Navbar.Brand>
               <Link to="/" className="text-decoration-none">
                 <h5 className="display-5 fw-lighter">Disposocial</h5>
               </Link>
             </Navbar.Brand>
           <Navbar.Text>{"disposable social media"}</Navbar.Text>
-          <Navbar.Toggle />
+          <Navbar.Toggle aria-controls="basic-Navbar-nav" />
           <Navbar.Collapse className="justify-content-end">
             <Nav activeKey={path} className="mr-auto">
               <Link className="text-decoration-none text-muted mx-3" to="/discover">Discover</Link>

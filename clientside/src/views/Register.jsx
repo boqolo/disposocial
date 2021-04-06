@@ -13,7 +13,8 @@ import {
   Form,
   FormControl,
   InputGroup,
-  Button
+  Button,
+  Col 
 } from 'react-bootstrap';
 import PageHeader from '../components/PageHeader.jsx';
 import { Leader } from '../components/Text';
@@ -89,7 +90,7 @@ function Register({acct_form, dispatch}) {
   return (
     <div>
       <PageHeader />
-      <div className="w-50 mx-auto">
+      <Col xs="11" md="7" lg="5" className="mx-auto">
         <Form onSubmit={handleSubmit}>
           <Leader>Register</Leader>
           <Form.Group className="mb-3">
@@ -138,7 +139,7 @@ function Register({acct_form, dispatch}) {
 
         </Form>
 
-      </div>
+      </Col>
     </div>
   );
 

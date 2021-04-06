@@ -6,7 +6,8 @@ import { Leader } from '../components/Text';
 import {
   Form,
   FormControl,
-  Button
+  Button,
+  Col
 } from 'react-bootstrap';
 import { api_auth } from '../api';
 
@@ -81,7 +82,7 @@ function Login({acct_form, dispatch}) {
   return (
     <div>
       <PageHeader />
-      <div className="w-50 mx-auto">
+      <Col xs="11" md="7" lg="5" className="mx-auto">
         <Form onSubmit={handleSubmit}>
           <Leader>Log in</Leader>
           <Form.Group className="mb-3">
@@ -115,7 +116,7 @@ function Login({acct_form, dispatch}) {
 
         </Form>
 
-      </div>
+      </Col>
     </div>
   );
 

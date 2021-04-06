@@ -133,7 +133,7 @@ function Discover({session, location, local_dispos, dispatch}) {
   return (
     <div>
       <PageHeader />
-      <Col className="w-50 mx-auto">
+      <Col xs="11" md="7" lg="5" className="mx-auto">
         <div className="mb-3">
           <Row className="d-flex flex-row justify-content-between align-items-center">
             <Col><Leader>{"Around me"}</Leader></Col>
@@ -168,7 +168,7 @@ function Discover({session, location, local_dispos, dispatch}) {
                   <small className="fw-lighter text-muted text-decoration-underline">
                     {`Expiring ${convertDateTime(dispo.death)}`}
                   </small>
-                  <Row className="mb-2">
+                  <Row className="my-2">
                     <Col>
                       <Card.Text className="fw-light">
                         <div>{`Based in ${dispo.location.locality}, ${dispo.location.region}`}</div>
