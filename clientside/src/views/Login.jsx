@@ -84,7 +84,7 @@ function Login({acct_form, dispatch}) {
       <div className="w-50 mx-auto">
         <Form onSubmit={handleSubmit}>
           <Leader>Log in</Leader>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <div className="form-floating">
               <FormControl
                 type="text"

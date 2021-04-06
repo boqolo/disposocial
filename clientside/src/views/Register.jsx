@@ -92,7 +92,7 @@ function Register({acct_form, dispatch}) {
       <div className="w-50 mx-auto">
         <Form onSubmit={handleSubmit}>
           <Leader>Register</Leader>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <div className="form-floating">
               <FormControl
                 type="name"
@@ -104,7 +104,7 @@ function Register({acct_form, dispatch}) {
             </div>
           </Form.Group>
 
-          <Form.Group>
+          <Form.Group className="mb-3">
             <div className="form-floating">
               <Form.Control
                 type="email"

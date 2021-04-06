@@ -50,11 +50,12 @@ function PostFooterComp({postId, flags, dispatch}) {
   let body;
   if (flags.post_comment_id == postId) {
     body = (
-      <Form inline className="w-100" onSubmit={ev => post_comment(ev, postId)}>
+      <Form inline className="w-100 p-1" onSubmit={ev => post_comment(ev, postId)}>
         <Form.Row className="d-flex align-items-center">
           <Col className="w-100 p-0">
-            <Form.Control type="text" placeholder="Comment" /></Col>
-          <Col xs="auto">
+            <Form.Control type="text"
+              size="sm" placeholder="Comment" /></Col>
+            <Col xs="auto" className="ps-2">
             <Button
               type="submit"
               variant="primary"
@@ -70,7 +71,7 @@ function PostFooterComp({postId, flags, dispatch}) {
     );
   } else {
     body = (
-      <div>
+      <div className="p-1">
         <Link to={"#"} className="me-2">
           <Button
             variant="outline-primary"
@@ -90,7 +91,7 @@ function PostFooterComp({postId, flags, dispatch}) {
   }
 
   return (
-    <Card.Footer className="py-0 px-3 h-0">
+    <Card.Footer className="py-0 px-2 h-0">
       {body}
     </Card.Footer>
   );
@@ -107,7 +108,7 @@ function Feed({feed, comments, dispatch}) {
   return (
     <Col>
       {Object.keys(feed).sort(desc).map((post_id) =>
-        <Row key={`post-${post_id}`}>
+        <Row key={`post-${post_id}`} className="mx-0">
           <Card className="rounded p-0">
             <Row className="align-items-center px-3">
               <Col><h3 className="fw-lighter">{feed[post_id].username}</h3></Col>

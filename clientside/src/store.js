@@ -184,7 +184,7 @@ function comments_reducer(state = {}, action) {
     case "comments/addone":
       let post_id = action.data.post_id;
       let post_comms = state[post_id];
-      let new_post_comms = post_comms ? [...[action.data.data], ...post_comms] : [action.data.data]
+      let new_post_comms = post_comms ? [...post_comms, ...[action.data.data]] : [action.data.data]
       let new_comms = {...state}
       new_comms[post_id] = new_post_comms;
       return new_comms;

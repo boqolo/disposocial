@@ -27,7 +27,7 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
   })(Timer);
 
   return (
-    <div>
+    <div className="mb-4">
       <Container className="bg-primary">
         <Navbar bg="light" expand="lg" className="px-3">
           <Navbar.Brand>

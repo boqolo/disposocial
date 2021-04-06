@@ -111,7 +111,7 @@ function New({session, location, flags, dispatch}) {
         </Row>
 
         <Form onSubmit={handleSubmit}>
-          <Form.Group>
+          <Form.Group className="my-3">
             <div className="form-floating">
               <FormControl
                 type="name"
@@ -122,7 +122,7 @@ function New({session, location, flags, dispatch}) {
             </div>
           </Form.Group>
 
-          <Form.Group>
+          <Form.Group className="mb-3">
             <div className="form-floating">
               <Form.Control as="select" defaultValue="1">
                 <option value="0.10">{"6 minutes"}</option>

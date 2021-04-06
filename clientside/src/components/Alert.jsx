@@ -24,7 +24,7 @@ export default function HeaderAlert({i, msg, group, success, error, info}) {
   console.log("alert with", variant, group, msg, msgs)
 
   return (
-    <Alert className="mb-1 p-1 px-3 align-items-center d-flex flex-row" variant={`${variant}`}>
+    <Alert className="mb-3 p-2 px-3 align-items-center d-flex flex-row" variant={`${variant}`}>
       <Col>{msg}</Col>
       <Col xs="auto">
         <Button

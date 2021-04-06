@@ -55,7 +55,7 @@ function PostingView({show}) {
       </Modal.Header>
       <Form onSubmit={handle_post}>
         <Modal.Body>
-          <Form.Group>
+          <Form.Group className="mb-3">
             <Form.Control
               type="text"
               as="textarea"
@@ -111,7 +111,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
       <DispoHeader />
       <PostingView show={flags.posting} />
       <Row>
-      <Col xs="2">
+      <Col xs="4" md="3">
         <Jumbotron className="rounded p-3 border-end border-bottom border-4 shadow-sm">
           <h2 className="fw-lighter text-wrap text-break">{curr_dispo.name}</h2>
           <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
@@ -148,7 +148,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
           </Tab>
         </Tabs>
       </Col>
-      <Col xs="2" className="d-flex flex-column align-items-start">
+      <Col xs="3" md="2" className="d-flex flex-column align-items-start">
         <Row className="w-100 mb-5">
           <Button
             variant="primary"
