@@ -16,5 +16,7 @@ defmodule Disposocial.Reactions.Reaction do
     reaction
     |> cast(attrs, [:value, :user_id, :post_id])
     |> validate_required([:value, :user_id, :post_id])
+    |> foreign_key_constraint(:post_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

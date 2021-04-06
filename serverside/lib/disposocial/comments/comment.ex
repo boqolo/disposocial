@@ -18,5 +18,7 @@ defmodule Disposocial.Comments.Comment do
     |> cast(attrs, [:body, :score, :user_id, :post_id])
     |> validate_required([:body, :user_id, :post_id])
     |> validate_length(:body, min: 1)
+    |> foreign_key_constraint(:post_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

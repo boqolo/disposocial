@@ -24,5 +24,6 @@ defmodule Disposocial.Dispos.Dispo do
     |> cast(attrs, [:name, :location, :latitude, :longitude, :is_public, :password_hash, :death, :user_id])
     |> validate_required([:name, :latitude, :is_public, :longitude, :death, :user_id])
     |> validate_length(:name, min: 4, max: 20)
+    |> foreign_key_constraint(:user_id)
   end
 end

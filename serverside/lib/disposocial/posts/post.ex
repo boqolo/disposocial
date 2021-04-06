@@ -21,5 +21,7 @@ defmodule Disposocial.Posts.Post do
     |> cast(attrs, [:body, :media_hash, :user_id, :dispo_id])
     |> validate_required([:body, :user_id, :dispo_id])
     |> validate_length(:body, min: 1)
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:dispo_id)
   end
 end

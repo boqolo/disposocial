@@ -15,5 +15,6 @@ defmodule Disposocial.Tags.Tag do
     tag
     |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> foreign_key_constraint(:dispo_id)
   end
 end
