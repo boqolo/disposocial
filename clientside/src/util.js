@@ -79,6 +79,12 @@ export function clear_errors(dispatch) {
   dispatch({ type: "error/set", data: [] });
 }
 
+export function clear_messages(dispatch) {
+  clear_errors(dispatch);
+  dispatch({ type: "success/set", data: [] });
+  dispatch({ type: "info/set", data: [] });
+}
+
 export function reset_dispo_state(dispatch) {
   dispatch({ type: "feed/set", data: [] });
   dispatch({ type: "comments/set", data: {} });

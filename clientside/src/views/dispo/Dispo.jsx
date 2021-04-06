@@ -112,15 +112,15 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
       <PostingView show={flags.posting} />
       <Row>
       <Col xs="2">
-        <Jumbotron className="rounded p-3 border-end border-bottom border-4">
+        <Jumbotron className="rounded p-3 border-end border-bottom border-4 shadow-sm">
           <h2 className="fw-lighter text-wrap text-break">{curr_dispo.name}</h2>
           <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
           <p><strong>{`Expiring ${convertDateTime(curr_dispo.death)}`}</strong></p>
           {curr_dispo.time_remaining &&
-            <p className="bg-warning p-1 rounded text-center">{`${ms_to_min_s(curr_dispo.time_remaining)} min left`}</p>}
+            <p className="bg-warning p-1 rounded text-center text-wrap">{`~${ms_to_min_s(curr_dispo.time_remaining)} min left`}</p>}
           <p>{`Based in ${curr_dispo.location?.locality}, ${curr_dispo.location?.region} near ${curr_dispo.location?.street}`}</p>
-          <p><small className="text-muted">{`lat: ${curr_dispo.latitude}`}</small></p>
-          <p><small className="text-muted">{`lng: ${curr_dispo.longitude}`}</small></p>
+        <p><small className="text-muted text-wrap">{`lat: ${curr_dispo.latitude}`}</small></p>
+      <p><small className="text-muted text-wrap">{`lng: ${curr_dispo.longitude}`}</small></p>
         <div className="d-flex justify-content-center">
             <Button
               size="lg"

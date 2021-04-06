@@ -157,7 +157,7 @@ defmodule Disposocial.DispoServer do
     # self destruct
     Endpoint.broadcast!("dispo:#{to_string(state.id)}", "angel_of_death", %{})
     status = Dispos.delete_dispo_and_remnants(state.id)
-    Logger.notice(inspect(status))
+    Logger.notice("Dispo Deleted --> #{inspect(status)}")
     # Goodbye
     {:stop, :normal, state}
   end
@@ -165,7 +165,7 @@ defmodule Disposocial.DispoServer do
   @impl true
   def terminate(:normal, state) do
     # The final stand
-    Logger.info("DispoServer #{inspect(self())} died peacefully with state --> #{inspect(state)}")
+    Logger.info("DispoServer #{inspect(self())} died peacefully with state --> #{inspect(Dispos.present(state))}")
   end
 
   @impl true

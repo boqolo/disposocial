@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import store from '../store';
 import { api_fetch_local_dispos } from '../api';
 import { ch_join_dispo } from '../socket';
-import { convertDateTime, getMyLocation, clear_errors } from '../util';
+import { convertDateTime, getMyLocation, clear_errors, clear_messages } from '../util';
 
 function None({session}) {
 
@@ -112,7 +112,7 @@ let Join = connect(({flags}) => { return {flags}})(JoinView);
 function Discover({session, location, local_dispos, dispatch}) {
 
   function handle_refresh() {
-    clear_errors(dispatch);
+    clear_messages(dispatch);
     api_fetch_local_dispos(location);
   }
 
@@ -159,13 +159,33 @@ function Discover({session, location, local_dispos, dispatch}) {
             local_dispos.map((dispo, i) =>
             <Row key={`disp-${dispo.id}`}>
               <Card
-                className="p-4 mb-3">
-                <Card.Title>{dispo.name}</Card.Title>
-                <Card.Subtitle className="mb-3 text-muted">
-                  {convertDateTime(dispo.created)}
-                </Card.Subtitle>
-                {session?.user_id &&
-                  <Join dispo={dispo} />}
+                className="p-1 mb-3 rounded shadow-sm">
+                <Card.Body>
+                  <Card.Title className="fw-light">{dispo.name}</Card.Title>
+                  <Card.Subtitle className="mb-1 fw-lighter text-muted">
+                    {`Created ${convertDateTime(dispo.created)}`}
+                  </Card.Subtitle>
+                  <small className="fw-lighter text-muted text-decoration-underline">
+                    {`Expiring ${convertDateTime(dispo.death)}`}
+                  </small>
+                  <Row className="mb-2">
+                    <Col>
+                      <Card.Text className="fw-light">
+                        <div>{`Based in ${dispo.location.locality}, ${dispo.location.region}`}</div>
+                        <div>{`Near ${dispo.location.street}`}
+                        </div>
+                      </Card.Text>
+                    </Col>
+                    <Col xs="auto">
+                      <Card.Text>
+                        <div><small className="text-muted text-wrap">{`lat: ${dispo.latitude}`}</small></div>
+                        <div><small className="text-muted text-wrap">{`lng: ${dispo.longitude}`}</small></div>
+                      </Card.Text>
+                    </Col>
+                  </Row>
+                  {session?.user_id &&
+                    <Join dispo={dispo} />}
+                </Card.Body>
               </Card>
             </Row>) :
           location.lat && location.lng && <None session={session} />}
