@@ -156,7 +156,8 @@ defmodule Disposocial.DispoServer do
   def handle_info(:death, state) do
     # self destruct
     Endpoint.broadcast!("dispo:#{to_string(state.id)}", "angel_of_death", %{})
-    Dispos.delete_dispo_and_remnants(state.id)
+    status = Dispos.delete_dispo_and_remnants(state.id)
+    Logger.notice(inspect(status))
     # Goodbye
     {:stop, :normal, state}
   end
