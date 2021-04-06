@@ -153,7 +153,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
           <Button
             variant="primary"
             size="lg"
-            className="fw-lighter fs-4"
+            className="fw-lighter fs-4 shadow-sm"
             onClick={() => dispatch({ type: "flags/setone", data: {posting: true} })}>
             Post
           </Button>

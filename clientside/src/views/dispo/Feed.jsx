@@ -13,7 +13,7 @@ function PostComments({postId, comments}) {
     <div id={`#comms-${postId}`}>
       <h5 className="px-3 my-1 fw-lighter">Comments</h5>
       {comments.map((comm, i) => (
-        <Row key={`comm-${postId}-${i}`} className="border-0 mt-0 px-3">
+        <Row key={`comm-${postId}-${i}`} className="border-0 mt-0 mx-3">
           <Col className="p-0" xs="2"><h6>{comm.username}</h6></Col>
           <Col className="py-0 px-2 text-wrap text-break">{comm.body}</Col>
           <Col className="p-0 fw-lighter" xs="auto">{convertDateTime(comm.inserted_at)}</Col>
@@ -91,7 +91,7 @@ function PostFooterComp({postId, flags, dispatch}) {
   }
 
   return (
-    <Card.Footer className="py-0 px-2 h-0">
+    <Card.Footer className="py-0 px-2 h-0 border-primary border-bottom border-2 border-top-0 rounded">
       {body}
     </Card.Footer>
   );
@@ -108,7 +108,7 @@ function Feed({feed, comments, dispatch}) {
   return (
     <Col>
       {Object.keys(feed).sort(desc).map((post_id) =>
-        <Row key={`post-${post_id}`} className="mx-0">
+        <Row key={`post-${post_id}`} className="mx-0 mb-4 shadow-sm rounded">
           <Card className="rounded p-0">
             <Row className="align-items-center px-3">
               <Col><h3 className="fw-lighter">{feed[post_id].username}</h3></Col>
