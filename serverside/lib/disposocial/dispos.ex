@@ -269,9 +269,13 @@ defmodule Disposocial.Dispos do
 
   def delete_dispo_and_remnants(id) do
     dispo = get_dispo!(id)
-    with({:ok, num_post_deleted, num_comm_deleted} <- Posts.delete_posts_and_remnants(id)) do
-        delete_dispo(dispo)
-        {:ok, dispo.id, dispo.name, num_post_deleted, num_comm_deleted}
+    with({:ok, num_post_deleted, num_comm_deleted, num_reac_deleted} <- Posts.delete_posts_and_remnants(id)) do
+      case delete_dispo(dispo) do
+        {:ok, _} -> {:ok, dispo.id, dispo.name, num_post_deleted, num_comm_deleted, num_reac_deleted}
+        error -> error
+      end
+    else
+      _ -> Logger.alert("Dispo delete failed")
     end
   end
 

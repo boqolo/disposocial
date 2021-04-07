@@ -3,6 +3,8 @@ defmodule Disposocial.Posts do
   The Posts context.
   """
 
+  require Logger
+
   import Ecto.Query, warn: false
   alias Disposocial.Repo
 
@@ -137,6 +139,8 @@ defmodule Disposocial.Posts do
       {num_reac_deleted, _} <- Reactions.delete_post_reactions(post_ids),
       {num_post_deleted, _} <- Repo.delete_all(q)) do
         {:ok, num_post_deleted, num_comm_deleted, num_reac_deleted}
+    else
+      _ -> Logger.alert("Delete posts failed")
     end
   end
 

@@ -3,6 +3,8 @@ defmodule Disposocial.Comments do
   The Comments context.
   """
 
+  require Logger
+
   import Ecto.Query, warn: false
   alias Disposocial.Repo
 
@@ -107,6 +109,8 @@ defmodule Disposocial.Comments do
     deleter = fn post_id, acc ->
       with {num_deleted, _} <- delete_post_comments(post_id) do
         acc + num_deleted
+      else
+        _ -> Logger.alert("Delete comments failed. Post: #{inspect(post_id)}")
       end
     end
 
