@@ -39,28 +39,28 @@ function New({session, location, flags, dispatch}) {
   function handleSubmit(ev) {
     ev.preventDefault();
     console.log("SUbmit clicked")
-    let disponame = ev.target[0].value;
-    let duration = ev.target[1].value;
+    let disponame = ev.target[0].value.trim();
+    let duration = ev.target[1].value.trim();
     let is_private = flags.check_private_dispo || false;
-    let passphrase = ev.target[3].value
+    let passphrase = ev.target[3].value.trim()
     console.log(disponame, duration, is_private, passphrase, location.lat, location.lng);
     let form = {
       user_id: session.user_id,
-      name: disponame.trim(),
-      duration: duration.trim(),
+      name: disponame,
+      duration: duration,
       is_public: !is_private,
-      password: passphrase.trim(),
+      password: passphrase,
       latitude: location.lat,
       longitude: location.lng
     };
 
     let created = (id) => {
       let redirect = () => {
-        history.replace(`/dispo/${id}`);
+        history.push(`/dispo/${id}`);
         dispatch({ type: "success/one", data: "Dispo created" });
       };
       clear_errors(dispatch);
-      ch_join_dispo(id, redirect);
+      ch_join_dispo(id, redirect, {password: passphrase});
     };
 
     api_create_dispo(form, created);
