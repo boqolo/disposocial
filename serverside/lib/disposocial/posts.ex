@@ -132,12 +132,11 @@ defmodule Disposocial.Posts do
     q = from(p in Post, where: p.dispo_id == ^dispo_id)
     post_ids = Repo.all(from(p in Post, where: p.dispo_id == ^dispo_id, select: p.id))
 
-    # TODO
-    # Reactions.delete_post_reactions(post_ids)
-
-    with({:ok, num_comm_deleted} <- Comments.delete_comments_and_remnants(post_ids),
+    with(
+      {:ok, num_comm_deleted} <- Comments.delete_comments_and_remnants(post_ids),
+      {num_reac_deleted, _} <- Reactions.delete_post_reactions(post_ids),
       {num_post_deleted, _} <- Repo.delete_all(q)) do
-        {:ok, num_post_deleted, num_comm_deleted}
+        {:ok, num_post_deleted, num_comm_deleted, num_reac_deleted}
     end
   end
 
