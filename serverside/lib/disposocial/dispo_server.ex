@@ -3,7 +3,7 @@ defmodule Disposocial.DispoServer do
 
   require Logger
   alias DisposocialWeb.Endpoint
-  alias Disposocial.{Dispos, Posts, Repo, DispoAgent, DispoRegistry, DispoSupervisor, Comments}
+  alias Disposocial.{Dispos, Posts, Repo, DispoAgent, DispoRegistry, DispoSupervisor, Comments, Reactions}
 
   def registry(id) do
     {:via, Registry, {DispoRegistry, id}}
@@ -38,12 +38,27 @@ defmodule Disposocial.DispoServer do
     GenServer.call(registry(id), :get_recent_comments)
   end
 
+  def get_recent_reactions(id) do
+    GenServer.call(registry(id), :get_recent_reactions)
+  end
+
+  # NOTE maybe none of these need to be GenServer calls.
+  # Could maybe get away with casting and then broadcast
+  # and may provide channels to handle more load since they
+  # dont have to wait for DispoServer to respond with
+  # appropriate data which is downtime due to DB calls.
+  # Try this out
+
   def post_post(id, attrs) do
     GenServer.call(registry(id), {:post_post, attrs})
   end
 
   def post_comment(id, attrs) do
     GenServer.call(registry(id), {:post_comment, attrs})
+  end
+
+  def post_reaction(id, attrs) do
+    GenServer.call(registry(id), {:post_reaction, attrs})
   end
 
   # def broadcast_feed(id) do
@@ -109,10 +124,21 @@ defmodule Disposocial.DispoServer do
       for post_id <- post_ids, into: %{} do
         {post_id, Comments.get_post_comments(post_id)}
       end
-      |> Enum.reject(fn {k, v} -> v == [] end)
+      |> Enum.reject(fn {_, v} -> v == [] end)
       |> Enum.into(%{})
 
     {:reply, comms, state}
+  end
+
+  @impl true
+  def handle_call(:get_recent_reactions, _from, state) do
+    post_ids = Posts.recent_post_ids(state.id)
+    reactions =
+      for post_id <- post_ids, into: %{} do
+        {post_id, Posts.get_reaction_counts(post_id)}
+      end
+
+    {:reply, reactions, state}
   end
 
   @impl true
@@ -127,6 +153,16 @@ defmodule Disposocial.DispoServer do
   def handle_call({:post_comment, attrs}, _from, state) do
     case Comments.create_comment(attrs) do
       {:ok, comment} -> {:reply, {:ok, Comments.present(comment)}, state}
+      {:error, chgset} -> {:reply, {:error, chgset}, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:post_reaction, attrs}, _from, state) do
+    case Reactions.create_or_update_reaction(attrs) do
+      {:ok, :created} -> {:reply, :created, state}
+      {:ok, :updated} -> {:reply, :updated, state}
+      :noop -> {:reply, :noop, state}
       {:error, chgset} -> {:reply, {:error, chgset}, state}
     end
   end

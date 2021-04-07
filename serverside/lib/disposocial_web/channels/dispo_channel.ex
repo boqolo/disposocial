@@ -39,14 +39,8 @@ defmodule DisposocialWeb.DispoChannel do
     dispo = DispoServer.get_dispo(dispo_id)
 
     push(socket, "dispo_meta", %{data: dispo})
-    push(socket, "doormat", %{data: "#{user_name} joined."})
     push(socket, "info", %{data: "Welcome to the #{dispo.name} Dispo!"})
-    push(socket, "new_posts", %{many: DispoServer.get_recent_posts(dispo_id)})
-    push(
-      socket,
-      "new_comments",
-      %{many: DispoServer.get_recent_comments(dispo_id)}
-    )
+    broadcast!(socket, "doormat", %{data: "#{user_name} joined."})
 
     {:noreply, socket}
   end
@@ -54,6 +48,28 @@ defmodule DisposocialWeb.DispoChannel do
   @impl true
   def handle_in("leave", %{"username" => username}, socket) do
     broadcast!(socket, "doormat", %{data: "#{username} left."})
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_in("recent_posts", _payload, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{many: DispoServer.get_recent_posts(dispo_id)}
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
+  def handle_in("recent_comments", _payload, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{many: DispoServer.get_recent_comments(dispo_id)}
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
+  def handle_in("recent_reactions", _payload, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{many: DispoServer.get_recent_reactions(dispo_id)}
+    {:reply, {:ok, payload}, socket}
   end
 
   @impl true
@@ -86,11 +102,10 @@ defmodule DisposocialWeb.DispoChannel do
 
     Logger.debug("POSTING COMMET WIT --> #{inspect(attrs)}")
 
-
     case DispoServer.post_comment(socket.assigns.curr_dispo_id, attrs) do
       {:ok, comment} ->
         payload = %{post_id: post_id, data: comment}
-        broadcast!(socket, "new_comments", %{one: payload})
+        broadcast!(socket, "new_post_comments", %{one: payload})
         {:reply, :ok, socket}
       {:error, errors} -> {
         :reply,
@@ -98,7 +113,34 @@ defmodule DisposocialWeb.DispoChannel do
         socket
       }
     end
+  end
 
+  @impl true
+  def handle_in("post_reaction", %{"post_id" => post_id, "reaction" => reaction}, socket) do
+    attrs = %{
+      post_id: post_id,
+      user_id: socket.assigns.current_user.id,
+      value: reaction
+    }
+
+    Logger.debug("POSTING REACTION WIT --> #{inspect(attrs)}")
+
+    case DispoServer.post_reaction(socket.assigns.curr_dispo_id, attrs) do
+      :created ->
+        payload = %{post_id: post_id, data: reaction}
+        broadcast!(socket, "new_post_reactions", %{created: 1, one: payload})
+        {:reply, :ok, socket}
+      :updated ->
+        payload = %{post_id: post_id, data: reaction}
+        broadcast!(socket, "new_post_reactions", %{updated: 1, one: payload})
+        {:reply, :ok, socket}
+      :noop -> {:reply, :ok, socket}
+      {:error, errors} -> {
+        :reply,
+        {:error, ChangesetView.translate_errors(errors)},
+        socket
+      }
+    end
   end
 
   # Channels can be used in a request/response fashion

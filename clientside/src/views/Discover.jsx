@@ -32,7 +32,7 @@ function JoinView({dispo, flags, dispatch}) {
     console.log("Join clicked")
     let redirect = () => {
       clear_errors(dispatch);
-      history.replace(`/dispo/${id}`);
+      history.push(`/dispo/${id}`);
       dispatch({ type: "success/one", data: "Dispo joined" });
     };
     ch_join_dispo(id, redirect, auth);

@@ -197,6 +197,64 @@ function comments_reducer(state = {}, action) {
   }
 }
 
+function reactions_reducer(state = {}, action) {
+
+  function new_count(post_reactions_obj, reaction) {
+    let { likes, dislikes } = post_reactions_obj;
+    if (reaction === 1) {
+      return {likes: ++likes, dislikes: dislikes}
+    } else { // -1 (dislike case)
+      return {likes: likes, dislikes: ++dislikes}
+    }
+  }
+
+  function updated_count(post_reactions_obj, reaction) {
+    let { likes, dislikes } = post_reactions_obj;
+    if (reaction === 1) {
+      return {likes: ++likes, dislikes: --dislikes}
+    } else { // -1 (dislike case)
+      return {likes: --likes, dislikes: ++dislikes}
+    }
+  }
+
+  let init_reactions = {likes: 0, dislikes: 0};
+
+  switch (action.type) {
+    case "reactions/addone":
+      let { post_id: post_id1, data: reaction1 } = action.data;
+      let post_reactions1 = state[post_id1]; // this post has reactions
+      let new_post_reactions1;
+
+      if (post_reactions1) {
+        new_post_reactions1 = new_count(post_reactions1, reaction1);
+      } else {
+        new_post_reactions1 = new_count(init_reactions, reaction1);
+      }
+
+      let new_reactions1 = {...state}
+      new_reactions1[post_id1] = new_post_reactions1;
+      return new_reactions1;
+    case "reactions/updateone":
+      let { post_id: post_id2, data: reaction2 } = action.data;
+      let post_reactions2 = state[post_id2];
+      let new_post_reactions2;
+
+      if (post_reactions2) {
+        new_post_reactions2 = updated_count(post_reactions2, reaction2);
+      } else {
+        new_post_reactions2 = updated_count(init_reactions, reaction2);
+      }
+
+      let new_reactions2 = {...state}
+      new_reactions2[post_id2] = new_post_reactions2;
+      return new_reactions2;
+    case "reactions/addmany":
+      return {...state, ...action.data};
+    default:
+      return state;
+  }
+}
+
 function popular_reducer(state = [], action) {
   switch (action.type) {
     case "popular/add":
@@ -275,6 +333,7 @@ let root_reducer = combineReducers({
   local_dispos: local_dispos_reducer,
   feed: feed_reducer,
   comments: comments_reducer,
+  reactions: reactions_reducer,
   popular: popular_reducer,
   likes: likes_reducer,
   tags: tags_reducer,

@@ -8,7 +8,7 @@ let socket;
 let channel_dispo;
 
 let MSG = {
-  dispo_dead: "The Dispo has expired",
+  dispo_dead: "The Dispo has died",
   left: "Left Dispo"
 }
 
@@ -39,6 +39,21 @@ function newcomments_dispatch(resp) {
   } else {
     console.log("Got many new comments", resp)
     store.dispatch({ type: "comments/addmany", data: resp.many });
+  }
+}
+
+function newreactions_dispatch(resp) {
+  if (resp.one) {
+    if (resp.created) {
+      console.log("Got one new reaction", resp)
+      store.dispatch({ type: "reactions/addone", data: resp.one });
+    } else {
+      console.log("Got one updated reaction", resp)
+      store.dispatch({ type: "reactions/updateone", data: resp.one });
+    }
+  } else {
+    console.log("Got many new reactions", resp)
+    store.dispatch({ type: "reactions/addmany", data: resp.many });
   }
 }
 
@@ -131,7 +146,8 @@ export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
       channel_dispo.on("info", info_dispatch);
       channel_dispo.on("remind", remind_dispatch);
       channel_dispo.on("new_posts", newposts_dispatch);
-      channel_dispo.on("new_comments", newcomments_dispatch);
+      channel_dispo.on("new_post_comments", newcomments_dispatch);
+      channel_dispo.on("new_post_reactions", newreactions_dispatch);
       channel_dispo.on("direct_msg", direct_msg_dispatch);
       channel_dispo.on("angel_of_death", handle_death);
       successRedirect()
@@ -141,6 +157,45 @@ export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
       error_dispatch(resp);
       ch_leave_dispo();
     });
+}
+
+export function ch_load_reactions(success = () => {}) {
+  channel_dispo.push("recent_reactions", {})
+    .receive("ok", resp => {
+      newreactions_dispatch(resp);
+      success();
+    })
+    .receive("error", resp => {
+      console.error("unable to load reactions", resp)
+    });
+}
+
+export function ch_load_comments(success = () => {}) {
+  channel_dispo.push("recent_comments", {})
+    .receive("ok", resp => {
+      newcomments_dispatch(resp);
+      success();
+    })
+    .receive("error", resp => {
+      console.error("unable to load comments", resp)
+    });
+}
+
+export function ch_load_posts(success = () => {}) {
+  channel_dispo.push("recent_posts", {})
+    .receive("ok", resp => {
+      newposts_dispatch(resp);
+      success();
+    })
+    .receive("error", resp => {
+      console.error("unable to load posts", resp)
+    });
+}
+
+export function ch_load_page() {
+  ch_load_posts();
+  ch_load_comments();
+  ch_load_reactions();
 }
 
 export function ch_post_post(params, success) {
@@ -160,5 +215,15 @@ export function ch_post_comment(params, success) {
     })
     .receive("error", resp => {
       console.error("unable to post comment", resp)
+    });
+}
+
+export function ch_post_reaction(params, success = () => {}) {
+  channel_dispo.push("post_reaction", params)
+    .receive("ok", resp => {
+      success();
+    })
+    .receive("error", resp => {
+      console.error("unable to post reaction", resp)
     });
 }

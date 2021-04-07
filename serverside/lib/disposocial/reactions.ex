@@ -37,6 +37,10 @@ defmodule Disposocial.Reactions do
   """
   def get_reaction!(id), do: Repo.get!(Reaction, id)
 
+  def get_post_reaction(post_id, user_id) do
+    Repo.get_by!(Reaction, [post_id: post_id, user_id: user_id])
+  end
+
   @doc """
   Creates a reaction.
 
@@ -53,6 +57,32 @@ defmodule Disposocial.Reactions do
     %Reaction{}
     |> Reaction.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_or_update_reaction(attrs) do
+    # create if doesn't exist else update
+    unless exists?(attrs) do
+      create_reaction(attrs)
+      {:ok, :created}
+    else
+      reaction = get_post_reaction(attrs.post_id, attrs.user_id)
+      if reaction.value == attrs.value do
+        :noop
+      else
+        update_reaction(reaction, attrs)
+        {:ok, :updated}
+      end
+    end
+  end
+
+  defp exists?(attrs) do
+    q = from r in Reaction, where: r.post_id == ^attrs.post_id and r.user_id == ^attrs.user_id
+    Repo.exists?(q)
+  end
+
+  def get_post_reactions(post_id) do
+    q = from(r in Reaction, where: r.post_id == ^post_id)
+    Repo.all(q)
   end
 
   @doc """

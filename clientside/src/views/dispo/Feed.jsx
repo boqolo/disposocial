@@ -1,17 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Link, useRouteMatch, useHistory, useParams } from 'react-router-dom';
-import { Tabs, Form, Card, Tab, Navbar, Col, Row, ListGroup, Container, Button, Modal } from 'react-bootstrap';
+import { Tabs, Form, Card, Tab, Navbar, ButtonGroup, Col, Row, ListGroup, Container, Button, Modal } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
 import store from '../../store';
 import { convertDateTime } from '../../util';
-import { ch_post_comment } from '../../socket';
+import { ch_post_comment, ch_post_reaction } from '../../socket';
 
 
 function PostComments({postId, comments}) {
   return (
     <div id={`#comms-${postId}`}>
-      <h5 className="px-3 my-1 fw-lighter">Comments</h5>
+      <h5
+        className="px-3 py-1 mb-2 fw-light bg-light border-top">
+        Comments
+      </h5>
       {comments.map((comm, i) => (
         <Row key={`comm-${postId}-${i}`} className="border-0 mt-0 mx-3">
           <Col className="p-0" xs="2"><h6>{comm.username}</h6></Col>
@@ -23,9 +26,12 @@ function PostComments({postId, comments}) {
   );
 }
 
-function PostFooterComp({postId, flags, dispatch}) {
+function PostFooterComp({postId, reactions, flags, dispatch}) {
 
-  console.log("Post footer post", postId)
+  // console.log("Post footer post", postId)
+  // console.log("Reactions are", reactions)
+
+  let { feed } = store.getState();
 
   function set_commenting(post_id) {
     dispatch({ type: "flags/setone", data: {post_comment_id: post_id} });
@@ -44,7 +50,21 @@ function PostFooterComp({postId, flags, dispatch}) {
     let successCallback = (resp) => {
       cancel_commenting();
     };
+    console.log("POSTING COMMENT")
     ch_post_comment(params, successCallback);
+  }
+
+  function handleReact(reaction) {
+    ch_post_reaction({post_id: postId, reaction: reaction});
+  }
+
+  function format_reactions(postId) {
+    if (reactions[postId]) {
+      let { likes, dislikes } = reactions[postId]
+      return `+${likes}, -${Math.abs(dislikes)}`
+    } else {
+      return "0, 0";
+    }
   }
 
   let body;
@@ -71,33 +91,50 @@ function PostFooterComp({postId, flags, dispatch}) {
     );
   } else {
     body = (
-      <div className="p-1">
-        <Link to={"#"} className="me-2">
+      <Row className="p-1 align-items-center w-100">
+        <Col xs="auto" className="pe-0">
+          <ButtonGroup>
+            <Button
+              variant="outline-secondary"
+              className="w-auto"
+              size="sm"
+              onClick={() => handleReact(1)}>
+              +1
+            </Button>
+            <Button
+              variant="outline-secondary"
+              className="w-auto"
+              size="sm"
+              onClick={() => handleReact(-1)}>
+              -1
+            </Button>
+          </ButtonGroup>
+        </Col>
+        <Col xs="auto" className="pe-0">
           <Button
-            variant="outline-primary"
+            variant="success"
             size="sm"
-            onClick={() => {}}>
-            Full Post
+            onClick={() => set_commenting(postId)}>
+            Comment
           </Button>
-        </Link>
-        <Button
-          variant="outline-success"
-          size="sm"
-          onClick={() => set_commenting(postId)}>
-          {"Comment"}
-        </Button>
-      </div>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <div className="text-muted m-0">
+            {format_reactions(postId)}
+          </div>
+        </Col>
+      </Row>
     );
   }
 
   return (
-    <Card.Footer className="py-0 px-2 h-0 border-primary border-bottom border-2 border-top-0 rounded">
+    <Card.Footer className="py-0 px-2 h-0">
       {body}
     </Card.Footer>
   );
 }
 
-let PostFooter = connect(({flags}) => { return {flags} })(PostFooterComp);
+let PostFooter = connect(({flags, reactions}) => { return {flags, reactions} })(PostFooterComp);
 
 function Feed({feed, comments, dispatch}) {
 
@@ -108,17 +145,20 @@ function Feed({feed, comments, dispatch}) {
   return (
     <Col>
       {Object.keys(feed).sort(desc).map((post_id) =>
-        <Row key={`post-${post_id}`} className="mx-0 mb-4 shadow-sm rounded">
-          <Card className="rounded p-0">
-            <Row className="align-items-center px-3">
-              <Col><h3 className="fw-lighter">{feed[post_id].username}</h3></Col>
-              <Col xs="auto">
-                <p className="fw-lighter fs-6 m-0">{convertDateTime(feed[post_id].inserted_at)}
-                </p>
-                <blockquote className="text-muted m-0">{"Reaction count"}</blockquote>
-              </Col>
-            </Row>
-            <Card.Body className="text-wrap text-break">{feed[post_id].body}</Card.Body>
+        <Row key={`post-${post_id}`} className="mx-0 mb-4 rounded border-primary border-bottom border-1 border-top-0 rounded-bottom shadow-sm">
+          <Card className="rounded p-0 border-bottom-0">
+            <Link to="#" className="text-reset text-decoration-none">
+              <Row className="align-items-center px-3">
+                <Col>
+                  <h3 className="fw-lighter">{feed[post_id].username}</h3>
+                </Col>
+                <Col xs="auto">
+                  <p className="fw-lighter fs-6 m-0">{convertDateTime(feed[post_id].inserted_at)}
+                  </p>
+                </Col>
+              </Row>
+              <Card.Body className="text-wrap text-break">{feed[post_id].body}</Card.Body>
+            </Link>
             <PostFooter postId={post_id} />
             {comments[post_id] &&
               <PostComments postId={post_id} comments={comments[post_id]} />}

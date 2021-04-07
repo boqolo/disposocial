@@ -39,6 +39,20 @@ defmodule Disposocial.Posts do
     Repo.all(q)
   end
 
+  def get_reaction_counts(post_id) do
+    # return %{likes: N, dislikes: N}
+    reactions = Reactions.get_post_reactions(post_id)
+    reducer =
+      fn reac, acc ->
+        case reac.value do
+          1 -> %{acc | likes: acc.likes + 1}
+          -1 -> %{acc | dislikes: acc.dislikes + 1}
+          _ -> acc
+        end
+      end
+    Enum.reduce(reactions, %{likes: 0, dislikes: 0}, reducer)
+  end
+
   @doc """
   Gets a single post.
 

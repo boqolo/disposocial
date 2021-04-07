@@ -5,7 +5,7 @@ import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal,
 import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import store from '../../store';
-import { ch_post_post, ch_leave_dispo } from '../../socket';
+import { ch_post_post, ch_leave_dispo, ch_load_page } from '../../socket';
 import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
 
 
@@ -26,7 +26,9 @@ function PostingView({show}) {
       store.dispatch({ type: "success/one", data: "Posted!" });
       close();
     };
+
     ch_post_post(params, success);
+
     // let file = ev.target[1].files[0];
     // const reader = new FileReader();
     // console.log("params are", body, file)
@@ -105,6 +107,10 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
     store.dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
     handle_leave();
   }
+
+  React.useEffect(() => {
+    ch_load_page();
+  }, []);
 
   return (
     <div>
