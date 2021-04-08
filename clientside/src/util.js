@@ -1,3 +1,8 @@
+// source: metro4 utility function
+Date.prototype.addHours=function(e){
+  return this.setTime(this.getTime()+60*e*60*1e3), this
+}
+
 export function capitalize(str) {
   return str.length > 0 && str.replace(/^\w/, str[0].toUpperCase());
 }

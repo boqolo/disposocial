@@ -9,3 +9,7 @@ body {
 #ticker {
   background-color: #f8f9fa !important;
 }
+
+.very-small {
+  font-size: 0.7em;
+}

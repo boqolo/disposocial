@@ -10,16 +10,20 @@ import { ch_post_comment, ch_post_reaction } from '../../socket';
 
 function PostComments({postId, comments}) {
   return (
-    <div id={`#comms-${postId}`}>
+    <div id={`#comms-${postId}`} className="pb-2">
       <h5
         className="px-3 py-1 mb-2 fw-light bg-light border-top">
         Comments
       </h5>
       {comments.map((comm, i) => (
-        <Row key={`comm-${postId}-${i}`} className="border-0 mt-0 mx-3">
-          <Col className="p-0" xs="2"><h6>{comm.username}</h6></Col>
-          <Col className="py-0 px-2 text-wrap text-break">{comm.body}</Col>
-          <Col className="p-0 fw-lighter" xs="auto">{convertDateTime(comm.inserted_at)}</Col>
+        <Row key={`comm-${postId}-${i}`} className="border-0 mt-0 mx-3 mb-1">
+          <Col className="ps-0 pe-1" xs="2">
+            <h6 className="mb-0 text-wrap">{comm.username}</h6>
+            <h6>
+              <small className="very-small fw-light">{convertDateTime(comm.inserted_at)}</small>
+            </h6>
+          </Col>
+          <Col className="py-0 px-0 text-wrap text-break">{comm.body}</Col>
         </Row>
       ))}
     </div>
