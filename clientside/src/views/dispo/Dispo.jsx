@@ -5,6 +5,7 @@ import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal,
 import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
 import Popular from './Popular';
+import DispoInfo from '../../components/DispoInfo';
 import store from '../../store';
 import { ch_post_post, ch_leave_dispo, ch_load_page } from '../../socket';
 import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
@@ -96,17 +97,13 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
   let { dispoId } = useParams();
   let history = useHistory();
 
-  function handle_leave() {
+  if (flags.dispo_dead) {
+    store.dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
     ch_leave_dispo();
     clear_errors(dispatch);
     reset_dispo_state(dispatch);
     dispatch({ type: "success/one", data: "Left Dispo" });
     history.replace("/discover");
-  }
-
-  if (flags.dispo_dead) {
-    store.dispatch({ type: "flags/setone", data: {dispo_dead: undefined} });
-    handle_leave();
   }
 
   React.useEffect(() => {
@@ -118,26 +115,8 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
       <DispoHeader />
       <PostingView show={flags.posting} />
       <Row>
-      <Col xs="4" md="3">
-        <Jumbotron className="rounded p-3 border-end border-bottom border-4 shadow-sm">
-          <h2 className="fw-lighter text-wrap text-break">{curr_dispo.name}</h2>
-          <p>{`Created ${convertDateTime(curr_dispo.created)}`}</p>
-          <p><strong>{`Expiring ${convertDateTime(curr_dispo.death)}`}</strong></p>
-          {curr_dispo.time_remaining &&
-            <p className="bg-warning p-1 rounded text-center text-wrap">{`~${ms_to_min_s(curr_dispo.time_remaining)} min left`}</p>}
-          <p>{`Based in ${curr_dispo.location?.locality}, ${curr_dispo.location?.region} near ${curr_dispo.location?.street}`}</p>
-        <p><small className="text-muted text-wrap">{`lat: ${curr_dispo.latitude}`}</small></p>
-      <p><small className="text-muted text-wrap">{`lng: ${curr_dispo.longitude}`}</small></p>
-        <div className="d-flex justify-content-center">
-            <Button
-              size="lg"
-              className="fw-lighter"
-              onClick={handle_leave}
-              variant="danger">
-              {"Leave"}
-            </Button>
-          </div>
-        </Jumbotron>
+      <Col xs="4" md="3" className="px-0">
+        <DispoInfo />
       </Col>
       <Col>
         <Tabs

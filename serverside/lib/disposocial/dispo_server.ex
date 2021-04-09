@@ -30,6 +30,10 @@ defmodule Disposocial.DispoServer do
     GenServer.call(registry(id), :get_dispo)
   end
 
+  def get_post(id, post_id) do
+    GenServer.call(registry(id), {:get_post, post_id})
+  end
+
   def get_posts(id, post_ids) do
     GenServer.call(registry(id), {:get_posts, post_ids})
   end
@@ -115,6 +119,12 @@ defmodule Disposocial.DispoServer do
   @impl true
   def handle_call(:get_dispo, _from, state) do
     {:reply, Dispos.present(state), state}
+  end
+
+  @impl true
+  def handle_call({:get_post, post_id}, _from, state) do
+    post = Posts.get_post(state.id, post_id)
+    {:reply, post, state}
   end
 
   @impl true

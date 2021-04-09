@@ -9,6 +9,8 @@ import { ch_post_comment, ch_post_reaction, ch_load_popular } from '../../socket
 
 function Popular({popular, dispatch}) {
 
+  let { dispoId } = useParams();
+
   React.useEffect(() => {
     ch_load_popular();
   }, []);
@@ -19,10 +21,10 @@ function Popular({popular, dispatch}) {
         {popular.map(post =>
           <Row key={`pop-${post.id}`} className="mx-0 mb-4 rounded border-primary border-bottom border-1 border-top-0 rounded-bottom shadow-sm">
             <Card className="rounded p-0 border-bottom-0">
-              <Link to="#" className="text-reset text-decoration-none">
+              <Link to={`/dispo/${dispoId}/post/${post.id}`} className="text-reset text-decoration-none">
                 <Row className="align-items-center px-3">
                   <Col>
-                    <h3 className="fw-lighter">{post.username}</h3>
+                    <h3 className="fw-lighter">{post.user?.name}</h3>
                   </Col>
                   <Col xs="auto">
                     <p className="fw-lighter fs-6 m-0">{convertDateTime(post.inserted_at)}

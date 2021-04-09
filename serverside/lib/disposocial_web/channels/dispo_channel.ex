@@ -89,6 +89,13 @@ defmodule DisposocialWeb.DispoChannel do
   end
 
   @impl true
+  def handle_in("fetch_post", %{"post_id" => post_id}, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{data: DispoServer.get_post(dispo_id, post_id)}
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
   def handle_in("post_post", %{"body" => body} = _params, socket) do
     attrs = %{
       body: Util.escapeInput(body),

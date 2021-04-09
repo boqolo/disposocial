@@ -22,6 +22,14 @@ function error_dispatch(msg) {
   store.dispatch({ type: "error/one", data: msg });
 }
 
+function show_dispatch(resp) {
+  let show = {}
+  show[resp.data.id] = resp.data;
+  console.log("Got full post to show", show)
+  store.dispatch({ type: "feed/addone", data: show });
+  // store.dispatch({ type: "show/set", data: resp.data });
+}
+
 function newposts_dispatch(resp) {
   if (resp.one) {
     console.log("Got one new post", resp)
@@ -204,6 +212,16 @@ export function ch_fetch_posts(post_ids, callback) {
     })
     .receive("error", resp => {
       console.error("unable to fetch posts", resp)
+    })
+}
+
+export function ch_load_post(params, success = () => {}) {
+  channel_dispo.push("fetch_post", params)
+    .receive("ok", resp => {
+      show_dispatch(resp);
+    })
+    .receive("error", resp => {
+      console.error("unable to fetch post", resp)
     })
 }
 

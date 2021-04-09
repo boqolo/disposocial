@@ -9,6 +9,7 @@ defmodule Disposocial.Posts do
   alias Disposocial.Repo
 
   alias Disposocial.Posts.Post
+  alias Disposocial.Users
   alias Disposocial.Reactions
   alias Disposocial.Comments
   alias Disposocial.Comments.Comment
@@ -26,10 +27,21 @@ defmodule Disposocial.Posts do
     Repo.all(Post)
   end
 
+  def get_post(dispo_id, post_id) do
+    Repo.get_by(Post, [dispo_id: dispo_id, id: post_id])
+    |> load_reaction_count()
+    |> present()
+    |> load_comments()
+  end
+
   def get_posts(dispo_id, post_ids) do
     q = from(p in Post, where: p.dispo_id == ^dispo_id and p.id in ^post_ids)
     Repo.all(q)
     |> Enum.map(fn post -> present(load_interactions(post)) end)
+  end
+
+  def load_comments(post) do
+    Map.put(post, :comments, Comments.get_post_comments(post.id))
   end
 
   def load_interactions(post) do
@@ -64,6 +76,10 @@ defmodule Disposocial.Posts do
         end
       end
     Enum.reduce(reactions, %{likes: 0, dislikes: 0}, reducer)
+  end
+
+  def load_reaction_count(post) do
+    Map.put(post, :reaction_count, get_reaction_counts(post.id))
   end
 
   @doc """
@@ -129,10 +145,8 @@ defmodule Disposocial.Posts do
   end
 
   def present(post) do
-    post = Repo.preload(post, :user)
-    username = post.user.name
-    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at, :interactions])
-    |> Map.put(:username, username)
+    Map.take(post, [:id, :body, :media_hash, :user, :inserted_at, :interactions, :reaction_count])
+    |> Map.put(:user, Users.present(post.user_id))
   end
 
   @doc """

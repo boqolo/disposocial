@@ -5,6 +5,7 @@ defmodule Disposocial.Posts.Post do
   schema "posts" do
     field(:body, :string)
     field(:media_hash, :string)
+    field(:reaction_count, :map, virtual: true)
     field(:interactions, :integer, virtual: true)
 
     belongs_to(:user, Disposocial.Users.User)

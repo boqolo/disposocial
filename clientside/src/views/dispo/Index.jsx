@@ -6,6 +6,7 @@ import DispoHeader from "../../components/DispoHeader.jsx";
 import Default from '../404';
 import New from './New';
 import Dispo from './Dispo';
+import Post from './Post';
 
 function Root() {
   let { session } = store.getState();
@@ -48,11 +49,14 @@ function Index({session, dispatch}) {
       <Route path={`${path}/new`}>
         <New />
       </Route>
+      <Route path={`${path}/:dispoId/post/:postId`}>
+        <Post />
+      </Route>
       <Route path={`${path}/:dispoId`}>
         <Dispo />
       </Route>
       <Route path="*">
-        <Default />
+        <Default url={url} />
       </Route>
     </Switch>
   );

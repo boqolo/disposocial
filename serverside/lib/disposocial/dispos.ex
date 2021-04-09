@@ -15,6 +15,7 @@ defmodule Disposocial.Dispos do
   alias Disposocial.Dispos.Dispo
   alias Disposocial.PositionStack
   alias Disposocial.Posts
+  alias Disposocial.Posts.Post
 
   require Logger
 

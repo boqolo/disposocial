@@ -288,7 +288,7 @@ function tags_reducer(state = [], action) {
   }
 }
 
-function show_reducer(state = [], action) {
+function show_reducer(state = {}, action) {
   switch (action.type) {
     case "show/set":
       return action.data;
