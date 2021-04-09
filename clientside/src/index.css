@@ -13,3 +13,16 @@ body {
 .very-small {
   font-size: 0.7em;
 }
+
+.notification {
+  position: absolute;
+  margin: 1em 1em;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.notification > button {
+  color: green;
+  border: solid 2px red;
+}
