@@ -21,6 +21,11 @@ defmodule Disposocial.Reactions do
     Repo.all(Reaction)
   end
 
+  def get_num_reactions(post_id) do
+    q = from r in Reaction, where: r.post_id == ^post_id
+    Repo.aggregate(q, :count)
+  end
+
   @doc """
   Gets a single reaction.
 

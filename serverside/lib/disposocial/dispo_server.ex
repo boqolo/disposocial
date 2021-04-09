@@ -3,7 +3,7 @@ defmodule Disposocial.DispoServer do
 
   require Logger
   alias DisposocialWeb.Endpoint
-  alias Disposocial.{Dispos, Posts, Repo, DispoAgent, DispoRegistry, DispoSupervisor, Comments, Reactions}
+  alias Disposocial.{DispoState, Dispos, Posts, Repo, DispoAgent, DispoRegistry, DispoSupervisor, Comments, Reactions}
 
   def registry(id) do
     {:via, Registry, {DispoRegistry, id}}
@@ -30,8 +30,16 @@ defmodule Disposocial.DispoServer do
     GenServer.call(registry(id), :get_dispo)
   end
 
+  def get_posts(id, post_ids) do
+    GenServer.call(registry(id), {:get_posts, post_ids})
+  end
+
   def get_recent_posts(id) do
     GenServer.call(registry(id), :get_recent_posts)
+  end
+
+  def get_popular_posts(id) do
+    GenServer.call(registry(id), :get_popular_posts)
   end
 
   def get_recent_comments(id) do
@@ -67,7 +75,6 @@ defmodule Disposocial.DispoServer do
 
   # Helpers
 
-
   # Callbacks
 
   def start_link(id) do
@@ -83,7 +90,7 @@ defmodule Disposocial.DispoServer do
       if prevState = DispoAgent.get(id) do
         prevState
       else
-        DispoAgent.put(id, Dispos.get_dispo!(id))
+        DispoAgent.put(id, DispoState.new(id))
         DispoAgent.get(id)
       end
 
@@ -111,9 +118,14 @@ defmodule Disposocial.DispoServer do
   end
 
   @impl true
+  def handle_call({:get_posts, post_ids}, _from, state) do
+    posts = Posts.get_posts(state.id, post_ids)
+    {:reply, posts, state}
+  end
+
+  @impl true
   def handle_call(:get_recent_posts, _from, state) do
     posts = Posts.recent_posts(state.id)
-    Logger.debug("GET RECENT POSS --> #{inspect(posts)}")
     {:reply, posts, state}
   end
 
@@ -142,6 +154,12 @@ defmodule Disposocial.DispoServer do
   end
 
   @impl true
+  def handle_call(:get_popular_posts, _from, state) do
+    # Sort popular and return array
+    {:reply, state.popular, state}
+  end
+
+  @impl true
   def handle_call({:post_post, attrs}, _from, state) do
     case Posts.create_post(attrs) do
       {:ok, post} -> {:reply, {:ok, Posts.present(post)}, state}
@@ -152,7 +170,9 @@ defmodule Disposocial.DispoServer do
   @impl true
   def handle_call({:post_comment, attrs}, _from, state) do
     case Comments.create_comment(attrs) do
-      {:ok, comment} -> {:reply, {:ok, Comments.present(comment)}, state}
+      {:ok, comment} ->
+        send(self(), {:count_popular, attrs.post_id})
+        {:reply, {:ok, Comments.present(comment)}, state}
       {:error, chgset} -> {:reply, {:error, chgset}, state}
     end
   end
@@ -160,7 +180,9 @@ defmodule Disposocial.DispoServer do
   @impl true
   def handle_call({:post_reaction, attrs}, _from, state) do
     case Reactions.create_or_update_reaction(attrs) do
-      {:ok, :created} -> {:reply, :created, state}
+      {:ok, :created} ->
+        send(self(), {:count_popular, attrs.post_id})
+        {:reply, :created, state}
       {:ok, :updated} -> {:reply, :updated, state}
       :noop -> {:reply, :noop, state}
       {:error, chgset} -> {:reply, {:error, chgset}, state}
@@ -172,6 +194,19 @@ defmodule Disposocial.DispoServer do
   #   # TODO broadcast on channel topic (dispo)
   #   {:noreply, state}
   # end
+
+  @doc"""
+  Calculates what the most popular posts are for the dispo
+  """
+  @impl true
+  def handle_info({:count_popular, post_id}, state) do
+    # count reactions + comments for the post
+    # store in state if popular less than 10 or beats another in popularity
+    num_interactions = Posts.get_interaction_count(post_id)
+    state = DispoState.compute_popular(post_id, num_interactions, state)
+    Logger.debug("Counted popular state --> #{inspect(state)}")
+    {:noreply, state}
+  end
 
   @doc"""
   Exponential backoff reminders of termination date.

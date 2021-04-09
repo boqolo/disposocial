@@ -14,6 +14,7 @@ defmodule DisposocialWeb.DispoChannel do
     if sock_authorized?(socket) &&
         Dispos.exists?(id) && dispo_authorized?(id, dispo_pass) do
       noDispoServer? = Registry.lookup(Disposocial.DispoRegistry, id) == []
+      Logger.debug("Dispo server found?? #{inspect(noDispoServer?)}")
       if noDispoServer?, do: DispoServer.start(id)
       socket = assign(socket, :curr_dispo_id, id)
       Process.send(self(), :after_join, [:nosuspend])
@@ -36,6 +37,7 @@ defmodule DisposocialWeb.DispoChannel do
   def handle_info(:after_join, socket) do
     dispo_id = socket.assigns.curr_dispo_id
     user_name = socket.assigns.current_user.name
+    Logger.debug("Got dispo id --> #{inspect(dispo_id)}")
     dispo = DispoServer.get_dispo(dispo_id)
 
     push(socket, "dispo_meta", %{data: dispo})
@@ -69,6 +71,20 @@ defmodule DisposocialWeb.DispoChannel do
   def handle_in("recent_reactions", _payload, socket) do
     dispo_id = socket.assigns.curr_dispo_id
     payload = %{many: DispoServer.get_recent_reactions(dispo_id)}
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
+  def handle_in("popular_posts", _payload, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{data: DispoServer.get_popular_posts(dispo_id)}
+    {:reply, {:ok, payload}, socket}
+  end
+
+  @impl true
+  def handle_in("fetch_posts", post_ids, socket) do
+    dispo_id = socket.assigns.curr_dispo_id
+    payload = %{data: DispoServer.get_posts(dispo_id, post_ids)}
     {:reply, {:ok, payload}, socket}
   end
 

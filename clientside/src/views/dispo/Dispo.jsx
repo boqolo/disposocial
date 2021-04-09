@@ -4,6 +4,7 @@ import { Switch, Route, Link, useRouteMatch, useHistory, useParams, useLocation 
 import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal, Jumbotron } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
 import Feed from './Feed';
+import Popular from './Popular';
 import store from '../../store';
 import { ch_post_post, ch_leave_dispo, ch_load_page } from '../../socket';
 import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
@@ -147,7 +148,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
             <Feed />
           </Tab>
           <Tab eventKey={`${url}/popular`} title="Popular">
-            <h1>Popular</h1>
+            <Popular />
           </Tab>
           <Tab eventKey={`${url}/mine`} title="Mine">
             <h1>Mine</h1>

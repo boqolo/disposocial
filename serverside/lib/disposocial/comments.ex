@@ -24,6 +24,11 @@ defmodule Disposocial.Comments do
     raise "TODO"
   end
 
+  def get_num_comments(post_id) do
+    q = from c in Comment, where: c.post_id == ^post_id
+    Repo.aggregate(q, :count)
+  end
+
   def present(comment) do
     comm = Repo.preload(comment, :user)
     username = comm.user.name

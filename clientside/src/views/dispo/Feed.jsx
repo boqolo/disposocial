@@ -48,7 +48,7 @@ function PostFooterComp({postId, reactions, flags, dispatch}) {
   function post_comment(ev, post_id) {
     ev.preventDefault();
     let params = {
-      post_id: post_id,
+      post_id: parseInt(post_id),
       body: ev.target[0].value.trim()
     }
     let successCallback = (resp) => {
@@ -59,7 +59,7 @@ function PostFooterComp({postId, reactions, flags, dispatch}) {
   }
 
   function handleReact(reaction) {
-    ch_post_reaction({post_id: postId, reaction: reaction});
+    ch_post_reaction({post_id: parseInt(postId), reaction: reaction});
   }
 
   function format_reactions(postId) {

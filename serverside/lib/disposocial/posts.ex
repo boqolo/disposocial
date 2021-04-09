@@ -26,6 +26,17 @@ defmodule Disposocial.Posts do
     Repo.all(Post)
   end
 
+  def get_posts(dispo_id, post_ids) do
+    q = from(p in Post, where: p.dispo_id == ^dispo_id and p.id in ^post_ids)
+    Repo.all(q)
+    |> Enum.map(fn post -> present(load_interactions(post)) end)
+  end
+
+  def load_interactions(post) do
+    count = get_interaction_count(post.id)
+    Map.put(post, :interactions, count)
+  end
+
   def recent_posts(id) do
     # Subquery based on example here: https://hexdocs.pm/ecto/Ecto.Query.html#preload/3
     q = from(p in Post, where: p.dispo_id == ^id, limit: 10, order_by: [desc: p.inserted_at], preload: [:reactions])
@@ -71,6 +82,16 @@ defmodule Disposocial.Posts do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
+  def get_most_popular(dispo_id) do
+    # TODO https://github.com/NatTuck/scratch-2021-01/blob/master/4550/0309/photo_blog/lib/photo_blog/votes.ex
+    # q = from(p in Post, where: p.dispo_id == ^dispo_id, limit: 10, order_by: [desc: ])
+  end
+
+  def get_interaction_count(post_id) do
+    # interaction count = num comments + num reactions
+    Reactions.get_num_reactions(post_id) + Comments.get_num_comments(post_id)
+  end
+
   @doc """
   Creates a post.
 
@@ -110,7 +131,7 @@ defmodule Disposocial.Posts do
   def present(post) do
     post = Repo.preload(post, :user)
     username = post.user.name
-    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at])
+    Map.take(post, [:id, :body, :media_hash, :user_id, :inserted_at, :interactions])
     |> Map.put(:username, username)
   end
 

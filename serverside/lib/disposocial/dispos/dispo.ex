@@ -10,6 +10,7 @@ defmodule Disposocial.Dispos.Dispo do
     field(:name, :string)
     field(:is_public, :boolean)
     field(:password_hash, :string)
+    # field(:popular_posts, {:array, :integer}, virtual: true)
 
     belongs_to(:user, Disposocial.Users.User) # creator
     has_many(:users, Disposocial.Users.User) # TODO remove??

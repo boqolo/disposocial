@@ -57,6 +57,11 @@ function newreactions_dispatch(resp) {
   }
 }
 
+function popular_dispatch(resp) {
+  console.log("Got new popular posts", resp)
+  store.dispatch({ type: "popular/set", data: resp.data });
+}
+
 function handle_death(resp) {
   console.log("Got death message", resp)
   store.dispatch({ type: "flags/setone", data: {dispo_dead: true} });
@@ -192,10 +197,35 @@ export function ch_load_posts(success = () => {}) {
     });
 }
 
+export function ch_fetch_posts(post_ids, callback) {
+  channel_dispo.push("fetch_posts", post_ids)
+    .receive("ok", resp => {
+      callback(resp);
+    })
+    .receive("error", resp => {
+      console.error("unable to fetch posts", resp)
+    })
+}
+
 export function ch_load_page() {
   ch_load_posts();
   ch_load_comments();
   ch_load_reactions();
+}
+
+export function ch_load_popular(success = () => {}) {
+  channel_dispo.push("popular_posts", {})
+    .receive("ok", resp => {
+      // sorts [[post_id, num_interactions], ...] by descending popularity
+      let desc_popularity = (a, b) => b[1] - a[1]
+      let popular_posts = Object.entries(resp.data).sort(desc_popularity);
+      let popular_post_ids = popular_posts.reduce((acc, e) => acc.concat(e[0]), []);
+      ch_fetch_posts(popular_post_ids, popular_dispatch);
+      // success();
+    })
+    .receive("error", resp => {
+      console.error("unable to load popular posts", resp)
+    });
 }
 
 export function ch_post_post(params, success) {

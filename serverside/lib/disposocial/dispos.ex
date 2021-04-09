@@ -49,6 +49,10 @@ defmodule Disposocial.Dispos do
 
   def get_dispo(id), do: Repo.get(Dispo, id)
 
+  def load_creator(dispo) do
+    Repo.preload(dispo, [:user])
+  end
+
   def exists?(id) do
     q = from d in Dispo, where: d.id == ^id
     Repo.exists?(q)
@@ -134,6 +138,15 @@ defmodule Disposocial.Dispos do
     |> Enum.filter(in_radius)
   end
 
+  def get_popular_posts(dispo_id) do
+    q = from(
+      d in Dispo,
+      left_join: posts in subquery(from p in Post, where: p.dispo_id == ^dispo_id, order_by: [desc: :interactions], limit: 10),
+      select_merge: %{popular_posts: posts}
+    )
+    Repo.all(q)
+  end
+
   def present(dispo) do
     created = Util.convertUTC!(dispo.inserted_at)
     death = Util.convertUTC!(dispo.death)
@@ -149,23 +162,6 @@ defmodule Disposocial.Dispos do
     |> Map.put(:created, created)
     |> Map.put(:death, death)
   end
-
-
-  # field(:death, :utc_datetime) # serverside
-  # field(:latitude, :integer)
-  # field(:longitude, :integer)
-  # field(:location, :string) # serverside
-  # field(:name, :string)
-  # field(:is_public, :boolean)
-  # field(:password_hash, :string) #serverside
-
-  # has_one(:creator, Disposocial.Users.User)
-
-  # name: disponame,
-  # is_public: !is_private,
-  # password: passphrase,
-  # latitude: location.lat,
-  # longitude: location.lng
 
   def create_dispo(%{"password" => password} = attrs) do
     attrs
