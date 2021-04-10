@@ -24,18 +24,6 @@ function New({session, location, flags, dispatch}) {
   console.log("Got location", location)
   console.log("check private flag is", flags.check_private_dispo);
 
-  /*
-  field(:death, :utc_datetime) # serverside
-  field(:latitude, :integer)
-  field(:longitude, :integer)
-  field(:location, :string) # serverside
-  field(:name, :string)
-  field(:is_public, :boolean)
-  field(:passcode_hash, :string) #serverside
-
-  has_one(:creator, Disposocial.Users.User)
-  */
-
   function handleSubmit(ev) {
     ev.preventDefault();
     console.log("SUbmit clicked")

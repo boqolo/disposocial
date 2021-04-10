@@ -1,7 +1,7 @@
 defmodule Disposocial.Photos do
   @root Path.expand("~/.disposocial_uploads/photos")
   @default_photo Path.join(@root, "default/photo.jpg")
-  @max_file_size 1_500 # in bytes
+  @max_file_size 1_500_000 # in bytes
 
   require Logger
 
@@ -21,14 +21,10 @@ defmodule Disposocial.Photos do
     # key info: filename, data, hash, metadata
     data = File.read!(path)
     hash = sha256(data)
-    metadata? = readMetadata(hash)
 
     metadata =
-      unless metadata? do
-        Map.merge(%{"name" => filename, "refs" => 0}, getSomeStats(path))
-      else
-        metadata?
-      end
+      %{"name" => filename, "refs" => 0}
+      |> Map.merge(getSomeStats(path))
 
     if metadata.size > @max_file_size do
       {:error, "File too large"}
@@ -38,13 +34,9 @@ defmodule Disposocial.Photos do
   end
 
   def getSomeStats(filepath) do
-    with {:ok, fileStat} <- File.stat(filepath) do
-      fileStat
-      |> Map.from_struct()
-      |> Map.take([:ctime, :size])
-    else
-      _ -> %{}
-    end
+    File.stat!(filepath)
+    |> Map.take([:size])
+    |> Map.put(:uploaded, DateTime.utc_now())
   end
 
   def savePhoto(_filename, hash, data, metadata) do
