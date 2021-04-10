@@ -33,7 +33,7 @@ export function convertDateTime(isoStr) {
 }
 
 export function load_session_from_storage(store) {
-  console.log("Checking for cookiue in sotrage")
+  // console.log("Checking for cookiue in sotrage")
   let localStorage = window.localStorage;
   let token = localStorage.getItem('token');
   let login_time = localStorage.getItem('time');
@@ -46,7 +46,7 @@ export function load_session_from_storage(store) {
       user_id: user_id,
       username: username
     };
-    console.log("Have session!")
+    // console.log("Have session!")
     store.dispatch({ type: "session/set", data: session });
   }
 }

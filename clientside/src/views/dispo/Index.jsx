@@ -39,7 +39,7 @@ function Index({session, dispatch}) {
 
   let { path, url } = useRouteMatch();
 
-  console.log('Got dispo path', path);
+  // console.log('Got dispo path', path);
 
   return (
     <Switch>

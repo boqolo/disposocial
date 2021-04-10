@@ -14,7 +14,7 @@ import {
   FormControl,
   InputGroup,
   Button,
-  Col 
+  Col
 } from 'react-bootstrap';
 import PageHeader from '../components/PageHeader.jsx';
 import { Leader } from '../components/Text';
@@ -37,7 +37,7 @@ function Register({acct_form, dispatch}) {
 
   function handleSubmit(ev) {
     ev.preventDefault();
-    console.log("SUbmit clicked")
+    // console.log("SUbmit clicked")
     let username = ev.target[0].value;
     let email = ev.target[1].value;
     let passcode = ev.target[2].value;

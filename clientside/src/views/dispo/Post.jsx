@@ -14,8 +14,8 @@ function Post({show, feed, comments, dispatch}) {
 
   let { dispoId, postId } = useParams();
 
-  console.log("feed has post", feed[postId])
-  console.log("show has post", show);
+  // console.log("feed has post", feed[postId])
+  // console.log("show has post", show);
 
   function format_reactions(reaction_count) {
     let { likes, dislikes } = reaction_count;

@@ -26,27 +26,27 @@ function error_dispatch(msg) {
 function show_dispatch(resp) {
   let show = {}
   show[resp.data.id] = resp.data;
-  console.log("Got full post to show", show)
+  // console.log("Got full post to show", show)
   store.dispatch({ type: "feed/addone", data: show });
   // store.dispatch({ type: "show/set", data: resp.data });
 }
 
 function newposts_dispatch(resp) {
   if (resp.one) {
-    console.log("Got one new post", resp)
+    // console.log("Got one new post", resp)
     store.dispatch({ type: "feed/addone", data: resp.one });
   } else {
-    console.log("Got many new posts", resp)
+    // console.log("Got many new posts", resp)
     store.dispatch({ type: "feed/addmany", data: resp.many });
   }
 }
 
 function newcomments_dispatch(resp) {
   if (resp.one) {
-    console.log("Got one new comment", resp)
+    // console.log("Got one new comment", resp)
     store.dispatch({ type: "comments/addone", data: resp.one });
   } else {
-    console.log("Got many new comments", resp)
+    // console.log("Got many new comments", resp)
     store.dispatch({ type: "comments/addmany", data: resp.many });
   }
 }
@@ -54,31 +54,31 @@ function newcomments_dispatch(resp) {
 function newreactions_dispatch(resp) {
   if (resp.one) {
     if (resp.created) {
-      console.log("Got one new reaction", resp)
+      // console.log("Got one new reaction", resp)
       store.dispatch({ type: "reactions/addone", data: resp.one });
     } else {
-      console.log("Got one updated reaction", resp)
+      // console.log("Got one updated reaction", resp)
       store.dispatch({ type: "reactions/updateone", data: resp.one });
     }
   } else {
-    console.log("Got many new reactions", resp)
+    // console.log("Got many new reactions", resp)
     store.dispatch({ type: "reactions/addmany", data: resp.many });
   }
 }
 
 function popular_dispatch(resp) {
-  console.log("Got new popular posts", resp)
+  // console.log("Got new popular posts", resp)
   store.dispatch({ type: "popular/set", data: resp.data });
 }
 
 function handle_death(resp) {
-  console.log("Got death message", resp)
+  // console.log("Got death message", resp)
   store.dispatch({ type: "flags/setone", data: {dispo_dead: true} });
   store.dispatch({ type: "success/one", data: MSG.dispo_dead });
 }
 
 function dispo_meta_dispatch(resp) {
-  console.log("received dispo meta", resp)
+  // console.log("received dispo meta", resp)
   store.dispatch({ type: "curr_dispo/set", data: resp.data });
 }
 
@@ -87,17 +87,17 @@ function direct_msg_dispatch(resp) {
 }
 
 function info_dispatch(resp) {
-  console.log("Got info", resp)
+  // console.log("Got info", resp)
   store.dispatch({ type: "info/add", data: resp.data })
 }
 
 function remind_dispatch(resp) {
-  console.log("Got reminder", resp)
+  // console.log("Got reminder", resp)
   store.dispatch({ type: "curr_dispo/setremind", data: resp.data });
 }
 
 function presence_dispatch(presence) {
-  console.log("Got presences", presence);
+  // console.log("Got presences", presence);
   let presences = {};
   presence.list((username, {metas: [first, ...others]}) => {
     presences[username] = {online_at: first.online_at};
@@ -141,7 +141,7 @@ export function ch_leave_dispo() {
 export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
   let { session } = store.getState();
   socket = init_sock(session.token);
-  console.log("Init sock", socket)
+  // console.log("Init sock", socket)
   let params = {...session, ...dispo_auth};
   channel_dispo = socket.channel(`dispo:${id}`, params);
   presence = new Presence(channel_dispo);
@@ -153,10 +153,10 @@ export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
       // TODO ch_user_away()
     }
   });
-  console.log("Init channel", channel_dispo)
+  // console.log("Init channel", channel_dispo)
   channel_dispo.join()
     .receive("ok", () => {
-      console.log("joined dispo channel", id)
+      // console.log("joined dispo channel", id)
 
       // Setup channel callbacks
       channel_dispo.on("dispo_meta", dispo_meta_dispatch);

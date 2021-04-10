@@ -21,17 +21,17 @@ function New({session, location, flags, dispatch}) {
   let { path, url } = useRouteMatch();
   let history = useHistory();
 
-  console.log("Got location", location)
-  console.log("check private flag is", flags.check_private_dispo);
+  // console.log("Got location", location)
+  // console.log("check private flag is", flags.check_private_dispo);
 
   function handleSubmit(ev) {
     ev.preventDefault();
-    console.log("SUbmit clicked")
+    // console.log("SUbmit clicked")
     let disponame = ev.target[0].value.trim();
     let duration = ev.target[1].value.trim();
     let is_private = flags.check_private_dispo || false;
     let passphrase = ev.target[3].value.trim()
-    console.log(disponame, duration, is_private, passphrase, location.lat, location.lng);
+    // console.log(disponame, duration, is_private, passphrase, location.lat, location.lng);
     let form = {
       user_id: session.user_id,
       name: disponame,

@@ -36,7 +36,7 @@ function PostComments({postId, comments}) {
 
 function Feed({feed, comments, dispatch}) {
 
-  console.log("Feed has", feed)
+  // console.log("Feed has", feed)
 
   let { dispoId } = useParams();
 

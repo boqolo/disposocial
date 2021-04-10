@@ -29,7 +29,7 @@ function Login({acct_form, dispatch}) {
   // }, [username, email, passcode]);
 
   function handleSubmit(ev) {
-    console.log("Clicked submit")
+    // console.log("Clicked submit")
     ev.preventDefault();
     let email = ev.target[0].value;
     let passcode = ev.target[1].value;

@@ -29,7 +29,7 @@ function JoinView({dispo, flags, dispatch}) {
   let history = useHistory();
 
   function handle_join(id, auth = {}) {
-    console.log("Join clicked")
+    // console.log("Join clicked")
     let redirect = () => {
       clear_messages(dispatch);
       history.push(`/dispo/${id}`);
@@ -40,18 +40,18 @@ function JoinView({dispo, flags, dispatch}) {
 
   function handle_auth_join(ev, dispo_id) {
     ev.preventDefault();
-    console.log("auth dispo with", ev.target[0].value)
+    // console.log("auth dispo with", ev.target[0].value)
     let params = { password: ev.target[0].value.trim() };
     handle_join(dispo_id, params);
   }
 
   function set_dispo_auth(id) {
     let dispo_auth_flag = `dispo_auth_${id}`;
-    console.log("DISPI AUTH FLAG", dispo_auth_flag)
+    // console.log("DISPI AUTH FLAG", dispo_auth_flag)
     let flag = {};
     if (!flags[dispo_auth_flag]) {
       flag[dispo_auth_flag] = true;
-      console.log("Setting", flag)
+      // console.log("Setting", flag)
       dispatch({ type: "flags/setone", data: flag });
     } else {
       flag[dispo_auth_flag] = undefined;
@@ -125,7 +125,7 @@ function Discover({session, location, local_dispos, dispatch}) {
 
   React.useEffect(() => {
     if (location.lat && location.lng && local_dispos.length < 3) {
-      console.log("fetch with location", location)
+      // console.log("fetch with location", location)
       api_fetch_local_dispos(location);
     }
   }, [location]);

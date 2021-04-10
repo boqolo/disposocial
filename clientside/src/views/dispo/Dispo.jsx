@@ -20,7 +20,7 @@ function PostingView({show}) {
 
   function handle_post(ev) {
     ev.preventDefault()
-    console.log("Clicked post", ev.target)
+    // console.log("Clicked post", ev.target)
     let body = ev.target[0].value.trim();
     let params = {
       body: body
@@ -46,7 +46,7 @@ function PostingView({show}) {
               ...params,
               media_hash: media_hash,
             }
-            console.log("post params are", params);
+            // console.log("post params are", params);
             ch_post_post(params, success);
           } else {
             console.error("unable to upload media");
@@ -54,7 +54,7 @@ function PostingView({show}) {
           }
         });
     } else { // regular text only post
-      console.log("post params are", params);
+      // console.log("post params are", params);
       ch_post_post(params, success);
     }
   }
@@ -106,7 +106,7 @@ function Dispo({session, curr_dispo, tags, flags, presences, dispatch}) {
 
   let { url } = useRouteMatch();
   let { pathname } = useLocation();
-  console.log("URL is", url)
+  // console.log("URL is", url)
   let { dispoId } = useParams();
   let history = useHistory();
 

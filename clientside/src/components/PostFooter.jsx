@@ -31,7 +31,7 @@ function PostFooter({postId, reactions, flags, dispatch}) {
     let successCallback = (resp) => {
       cancel_commenting();
     };
-    console.log("POSTING COMMENT")
+    // console.log("POSTING COMMENT")
     ch_post_comment(params, successCallback);
   }
 

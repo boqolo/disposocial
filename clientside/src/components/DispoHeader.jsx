@@ -54,8 +54,8 @@ function Notifications({info, ticker}) {
 function DispoHeader({info, success, error, ticker, dispatch}) {
 
   let history = useHistory();
-  console.log("Ticker msgs are", ticker)
-  console.log("Info msgs are", info)
+  // console.log("Ticker msgs are", ticker)
+  // console.log("Info msgs are", info)
 
   return (
     <div className="mb-4">
