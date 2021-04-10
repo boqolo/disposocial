@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Link, useRouteMatch, useHistory, useParams } from 'react-router-dom';
-import { Tabs, Form, Card, Tab, Navbar, ButtonGroup, Col, Row, ListGroup, Container, Button, Modal } from 'react-bootstrap';
+import { Tabs, Form, Card, Image, Tab, Navbar, ButtonGroup, Col, Row, ListGroup, Container, Button, Modal } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
 import PostFooter from '../../components/PostFooter';
 import store from '../../store';
+import { api_media_path } from '../../api';
 import { convertDateTime } from '../../util';
 import { ch_post_comment, ch_post_reaction } from '../../socket';
 
@@ -24,7 +25,9 @@ function PostComments({postId, comments}) {
               <small className="very-small fw-light">{convertDateTime(comm.inserted_at)}</small>
             </h6>
           </Col>
-          <Col className="py-0 px-0 text-wrap text-break">{comm.body}</Col>
+          <Col className="py-0 px-0 text-wrap text-break">
+            {comm.body}
+          </Col>
         </Row>
       ))}
     </div>
@@ -53,6 +56,10 @@ function Feed({feed, comments, dispatch}) {
                   </p>
                 </Col>
               </Row>
+              {feed[post_id].media_hash &&
+                <Row className="mx-0">
+                  <Image fluid className="px-0" src={api_media_path(feed[post_id].media_hash)} />
+                </Row>}
               <Card.Body className="text-wrap text-break">{feed[post_id].body}</Card.Body>
             </Link>
             <PostFooter postId={post_id} />

@@ -86,7 +86,7 @@ function PostingView({show}) {
                 accept="image/jpeg, image/png"
                 />
             </div>
-            <small>{"Max 1.5 MB"}</small>
+            <small>{"Images accepted. Max 1.5 MB"}</small>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

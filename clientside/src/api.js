@@ -10,6 +10,10 @@ function api_base(path) {
   return `http://localhost:4000/api/v1${path}`;
 }
 
+export function api_media_path(hash) {
+  return `https://disposocial.com/api/v1/uploads/${hash}`;
+}
+
 function clear_errors() {
   store.dispatch({ type: "error/set", data: [] });
 }

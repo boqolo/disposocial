@@ -6,6 +6,7 @@ import DispoHeader from "../../components/DispoHeader.jsx";
 import DispoInfo from '../../components/DispoInfo';
 import PostFooter from '../../components/PostFooter';
 import store from '../../store';
+import { api_media_path } from '../../api';
 import { ch_load_post, ch_post_post, ch_leave_dispo, ch_load_page } from '../../socket';
 import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
 
@@ -23,10 +24,6 @@ function Post({show, feed, comments, dispatch}) {
     } else {
       return "0, 0";
     }
-  }
-
-  function media_path(hash) {
-    return `https://disposocial.com/api/v1/uploads/${hash}`;
   }
 
   // fetch full post
@@ -58,7 +55,7 @@ function Post({show, feed, comments, dispatch}) {
               <div className="w-50 h-50 mx-auto shadow-sm">
                 <Image
                   fluid
-                  src={media_path(show.media_hash)} />
+                  src={api_media_path(show.media_hash)} />
               </div>}
             <div className="p-3 fw-light">
               {show.body}
