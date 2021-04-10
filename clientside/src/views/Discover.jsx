@@ -33,7 +33,7 @@ function JoinView({dispo, flags, dispatch}) {
     let redirect = () => {
       clear_messages(dispatch);
       history.push(`/dispo/${id}`);
-      dispatch({ type: "success/one", data: "Dispo joined" });
+      // dispatch({ type: "success/one", data: "Dispo joined" });
     };
     ch_join_dispo(id, redirect, auth);
   }
