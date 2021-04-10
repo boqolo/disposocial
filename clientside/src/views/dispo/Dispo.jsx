@@ -142,9 +142,9 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
             <Tab eventKey={`${url}/popular`} title="Popular">
               <Popular />
             </Tab>
-            <Tab eventKey={`${url}/mine`} title="Mine">
+            {/* <Tab eventKey={`${url}/mine`} title="Mine">
               <h1>Mine</h1>
-            </Tab>
+            </Tab> */}
           </Tabs>
         </Col>
         <Col xs="3" md="2" className="d-flex flex-column align-items-start">

@@ -25,6 +25,10 @@ function Post({show, feed, comments, dispatch}) {
     }
   }
 
+  function media_path(hash) {
+    return `https://disposocial.com/api/v1/uploads/${hash}`;
+  }
+
   // fetch full post
   React.useEffect(() => {
     if (!show.id || show.id != postId) {
@@ -54,7 +58,7 @@ function Post({show, feed, comments, dispatch}) {
               <div className="w-50 h-50 mx-auto shadow-sm">
                 <Image
                   fluid
-                  src={`http://localhost:4000/api/v1/uploads/${show.media_hash}`} />
+                  src={media_path(show.media_hash)} />
               </div>}
             <div className="p-3 fw-light">
               {show.body}
