@@ -48,13 +48,14 @@ function Post({show, feed, comments, dispatch}) {
     <div>
       <DispoHeader />
       <Row>
-        <Col xs="4" md="3" className="px-0">
-          <DispoInfo />
-        </Col>
         <Col>
           <Jumbotron>
             {show.media_hash &&
-              <Image fluid src={`http://localhost:4000/api/v1/uploads/${show.media_hash}`} />}
+              <div className="w-50 h-50 mx-auto shadow-sm">
+                <Image
+                  fluid
+                  src={`http://localhost:4000/api/v1/uploads/${show.media_hash}`} />
+              </div>}
             <div className="p-3 fw-light">
               {show.body}
             </div>

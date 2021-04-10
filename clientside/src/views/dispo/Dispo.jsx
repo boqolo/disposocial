@@ -127,44 +127,44 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
       <DispoHeader />
       <PostingView show={flags.posting} />
       <Row>
-      <Col xs="4" md="3" className="px-0">
-        <DispoInfo />
-      </Col>
-      <Col>
-        <Tabs
-          activeKey={pathname}
-          onSelect={path => history.push(path)}
-          className="w-100 display-6 rounded my-2">
-          <Tab eventKey={url} title="Live">
-            <Feed />
-          </Tab>
-          <Tab eventKey={`${url}/popular`} title="Popular">
-            <Popular />
-          </Tab>
-          <Tab eventKey={`${url}/mine`} title="Mine">
-            <h1>Mine</h1>
-          </Tab>
-        </Tabs>
-      </Col>
-      <Col xs="3" md="2" className="d-flex flex-column align-items-start">
-        <Row className="w-100 mb-5">
-          <Button
-            variant="primary"
-            size="lg"
-            className="fw-lighter fs-4 shadow-sm"
-            onClick={() => dispatch({ type: "flags/setone", data: {posting: true} })}>
-            Post
-          </Button>
-        </Row>
-        <Row className="w-100">
-          <h2 className="fw-lighter">Tags</h2>
-          <ListGroup>
-            {tags.map((tag, i) =>
-              <ListGroup.Item key={`tag-${i}`} action>{JSON.stringify(tag)}</ListGroup.Item>)}
-          </ListGroup>
-        </Row>
-      </Col>
-    </Row>
+        <Col xs="4" md="3" className="px-0">
+          <DispoInfo />
+        </Col>
+        <Col>
+          <Tabs
+            activeKey={pathname}
+            onSelect={path => history.push(path)}
+            className="w-100 display-6 rounded my-2">
+            <Tab eventKey={url} title="Live">
+              <Feed />
+            </Tab>
+            <Tab eventKey={`${url}/popular`} title="Popular">
+              <Popular />
+            </Tab>
+            <Tab eventKey={`${url}/mine`} title="Mine">
+              <h1>Mine</h1>
+            </Tab>
+          </Tabs>
+        </Col>
+        <Col xs="3" md="2" className="d-flex flex-column align-items-start">
+          <Row className="w-100 mb-5">
+            <Button
+              variant="primary"
+              size="lg"
+              className="fw-lighter fs-4 shadow-sm"
+              onClick={() => dispatch({ type: "flags/setone", data: {posting: true} })}>
+              Post
+            </Button>
+          </Row>
+          <Row className="w-100">
+            <h2 className="fw-lighter">Tags</h2>
+            <ListGroup>
+              {tags.map((tag, i) =>
+                <ListGroup.Item key={`tag-${i}`} action>{JSON.stringify(tag)}</ListGroup.Item>)}
+            </ListGroup>
+          </Row>
+        </Col>
+      </Row>
     </div>
   );
 
