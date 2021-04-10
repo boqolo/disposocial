@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader.jsx';
 import { Jumbotron, Button, Col } from 'react-bootstrap';
 import { Leader } from '../components/Text';
+import store from '../store';
 
 export default function Home() {
+
+  let { session } = store.getState();
 
   return (
     <div>
@@ -17,7 +20,7 @@ export default function Home() {
           <p>{"Attention spans are short and there's already enough content out there on the web."}</p>
           <p>{"Dispos are fleeting. They're here, and they're gone."}</p>
           <br />
-          <Link to="/register">
+          <Link to={session.token ? "/discover" : "/register"}>
             <Button size="lg">{"Get started"}</Button>
           </Link>
         </Jumbotron>
