@@ -61,7 +61,7 @@ interact with others in realtime that will recycle itself, and
 discover local pop-up communities around them to socialize with.
 I thought this could be potentially useful for a hosted event,
 club gathering, neighborhood bulletin, or maybe even a classroom.
-Using a Dispo for temporary event rather than creating a group
+Using a Dispo for a temporary event rather than creating a group
 chat means you don't have to think about being bothered with 
 extraneous messages once the purpose of the chat has passed 
 because everyone agrees that the group should disperse after
@@ -117,7 +117,7 @@ and provided the key to make requests.
 
 The app uses Phoenix channels extensively to handle most 
 post events and to receive resources on the wire. Broadcasts
-to all users of a Dispo are done are sent on all relevant
+to all users of a Dispo are sent on all relevant
 updates either on post events, or by the DispoServer
 GenServer.
 
