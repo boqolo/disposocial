@@ -39,11 +39,10 @@ function Feed({feed, comments, dispatch}) {
   console.log("Feed has", feed)
 
   let { dispoId } = useParams();
-  let desc = (x, y) => x > y ? x : y;
 
   return (
     <Col>
-      {Object.keys(feed).sort(desc).map((post_id) =>
+      {Object.keys(feed).reverse().map((post_id) =>
         <Row key={`post-${post_id}`} className="mx-0 mb-4 rounded border-primary border-bottom border-1 border-top-0 rounded-bottom shadow-sm">
           <Card className="rounded p-0 border-bottom-0">
             <Link to={`/dispo/${dispoId}/post/${post_id}`} className="text-reset text-decoration-none">
