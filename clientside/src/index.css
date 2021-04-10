@@ -14,10 +14,16 @@ body {
   font-size: 0.7em;
 }
 
-.notification {
+.notifications {
   position: absolute;
+  z-index: 10;
   margin: 1em 1em;
   top: 0;
   right: 0;
-  z-index: 10;
+}
+
+.toast-style {
+  opacity: 1;
+  margin-bottom: 1em;
+  background-color: white;
 }

@@ -8,24 +8,54 @@ import { remove_at, reset_dispo_state, clear_errors } from '../util';
 import store from '../store';
 import HeaderAlert from './Alert';
 
+function Notifications({info, ticker}) {
+
+  return (
+    <div className="notifications">
+      {info.length > 0 && info.map((msg, i) =>
+        <Toast
+          key={`info-${i}`}
+          autohide
+          className="toast-style"
+          delay={5000}
+          onClose={() => {
+            store.dispatch({ type: "info/set", data: remove_at(info, i) })
+          }}
+          className="toast-style">
+          <Toast.Header closeButton={false}>
+            <Col><strong>Info</strong></Col>
+            <Col xs="auto">
+              <Button
+                size="sm"
+                className="border-0 btn-close"
+                onClick={() => {
+                  store.dispatch({ type: "info/set", data: remove_at(info, i) })
+                }}></Button>
+            </Col>
+          </Toast.Header>
+          <Toast.Body>{msg}</Toast.Body>
+        </Toast>)}
+      {ticker.length > 0 && ticker.map((msg, i) =>
+        <Toast
+          key={`tick-${i}`}
+          autohide
+          className="toast-style"
+          delay={3000}
+          onClose={() => {
+            store.dispatch({ type: "ticker/set", data: remove_at(ticker, i) })
+          }}
+          className="toast-style">
+          <Toast.Body>{msg}</Toast.Body>
+        </Toast>)}
+    </div>
+  );
+}
+
 function DispoHeader({info, success, error, ticker, dispatch}) {
 
-  // TODO if notification update marquee
   let history = useHistory();
   console.log("Ticker msgs are", ticker)
   console.log("Info msgs are", info)
-
-  function Timer({dispo_timer, dispatch}) {
-    return (
-      <div>
-        <span className="display-3">{dispo_timer}</span>
-      </div>
-    );
-  }
-
-  let Countdown = connect(({dispo_timer}) => {
-    return {dispo_timer}
-  })(Timer);
 
   return (
     <div className="mb-4">
@@ -43,28 +73,7 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
           </Navbar.Collapse>
         </Navbar>
       </Container>
-      {info.length > 0 && info.map((msg, i) =>
-        <Toast
-          key={`info-${i}`}
-          autohide
-          delay={5000}
-          onClose={() => {
-            store.dispatch({ type: "info/set", data: remove_at(info, i) })
-          }}
-          className="notification">
-          <Toast.Header closeButton={false}>
-            <Col><strong>Info</strong></Col>
-            <Col xs="auto">
-              <Button
-                size="sm"
-                className="border-0 btn-close"
-                onClick={() => {
-                  store.dispatch({ type: "info/set", data: remove_at(info, i) })
-                }}></Button>
-            </Col>
-          </Toast.Header>
-          <Toast.Body>{msg}</Toast.Body>
-        </Toast>)}
+      <Notifications ticker={ticker} info={info} />
       <Col className="mt-1 mx-auto w-75">
         {success.length > 0 && success.map((msg, i) =>
           <HeaderAlert key={`succ-${i}`} i={i} msg={msg} success={success} group="success" />)}
