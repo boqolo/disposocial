@@ -106,7 +106,7 @@ defmodule DisposocialWeb.DispoChannel do
     Logger.debug("GOT POST PARAMS --> #{inspect(params)}")
     upload = params["media_hash"]
     attrs = %{
-      body: Util.escapeInput(body),
+      body: body,
       user_id: socket.assigns.current_user.id,
       dispo_id: socket.assigns.curr_dispo_id
     }
@@ -135,7 +135,7 @@ defmodule DisposocialWeb.DispoChannel do
   @impl true
   def handle_in("post_comment", %{"post_id" => post_id, "body" => body}, socket) do
     attrs = %{
-      body: Util.escapeInput(body),
+      body: body,
       user_id: socket.assigns.current_user.id,
       post_id: post_id
     }
