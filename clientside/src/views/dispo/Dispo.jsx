@@ -102,7 +102,7 @@ function PostingView({show}) {
   );
 }
 
-function Dispo({session, curr_dispo, tags, flags, dispatch}) {
+function Dispo({session, curr_dispo, tags, flags, presences, dispatch}) {
 
   let { url } = useRouteMatch();
   let { pathname } = useLocation();
@@ -158,10 +158,12 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
             </Button>
           </Row>
           <Row className="w-100">
-            <h2 className="fw-lighter">Tags</h2>
+            <h2 className="fw-lighter">{`Online (${Object.keys(presences).length})`}</h2>
             <ListGroup>
-              {tags.map((tag, i) =>
-                <ListGroup.Item key={`tag-${i}`} action>{JSON.stringify(tag)}</ListGroup.Item>)}
+              {Object.keys(presences).map((username, i) =>
+                <ListGroup.Item key={`tag-${i}`} className="text-center">
+                  {username}
+                </ListGroup.Item>)}
             </ListGroup>
           </Row>
         </Col>
@@ -171,8 +173,8 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
 
 }
 
-function state_to_props({session, curr_dispo, tags, flags}) {
-  return {session, curr_dispo, tags, flags};
+function state_to_props({session, curr_dispo, tags, presences, flags}) {
+  return {session, curr_dispo, tags, flags, presences};
 }
 
 export default connect(state_to_props)(Dispo);
