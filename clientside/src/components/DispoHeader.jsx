@@ -51,11 +51,12 @@ function Notifications({info, ticker}) {
   );
 }
 
-function DispoHeader({info, success, error, ticker, dispatch}) {
+function DispoHeader({info, success, error, ticker, presences, dispatch}) {
 
   let history = useHistory();
   console.log("Ticker msgs are", ticker)
   console.log("Info msgs are", info)
+  console.log("Presences are", presences)
 
   return (
     <div className="mb-4">
@@ -72,6 +73,7 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
+        <div className="text-light fw-light ps-3">{`${Object.keys(presences).length} online`}</div>
       </Container>
       <Notifications ticker={ticker} info={info} />
       <Col className="mt-1 mx-auto w-75">
@@ -85,8 +87,8 @@ function DispoHeader({info, success, error, ticker, dispatch}) {
 
 }
 
-function state_to_props({info, success, error, ticker}) {
-  return {info, success, error, ticker};
+function state_to_props({info, success, error, ticker, presences}) {
+  return {info, success, error, ticker, presences};
 }
 
 export default connect(state_to_props)(DispoHeader);

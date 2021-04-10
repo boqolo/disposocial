@@ -317,6 +317,17 @@ function session_reducer(state = {}, action) {
   }
 }
 
+function presence_reducer(state = {}, action) {
+  switch (action.type) {
+    case "presences/add":
+      return {...state, ...action.data};
+    case "presences/set":
+      return action.data;
+    default:
+      return state;
+  }
+}
+
 // Combine state reducers to create global state reducer
 let root_reducer = combineReducers({
   session: session_reducer,
@@ -330,6 +341,7 @@ let root_reducer = combineReducers({
   join_form: join_form_reducer,
   create_form: create_form_reducer,
   curr_dispo: curr_dispo_reducer,
+  presences: presence_reducer,
   local_dispos: local_dispos_reducer,
   feed: feed_reducer,
   comments: comments_reducer,

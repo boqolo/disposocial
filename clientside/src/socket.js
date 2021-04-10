@@ -1,4 +1,4 @@
-import { Socket } from 'phoenix';
+import { Socket, Presence } from 'phoenix';
 import store from './store';
 
 // create socket with token if authenticated (undefined if not i.e.
@@ -6,6 +6,7 @@ import store from './store';
 // FIXME change for prod -> "/socket"
 let socket;
 let channel_dispo;
+let presence;
 
 let MSG = {
   dispo_dead: "The Dispo has died",
@@ -95,6 +96,15 @@ function remind_dispatch(resp) {
   store.dispatch({ type: "curr_dispo/setremind", data: resp.data });
 }
 
+function presence_dispatch(presence) {
+  console.log("Got presences", presence);
+  let presences = {};
+  presence.list((username, {metas: [first, ...others]}) => {
+    presences[username] = {online_at: first.online_at};
+  });
+  store.dispatch({ type: "presences/set", data: presences });
+}
+
 
 // Channels
 // let channel_default = socket.channel("default:init", {});
@@ -103,21 +113,6 @@ function remind_dispatch(resp) {
 // channel_default.join()
 //   .receive("ok", () => console.log("joined default channel"))
 //   .receive("error", resp => console.log("unable to join default channel", resp));
-
-// Register user
-// export function ch_register({form_params, dispatch}) {
-//   channel_default.push("register", form_params)
-//     .receive("ok", () => {
-//       console.log("register success!");
-//       // TODO clear form, set user data?, set auth, redirect to discover,
-//       dispatch({ type: "acct_form/set", data: {} });
-//
-//     }) // TODO dispatch user info to store?
-//     .receive("error", resp => {
-//       console.log("unable to register user", resp);
-//       dispatch({ type: "error/one", data: [resp] });
-//     });
-// }
 
 function init_sock(token) {
   let sock = new Socket("//localhost:4000/socket", {params: {token: token}});
@@ -136,6 +131,7 @@ export function ch_leave_dispo() {
     .receive("ok", (resp) => {
       socket = undefined;
       channel_dispo = undefined;
+      presence = undefined;
     })
     .receive("error", resp => console.error(resp));
 }
@@ -148,6 +144,15 @@ export function ch_join_dispo(id, successRedirect, dispo_auth = {}) {
   console.log("Init sock", socket)
   let params = {...session, ...dispo_auth};
   channel_dispo = socket.channel(`dispo:${id}`, params);
+  presence = new Presence(channel_dispo);
+  presence.onSync(() => presence_dispatch(presence));
+  presence.onLeave((username, curr, leftPres) => {
+    if (curr.metas.length === 0) {
+      // there is a meta for every device a user is online
+      // here check if they've fully exited
+      // TODO ch_user_away()
+    }
+  });
   console.log("Init channel", channel_dispo)
   channel_dispo.join()
     .receive("ok", () => {

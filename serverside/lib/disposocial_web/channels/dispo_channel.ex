@@ -40,8 +40,14 @@ defmodule DisposocialWeb.DispoChannel do
     Logger.debug("Got dispo id --> #{inspect(dispo_id)}")
     dispo = DispoServer.get_dispo(dispo_id)
 
+    # Init presence tracking
+    {:ok, _} = Presence.track(socket, user_name, %{
+      online_at: DateTime.utc_now()
+    })
+
     push(socket, "dispo_meta", %{data: dispo})
     push(socket, "info", %{data: "Welcome to the #{dispo.name} Dispo!"})
+    push(socket, "presence_state", Presence.list(socket))
     broadcast!(socket, "doormat", %{data: "#{user_name} joined."})
 
     {:noreply, socket}
