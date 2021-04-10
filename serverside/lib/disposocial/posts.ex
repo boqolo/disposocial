@@ -174,18 +174,27 @@ defmodule Disposocial.Posts do
 
   """
   def delete_post(%Post{} = post) do
-    Repo.delete(post)
+    media_hash = post.media_hash
+    unless media_hash == "" do
+      # Delete the associated upload also
+      File.rm_rf!(Photos.basePath(media_hash))
+      Repo.delete(post)
+    else
+      Repo.delete(post)
+    end
   end
 
   def delete_posts_and_remnants(dispo_id) do
     q = from(p in Post, where: p.dispo_id == ^dispo_id)
     post_ids = Repo.all(from(p in Post, where: p.dispo_id == ^dispo_id, select: p.id))
+    hashes = Repo.all(from(p in Post, where: p.dispo_id == ^dispo_id, select: p.media_hash))
 
     with(
       {:ok, num_comm_deleted} <- Comments.delete_comments_and_remnants(post_ids),
       {num_reac_deleted, _} <- Reactions.delete_post_reactions(post_ids),
+      {:ok, num_uploads_deleted} <- Photos.delete_uploads(hashes),
       {num_post_deleted, _} <- Repo.delete_all(q)) do
-        {:ok, num_post_deleted, num_comm_deleted, num_reac_deleted}
+        {:ok, num_post_deleted, num_uploads_deleted, num_comm_deleted, num_reac_deleted}
     else
       _ -> Logger.alert("Delete posts failed")
     end

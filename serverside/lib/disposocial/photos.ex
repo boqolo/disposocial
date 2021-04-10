@@ -3,6 +3,8 @@ defmodule Disposocial.Photos do
   @default_photo Path.join(@root, "default/photo.jpg")
   @max_file_size 1_500_000 # in bytes
 
+  def photos_path(), do: @root
+
   require Logger
 
   # This module is interpolated from Nat Tuck lecture code here:
@@ -54,6 +56,10 @@ defmodule Disposocial.Photos do
   def deletePhoto(hash) do
     File.rm_rf!(basePath(hash))
     :ok
+  end
+
+  def delete_uploads(hashes) do
+    {Enum.each(hashes, fn hash -> deletePhoto(hash) end), Enum.count(hashes)}
   end
 
   def retrievePhoto(hash) do
