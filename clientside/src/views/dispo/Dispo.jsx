@@ -30,7 +30,7 @@ function PostingView({show}) {
       close();
     };
     let error = () => {
-      store.dispatch({ type: "error/one", data: "Failed to create post" });
+      store.dispatch({ type: "error/add", data: "Failed to create post" });
       close();
     };
 
@@ -86,6 +86,7 @@ function PostingView({show}) {
                 accept="image/jpeg, image/png"
                 />
             </div>
+            <small>{"Max 1.5 MB"}</small>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -123,7 +124,7 @@ function Dispo({session, curr_dispo, tags, flags, dispatch}) {
   }, []);
 
   return (
-    <div>
+    <div className="mb-5">
       <DispoHeader />
       <PostingView show={flags.posting} />
       <Row>

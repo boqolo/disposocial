@@ -1,6 +1,7 @@
 defmodule Disposocial.Photos do
   @root Path.expand("~/.disposocial_uploads/photos")
   @default_photo Path.join(@root, "default/photo.jpg")
+  @max_file_size 1_500 # in bytes
 
   require Logger
 
@@ -16,23 +17,6 @@ defmodule Disposocial.Photos do
     |> Base.url_encode64(case: :lower)
   end
 
-  def saveMedia(filename, data) do
-    # key info: filename, data, hash, metadata
-    hash = sha256(data)
-    metadata? = readMetadata(hash)
-
-    metadata =
-      unless metadata? do
-        # create individ dir for every photo upload
-        File.mkdir_p!(basePath(hash))
-        %{"name" => filename, "refs" => 0, "uploaded" => DateTime.to_string(DateTime.utc_now())}
-      else
-        metadata?
-      end
-
-    savePhoto(filename, hash, data, metadata)
-  end
-
   def savePhoto(filename, path) do
     # key info: filename, data, hash, metadata
     data = File.read!(path)
@@ -41,18 +25,20 @@ defmodule Disposocial.Photos do
 
     metadata =
       unless metadata? do
-        # create individ dir for every photo upload
-        File.mkdir_p!(basePath(hash))
-        Map.merge(%{"name" => filename, "refs" => 0}, getSomeStats(filename))
+        Map.merge(%{"name" => filename, "refs" => 0}, getSomeStats(path))
       else
         metadata?
       end
 
-    savePhoto(filename, hash, data, metadata)
+    if metadata.size > @max_file_size do
+      {:error, "File too large"}
+    else
+      savePhoto(filename, hash, data, metadata)
+    end
   end
 
-  def getSomeStats(filename) do
-    with {:ok, fileStat} <- File.stat(filename) do
+  def getSomeStats(filepath) do
+    with {:ok, fileStat} <- File.stat(filepath) do
       fileStat
       |> Map.from_struct()
       |> Map.take([:ctime, :size])
@@ -62,6 +48,8 @@ defmodule Disposocial.Photos do
   end
 
   def savePhoto(_filename, hash, data, metadata) do
+    # create individ dir for every photo upload
+    File.mkdir_p!(basePath(hash))
     # have dir and all info
     metadata = Map.update!(metadata, "refs", fn count -> count + 1 end)
     # write file to photo loc + write metadata

@@ -145,7 +145,15 @@ export async function api_upload_media(params) {
   };
 
   let resp = await fetch(api_base("/upload"), opts)
-  return await resp.json();
+  resp = await resp.json();
+  let error_resp = resp["error"];
+  if (error_resp) {
+    let msg = [error_resp];
+    store.dispatch({ type: "error/set", data: msg });
+    return {};
+  } else {
+    return resp;
+  }
 }
 
 export function api_create_acct(params, success) {

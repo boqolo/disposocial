@@ -23,6 +23,7 @@ defmodule DisposocialWeb.RootController do
         conn
         |> put_resp_header("Content-Type", "application/json")
         |> send_resp(201, Jason.encode!(%{media_hash: hash}))
+      {:error, msg} -> send_resp(conn, 413, Jason.encode!(%{error: [msg]}))
       _ -> send_resp(conn, 400, Jason.encode!(%{error: ["Upload failed"]}))
     end
   end

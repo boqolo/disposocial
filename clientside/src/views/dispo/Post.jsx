@@ -45,7 +45,7 @@ function Post({show, feed, comments, dispatch}) {
   }, [feed, comments]);
 
   return (
-    <div>
+    <div className="mb-5">
       <DispoHeader />
       <Row>
         <Col>
