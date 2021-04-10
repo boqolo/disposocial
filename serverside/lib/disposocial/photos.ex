@@ -8,12 +8,29 @@ defmodule Disposocial.Photos do
   # https://github.com/NatTuck/scratch-2021-01/blob/master/4550/0309/photo_blog/lib/photo_blog/photos.ex
 
   def sha256(data) do
-    # create binary hash from data 
-    # and convert to base64 string so we can store in 
+    # create binary hash from data
+    # and convert to base64 string so we can store in
     # the database
     # erlang crypto module here
     :crypto.hash(:sha256, data)
-    |> Base.encode64(case: :lower)
+    |> Base.url_encode64(case: :lower)
+  end
+
+  def saveMedia(filename, data) do
+    # key info: filename, data, hash, metadata
+    hash = sha256(data)
+    metadata? = readMetadata(hash)
+
+    metadata =
+      unless metadata? do
+        # create individ dir for every photo upload
+        File.mkdir_p!(basePath(hash))
+        %{"name" => filename, "refs" => 0, "uploaded" => DateTime.to_string(DateTime.utc_now())}
+      else
+        metadata?
+      end
+
+    savePhoto(filename, hash, data, metadata)
   end
 
   def savePhoto(filename, path) do
@@ -60,13 +77,12 @@ defmodule Disposocial.Photos do
   end
 
   def retrievePhoto(hash) do
-    data = File.read!(dataPath(hash))
-
-    metadata =
-      File.read!(metaPath(hash))
-      |> Jason.decode!()
-
-    {:ok, metadata, data}
+    with {:ok, data} <- File.read(dataPath(hash)),
+          {:ok, metadata} <- File.read(metaPath(hash)) do
+      {:ok, Jason.decode!(metadata), data}
+    else
+      _ -> {:error, "Not found"}
+    end
   end
 
   def retrieveDefaultPhoto() do
@@ -75,7 +91,7 @@ defmodule Disposocial.Photos do
   end
 
   def readMetadata(hash) do
-    # This is a special form that will execute the 
+    # This is a special form that will execute the
     # `do` *with* the bindings if they match
     with {:ok, data} <- File.read(metaPath(hash)),
          {:ok, metadata} <- Jason.decode(data) do

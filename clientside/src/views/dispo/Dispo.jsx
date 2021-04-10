@@ -8,6 +8,7 @@ import Popular from './Popular';
 import DispoInfo from '../../components/DispoInfo';
 import store from '../../store';
 import { ch_post_post, ch_leave_dispo, ch_load_page } from '../../socket';
+import { api_upload_media } from '../../api';
 import { reset_dispo_state, convertDateTime, ms_to_min_s, clear_errors } from '../../util';
 
 
@@ -19,7 +20,7 @@ function PostingView({show}) {
 
   function handle_post(ev) {
     ev.preventDefault()
-    console.log("Clicked post")
+    console.log("Clicked post", ev.target)
     let body = ev.target[0].value.trim();
     let params = {
       body: body
@@ -28,26 +29,38 @@ function PostingView({show}) {
       store.dispatch({ type: "success/one", data: "Posted!" });
       close();
     };
+    let error = () => {
+      store.dispatch({ type: "error/one", data: "Failed to create post" });
+      close();
+    };
 
-    ch_post_post(params, success);
+    // There's a file upload
+    if (ev.target[1].value) {
+      let fileObj = ev.target[1].files[0];
 
-    // let file = ev.target[1].files[0];
-    // const reader = new FileReader();
-    // console.log("params are", body, file)
-    // reader.readAsBinaryString(file);
-    // reader.onloadend = () => {
-    //   let params = {
-    //     body: body,
-    //     file: ev.target[1].value,
-    //     data: reader.result
-    //   }
-    //   ch_post_post(params);
-    //   close();
-    // }
+      api_upload_media({file: fileObj})
+        .then(resp => {
+          if (resp.media_hash) {
+            let { media_hash } = resp;
+            params = {
+              ...params,
+              media_hash: media_hash,
+            }
+            console.log("post params are", params);
+            ch_post_post(params, success);
+          } else {
+            console.error("unable to upload media");
+            error();
+          }
+        });
+    } else { // regular text only post
+      console.log("post params are", params);
+      ch_post_post(params, success);
+    }
   }
 
   // function pressedEnter(ev) {
-  //   if (show && ev.key === "Enter") {
+  //   if (ev.key === "Enter") {
   //     handle_post(ev);
   //   }
   // }
@@ -57,7 +70,7 @@ function PostingView({show}) {
       <Modal.Header>
         <Modal.Title>Post</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={handle_post}>
+      <Form onSubmit={handle_post} encType="multipart/form-data">
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Control
@@ -70,8 +83,7 @@ function PostingView({show}) {
           <Form.Group>
             <div className="form-floating">
               <Form.File
-                encType="multipart/form-data"
-                custom
+                accept="image/jpeg, image/png"
                 />
             </div>
           </Form.Group>

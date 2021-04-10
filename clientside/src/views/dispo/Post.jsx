@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route, Link, useRouteMatch, useHistory, useParams, useLocation } from 'react-router-dom';
-import { Tabs, Form, Tab, ListGroup, Navbar, Col, Row, Container, Button, Modal, Card, Jumbotron } from 'react-bootstrap';
+import { Tabs, Form, Tab, ListGroup, Image, Navbar, Col, Row, Container, Button, Modal, Card, Jumbotron } from 'react-bootstrap';
 import DispoHeader from "../../components/DispoHeader.jsx";
 import DispoInfo from '../../components/DispoInfo';
 import PostFooter from '../../components/PostFooter';
@@ -53,6 +53,8 @@ function Post({show, feed, comments, dispatch}) {
         </Col>
         <Col>
           <Jumbotron>
+            {show.media_hash &&
+              <Image fluid src={`http://localhost:4000/api/v1/uploads/${show.media_hash}`} />}
             <div className="p-3 fw-light">
               {show.body}
             </div>

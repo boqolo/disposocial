@@ -13,6 +13,7 @@ defmodule Disposocial.Posts do
   alias Disposocial.Reactions
   alias Disposocial.Comments
   alias Disposocial.Comments.Comment
+  alias Disposocial.Photos
 
   @doc """
   Returns the list of posts.
@@ -121,6 +122,17 @@ defmodule Disposocial.Posts do
 
   """
   def create_post(attrs \\ %{}) do
+    attrs =
+      if path = attrs[:upload] do
+        case Photos.savePhoto("test", path) do
+          {:ok, hash} -> Map.put(attrs, :media_hash, hash)
+          _ ->
+          Logger.error("PHOTO FAILED TO SAVE")
+          attrs
+        end
+      else
+        attrs
+      end
     %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()

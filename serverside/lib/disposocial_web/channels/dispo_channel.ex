@@ -96,12 +96,23 @@ defmodule DisposocialWeb.DispoChannel do
   end
 
   @impl true
-  def handle_in("post_post", %{"body" => body} = _params, socket) do
+  def handle_in("post_post", %{"body" => body} = params, socket) do
+    Logger.debug("GOT POST PARAMS --> #{inspect(params)}")
+    upload = params["media_hash"]
     attrs = %{
       body: Util.escapeInput(body),
       user_id: socket.assigns.current_user.id,
       dispo_id: socket.assigns.curr_dispo_id
     }
+
+    attrs =
+      if upload do
+        Map.put(attrs, :media_hash, upload)
+      else
+        attrs
+      end
+
+    Logger.debug("CREATING POST W ATTRS --> #{inspect(attrs)}")
 
     case DispoServer.post_post(socket.assigns.curr_dispo_id, attrs) do
       {:ok, post} ->

@@ -128,6 +128,26 @@ export function api_auth({email, password}, success = () => {}) {
     });
 }
 
+export async function api_upload_media(params) {
+  // referencing: https://github.com/NatTuck/scratch-2021-01/blob/master/4550/0323/photo-blog-spa/web-ui/src/api.js
+  let { session } = store.getState();
+  let token = session?.token;
+
+  let data = new FormData();
+  data.append("media[file]", params.file);
+
+  let opts = {
+    method: "POST",
+    body: data,
+    headers: {
+      'x-auth': token
+    }
+  };
+
+  let resp = await fetch(api_base("/upload"), opts)
+  return await resp.json();
+}
+
 export function api_create_acct(params, success) {
   // create acct, then api_auth
   api_post("/users", {user: params})

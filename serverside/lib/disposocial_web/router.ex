@@ -17,6 +17,8 @@ defmodule DisposocialWeb.Router do
     pipe_through(:api)
     # FIXME conflicting routes
     post "/dispos/near", DispoController, :get_near
+    post "/upload", RootController, :upload
+    get "/uploads/:hash", RootController, :retrieve
 
     resources("/session", SessionController, only: [:create])
     resources("/dispos", DispoController, except: [:new, :edit, :index])
