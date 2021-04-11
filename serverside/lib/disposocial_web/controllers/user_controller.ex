@@ -15,13 +15,36 @@ defmodule DisposocialWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
+  defp convertKList(keyword) do
+    for {k, v} <- keyword, into: %{} do
+      {k, hd(Tuple.to_list(v))}
+    end
+  end
+
+  defp remove_hash_errors(chgset) do
+    %{chgset | errors: Keyword.drop(chgset.errors, [:password_hash, :media_hash])}
+  end
+
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Users.create_user_with_passhash(user_params) do
-      Logger.debug("USER controller created user")
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.user_path(conn, :show, user))
-      |> render("show.json", user: user)
+    email = user_params["email"]
+    unless Users.get_user_by_email(email) do
+      Logger.debug("ENTERING")
+      case Users.create_user(user_params) do
+        {:ok, %User{} = user} ->
+          Logger.debug("MADE USER --> #{inspect(user)}")
+          conn
+          |> put_status(:created)
+          |> put_resp_header("location", Routes.user_path(conn, :show, user))
+          |> render("show.json", user: user)
+        {:error, chgset} ->
+          Logger.debug("ERROR --> #{inspect(chgset)}")
+          conn
+          |> put_view(DisposocialWeb.ChangesetView)
+          |> render("error.json", changeset: remove_hash_errors(chgset))
+        _ -> Logger.debug("SDSDSDDSDSDSDSDSD")
+      end
+    else
+      send_resp(conn, 409, Jason.encode!(%{error: %{email: ["That account already exists"]}}))
     end
   end
 

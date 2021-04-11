@@ -40,6 +40,8 @@ defmodule Disposocial.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by_email(email), do: Repo.get_by(User, email: email)
+
   def present(id) do
     q = from(u in User, where: u.id == ^id, select: [u.id, u.name, u.photo_hash])
     [user] = Repo.all(q)
@@ -60,20 +62,18 @@ defmodule Disposocial.Users do
 
   """
   def create_user(attrs \\ %{}) do
-    Logger.debug("CREATING USER WITH --> #{inspect(attrs)}")
-    # TODO also hash emails
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
   end
 
-  def create_user_with_passhash(%{"password" => password} = attrs) do
-    attrs
-    |> Map.merge(Argon2.add_hash(password))
-    |> Map.drop(["password"])
-    |> Util.stringify_keys()
-    |> create_user()
-  end
+  # def create_user_with_passhash(%{"password" => password} = attrs) do
+  #   attrs
+  #   |> Map.merge(Argon2.add_hash(password))
+  #   |> Map.drop(["password"])
+  #   |> Util.stringify_keys()
+  #   |> create_user()
+  # end
 
   def authenticate(email, password) do
     # determine if username and password match
